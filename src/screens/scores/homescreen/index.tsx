@@ -5,14 +5,12 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { useTranslation } from "react-i18next";
 import { Country } from "@/types/api";
 import { ScoresStackParamList } from "@/types/navigation";
-import { useSearch } from "@/context/SearchContext";
-import { useFavorites } from "@/context/FavoritesContext";
 import { useTheme } from "@/context/ThemeContext";
+import { useCountries } from "@/hooks";
 import SearchBar from "@/components/SearchBar";
 import SearchResults from "@/components/SearchResults";
 import FavoritesSection from "@/components/FavoritesSection";
 import SuggestedSection from "@/components/SuggestedSection";
-import { SUGGESTED_COUNTRIES } from "@/utils/constants";
 
 type ScoresNavigationProp = StackNavigationProp<ScoresStackParamList>;
 
@@ -20,29 +18,27 @@ const Homescreen: React.FC = () => {
   const { t } = useTranslation();
   const { theme } = useTheme();
   const navigation = useNavigation<ScoresNavigationProp>();
+
+  // 🎯 Eén hook voor alle data logica!
   const {
     searchTerm,
     searchResults,
     isSearching,
-    hasSearched,
-    error,
-    setSearchTerm,
-    performSearch,
+    searchError,
+    favorites,
+    suggestedCountries,
+    handleSearch,
     clearSearch,
-  } = useSearch();
-  const { favorites, isFavorite, toggleFavorite } = useFavorites();
+    toggleFavorite,
+    isFavorite,
+    shouldShowSearchResults,
+    shouldShowNoResults,
+    shouldShowFavorites,
+    shouldShowSuggested,
+  } = useCountries();
 
   const handleCountryPress = (country: Country) => {
     navigation.navigate("CountryDetail", { item: country });
-  };
-
-  const handleSearch = (query: string) => {
-    setSearchTerm(query);
-    if (query.trim()) {
-      performSearch(query);
-    } else {
-      clearSearch();
-    }
   };
 
   const styles = getStyles(theme);
@@ -74,25 +70,25 @@ const Homescreen: React.FC = () => {
             </View>
           )}
 
-          {error && (
+          {searchError && (
             <View style={styles.errorContainer}>
-              <Text style={styles.errorText}>{error}</Text>
+              <Text style={styles.errorText}>{searchError}</Text>
             </View>
           )}
 
-          {hasSearched && !isSearching && searchResults.length > 0 && (
+          {shouldShowSearchResults && (
             <SearchResults
               results={searchResults}
               searchTerm={searchTerm}
               isLoading={isSearching}
-              error={error}
+              error={searchError}
               onCountryPress={handleCountryPress}
               onHeartPress={toggleFavorite}
               isFavorite={isFavorite}
             />
           )}
 
-          {hasSearched && !isSearching && searchResults.length === 0 && (
+          {shouldShowNoResults && (
             <View style={styles.noResultsContainer}>
               <Text style={styles.noResultsText}>
                 {t("search.noResults", { query: searchTerm })}
@@ -100,7 +96,7 @@ const Homescreen: React.FC = () => {
             </View>
           )}
 
-          {!hasSearched && favorites.length > 0 && (
+          {shouldShowFavorites && (
             <FavoritesSection
               favorites={favorites}
               onCountryPress={handleCountryPress}
@@ -108,9 +104,9 @@ const Homescreen: React.FC = () => {
             />
           )}
 
-          {!hasSearched && (
+          {shouldShowSuggested && (
             <SuggestedSection
-              suggestedCountries={SUGGESTED_COUNTRIES}
+              suggestedCountries={suggestedCountries}
               onCountryPress={handleCountryPress}
               onHeartPress={toggleFavorite}
               isFavorite={isFavorite}

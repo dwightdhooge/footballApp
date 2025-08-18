@@ -23,7 +23,9 @@
     "leagueDetail": "League Details",
     "cupDetail": "Cup Details",
     "countryDetail": "Country Details",
-    "cupDetails": "Cup Details"
+    "cupDetails": "Cup Details",
+    "matchDetail": "Match Details",
+    "matchDetails": "Match Details"
   },
   "homescreen": {
     "title": "Football Scores",
@@ -99,6 +101,15 @@
     "loadingMatches": "Loading matches...",
     "retry": "Try again"
   },
+  "lineups": {
+    "loadingLineups": "Loading lineups...",
+    "errorLoadingLineups": "Error loading lineups",
+    "noLineupsAvailable": "No lineups available",
+    "teamLineupsNotAvailable": "Team lineups are not available for this match yet.",
+    "coach": "Coach",
+    "formation": "Formation",
+    "substitutes": "Substitutes"
+  },
   "favorites": {
     "title": "Favorites",
     "noFavorites": "You don't have any favorites yet",
@@ -154,5 +165,75 @@
     "forbidden": "Access denied",
     "timeout": "Request timeout",
     "unknownError": "Unknown error occurred"
+  },
+  "match": {
+    "status": {
+      "live": "Live - {{elapsed}}'",
+      "finished": "FINISHED",
+      "halftime": "HALFTIME",
+      "notStarted": "NEW MATCH"
+    },
+    "competition": {
+      "default": "Competition",
+      "type": {
+        "default": "League"
+      },
+      "season": "Season"
+    },
+    "duration": {
+      "full": "90'"
+    },
+    "score": {
+      "halfTime": "HT: {{home}}-{{away}}"
+    },
+    "goal": {
+      "minute": "{{minute}}'"
+    },
+    "referee": {
+      "default": "Lawrence Visser"
+    },
+    "penalty": {
+      "label": "Penalties"
+    }
+  },
+  "events": {
+    "title": "Match Events",
+    "count": "{{count}} events",
+    "loading": "Loading events...",
+    "error": {
+      "title": "Error loading events"
+    },
+    "empty": {
+      "title": "No events available",
+      "message": "There are no events recorded for this match yet."
+    },
+    "time": {
+      "normal": "{{elapsed}}'",
+      "extra": "{{elapsed}}+{{extra}}'"
+    },
+    "types": {
+      "goal": "Goal",
+      "card": "Card",
+      "subst": "Substitution",
+      "var": "VAR",
+      "foul": "Foul",
+      "corner": "Corner",
+      "free kick": "Free Kick",
+      "throw in": "Throw In",
+      "offside": "Offside",
+      "injury": "Injury",
+      "break": "Break",
+      "missed penalty": "Missed Penalty",
+      "saved penalty": "Saved Penalty",
+      "post": "Hit Post",
+      "crossbar": "Hit Crossbar"
+    },
+    "noPlayer": "No player",
+    "assist": "Assist"
+  },
+  "tabs": {
+    "info": "Info",
+    "events": "Events",
+    "lineups": "Lineups"
   }
 }

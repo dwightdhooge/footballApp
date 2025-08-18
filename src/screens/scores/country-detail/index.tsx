@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   View,
   ScrollView,
@@ -9,13 +9,13 @@ import {
 } from "react-native";
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { Country, LeagueItem } from "@/types/api";
+import { LeagueItem } from "@/types/api";
 import { ScoresStackParamList } from "@/types/navigation";
 import { useTheme } from "@/context/ThemeContext";
+import { useCountryData } from "@/hooks";
 import CountryHeader from "../../../components/CountryHeader";
 import CountryInfo from "../../../components/CountryInfo";
 import LeaguesSection from "../../../components/LeaguesSection";
-import { fetchLeaguesForCountry } from "@/services/api/leagues";
 
 type CountryDetailRouteProp = RouteProp<ScoresStackParamList, "CountryDetail">;
 type CountryDetailNavigationProp = StackNavigationProp<ScoresStackParamList>;
@@ -26,46 +26,16 @@ const CountryDetailScreen: React.FC = () => {
   const route = useRoute<CountryDetailRouteProp>();
   const { item: country } = route.params;
 
-  const [leagues, setLeagues] = useState<LeagueItem[]>([]);
-  const [cups, setCups] = useState<LeagueItem[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    loadLeaguesData();
-  }, [country.code]);
-
-  const loadLeaguesData = async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
-
-      const leaguesData = await fetchLeaguesForCountry(country.code);
-
-      // Separate leagues and cups
-      const leaguesList = leaguesData.filter(
-        (item) => item.league.type === "League"
-      );
-      const cupsList = leaguesData.filter((item) => item.league.type === "Cup");
-
-      setLeagues(leaguesList);
-      setCups(cupsList);
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : "Onbekende fout opgetreden";
-      setError(errorMessage);
-      Alert.alert("Fout", `Kon competities niet laden: ${errorMessage}`);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleRefresh = async () => {
-    setIsRefreshing(true);
-    await loadLeaguesData();
-    setIsRefreshing(false);
-  };
+  // 🎯 Eén hook voor alle data logica!
+  const {
+    leagues,
+    cups,
+    isLoading,
+    isRefreshing,
+    error,
+    refresh,
+    clearError,
+  } = useCountryData(country.code);
 
   const handleBack = () => {
     navigation.goBack();
@@ -78,6 +48,14 @@ const CountryDetailScreen: React.FC = () => {
       navigation.navigate("CupDetail", { item: league });
     }
   };
+
+  // Show error alert if there's an error
+  React.useEffect(() => {
+    if (error) {
+      Alert.alert("Fout", `Kon competities niet laden: ${error}`);
+      clearError();
+    }
+  }, [error, clearError]);
 
   const styles = getStyles(theme);
 
@@ -93,7 +71,7 @@ const CountryDetailScreen: React.FC = () => {
           refreshControl={
             <RefreshControl
               refreshing={isRefreshing}
-              onRefresh={handleRefresh}
+              onRefresh={refresh}
               colors={[theme.colors.primary]}
               tintColor={theme.colors.primary}
             />

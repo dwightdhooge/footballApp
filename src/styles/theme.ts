@@ -27,8 +27,14 @@ const darkColors = {
   info: "#42A5F5", // Lichtere blauwe voor dark mode
 };
 
+// Export color sets for direct access
+export { lightColors, darkColors };
+
 // Theme type
 export type ThemeMode = "light" | "dark";
+
+// Export ThemeColors type
+export type ThemeColors = typeof lightColors;
 
 // Theme interface
 export interface Theme {
@@ -71,6 +77,29 @@ export interface Theme {
       fontWeight: "normal";
     };
   };
+  cards: {
+    small: {
+      width: number;
+      height: number;
+      logoSize: number;
+      fontSize: number;
+      lineHeight: number;
+    };
+    medium: {
+      width: number;
+      height: number;
+      logoSize: number;
+      fontSize: number;
+      lineHeight: number;
+    };
+    large: {
+      width: number;
+      height: number;
+      logoSize: number;
+      fontSize: number;
+      lineHeight: number;
+    };
+  };
 }
 
 // Create theme function
@@ -106,7 +135,7 @@ export const createTheme = (mode: ThemeMode): Theme => ({
       fontWeight: "normal",
     },
     caption: {
-      fontSize: 14,
+      fontSize: 12,
       fontWeight: "normal",
     },
     small: {
@@ -114,10 +143,30 @@ export const createTheme = (mode: ThemeMode): Theme => ({
       fontWeight: "normal",
     },
   },
+  cards: {
+    small: {
+      width: 100,
+      height: 100,
+      logoSize: 24,
+      fontSize: 12,
+      lineHeight: 1.2,
+    },
+    medium: {
+      width: 200,
+      height: 200,
+      logoSize: 32,
+      fontSize: 16,
+      lineHeight: 1.4,
+    },
+    large: {
+      width: 300,
+      height: 300,
+      logoSize: 40,
+      fontSize: 20,
+      lineHeight: 1.6,
+    },
+  },
 });
 
 // Default theme (light mode for backward compatibility)
 export const theme = createTheme("light");
-
-// Export color sets for direct access
-export { lightColors, darkColors };

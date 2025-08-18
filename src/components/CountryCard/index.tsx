@@ -19,7 +19,7 @@ const CountryCard: React.FC<CountryCardProps> = ({
   const { theme } = useTheme();
 
   const styles = getStyles(theme, size);
-  const flagSize = size === "small" ? 32 : size === "large" ? 48 : 40;
+  const flagSize = theme.cards[size as keyof typeof theme.cards].logoSize;
 
   return (
     <TouchableOpacity
@@ -55,7 +55,7 @@ const CountryCard: React.FC<CountryCardProps> = ({
 const getStyles = (theme: ReturnType<typeof useTheme>["theme"], size: string) =>
   StyleSheet.create({
     container: {
-      width: size === "small" ? 100 : size === "large" ? 160 : 140,
+      width: theme.cards[size as keyof typeof theme.cards].width,
       borderRadius: 12,
       padding: 16,
       borderWidth: 1,
@@ -69,7 +69,7 @@ const getStyles = (theme: ReturnType<typeof useTheme>["theme"], size: string) =>
       shadowOpacity: 0.1,
       shadowRadius: 3.84,
       elevation: 5,
-      minHeight: 120,
+      minHeight: theme.cards[size as keyof typeof theme.cards].height,
       position: "relative",
     },
     heartButton: {
@@ -97,9 +97,11 @@ const getStyles = (theme: ReturnType<typeof useTheme>["theme"], size: string) =>
     countryName: {
       textAlign: "center",
       fontWeight: "600",
-      lineHeight: 20,
+      lineHeight:
+        theme.cards[size as keyof typeof theme.cards].lineHeight *
+        theme.cards[size as keyof typeof theme.cards].fontSize,
       marginTop: 8,
-      fontSize: size === "small" ? 14 : size === "large" ? 18 : 16,
+      fontSize: theme.cards[size as keyof typeof theme.cards].fontSize,
       color: theme.colors.text,
     },
     disabled: {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -40,6 +40,27 @@ const RoundDropdown: React.FC<RoundDropdownProps> = ({
   const { t } = useTranslation();
 
   const styles = getStyles(theme, size, selectedRound, isOpen);
+
+  // Keep a ref to list so we can scroll to selected item on open
+  const listRef = useRef<any>(null);
+
+  // When opening, scroll list to the currently selected value
+  useEffect(() => {
+    if (isOpen && selectedRound) {
+      const index = rounds.findIndex((r) => r === selectedRound);
+      if (index >= 0) {
+        setTimeout(() => {
+          try {
+            listRef.current?.scrollToIndex({
+              index,
+              animated: false,
+              viewPosition: 0.5,
+            });
+          } catch {}
+        }, 0);
+      }
+    }
+  }, [isOpen, selectedRound, rounds]);
 
   const handleRoundSelect = (round: string) => {
     onRoundChange(round);
@@ -89,6 +110,7 @@ const RoundDropdown: React.FC<RoundDropdownProps> = ({
         >
           <View style={styles.modalContent}>
             <FlatList
+              ref={listRef}
               data={rounds}
               keyExtractor={(item) => item}
               renderItem={({ item }) => (
@@ -99,20 +121,35 @@ const RoundDropdown: React.FC<RoundDropdownProps> = ({
                   ]}
                   onPress={() => handleRoundSelect(item)}
                 >
-                  <Text
-                    style={[
-                      styles.optionText,
-                      selectedRound === item && styles.selectedOptionText,
-                    ]}
-                  >
-                    {getRoundDisplay(item)}
-                    {showCurrent &&
-                      currentRound === item &&
-                      ` ${t("leagueDetail.current")}`}
-                  </Text>
+                  <View style={styles.optionContent}>
+                    <Text
+                      style={[
+                        styles.optionText,
+                        selectedRound === item && styles.selectedOptionText,
+                      ]}
+                    >
+                      {getRoundDisplay(item)}
+                    </Text>
+                    {showCurrent && currentRound === item && (
+                      <View style={styles.currentBadge}>
+                        <Text style={styles.currentBadgeText}>
+                          {t("leagueDetail.current")}
+                        </Text>
+                      </View>
+                    )}
+                  </View>
                 </TouchableOpacity>
               )}
               style={styles.optionsList}
+              onScrollToIndexFailed={(info) => {
+                setTimeout(() => {
+                  listRef.current?.scrollToIndex({
+                    index: info.index,
+                    animated: false,
+                    viewPosition: 0.5,
+                  });
+                }, 0);
+              }}
             />
           </View>
         </TouchableOpacity>
@@ -195,6 +232,22 @@ const getStyles = (
     selectedOptionText: {
       fontWeight: "600",
       color: theme.colors.primary,
+    },
+    optionContent: {
+      flexDirection: "row",
+      alignItems: "center",
+    },
+    currentBadge: {
+      backgroundColor: theme.colors.primary + "20",
+      borderRadius: 4,
+      paddingHorizontal: 6,
+      paddingVertical: 2,
+      marginLeft: 8,
+    },
+    currentBadgeText: {
+      fontSize: 12,
+      color: theme.colors.primary,
+      fontWeight: "500",
     },
   });
 

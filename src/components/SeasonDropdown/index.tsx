@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -42,6 +42,9 @@ const SeasonDropdown: React.FC<SeasonDropdownProps> = ({
 
   const styles = getStyles(theme, size, selectedSeason, isOpen);
 
+  // Keep a ref to list so we can scroll to selected item on open
+  const listRef = useRef<any>(null);
+
   // Filter seasons based on coverage type
   const getFilteredSeasons = (): Season[] => {
     if (!coverageType) return seasons;
@@ -59,6 +62,26 @@ const SeasonDropdown: React.FC<SeasonDropdownProps> = ({
 
   const filteredSeasons = getFilteredSeasons();
 
+  // When opening, scroll list to the currently selected value
+  useEffect(() => {
+    if (isOpen && selectedSeason) {
+      const index = filteredSeasons.findIndex(
+        (s) => s.year === selectedSeason.year
+      );
+      if (index >= 0) {
+        setTimeout(() => {
+          try {
+            listRef.current?.scrollToIndex({
+              index,
+              animated: false,
+              viewPosition: 0.5,
+            });
+          } catch {}
+        }, 0);
+      }
+    }
+  }, [isOpen, selectedSeason, filteredSeasons]);
+
   const handleSeasonSelect = (season: Season) => {
     onSeasonChange(season);
     setIsOpen(false);
@@ -73,11 +96,7 @@ const SeasonDropdown: React.FC<SeasonDropdownProps> = ({
       >
         <Text style={styles.selectedText}>
           {selectedSeason
-            ? `${selectedSeason.year}${
-                showCurrent && selectedSeason.current
-                  ? ` ${t("leagueDetail.current")}`
-                  : ""
-              }`
+            ? `${selectedSeason.year}`
             : placeholder || t("leagueDetail.selectSeason")}
         </Text>
         <Text style={styles.chevron}>{isOpen ? "▲" : "▼"}</Text>
@@ -96,6 +115,7 @@ const SeasonDropdown: React.FC<SeasonDropdownProps> = ({
         >
           <View style={styles.modalContent}>
             <FlatList
+              ref={listRef}
               data={filteredSeasons}
               keyExtractor={(item) => item.year.toString()}
               renderItem={({ item }) => (
@@ -106,21 +126,36 @@ const SeasonDropdown: React.FC<SeasonDropdownProps> = ({
                   ]}
                   onPress={() => handleSeasonSelect(item)}
                 >
-                  <Text
-                    style={[
-                      styles.optionText,
-                      selectedSeason?.year === item.year &&
-                        styles.selectedOptionText,
-                    ]}
-                  >
-                    {item.year}
-                    {showCurrent &&
-                      item.current &&
-                      ` ${t("leagueDetail.current")}`}
-                  </Text>
+                  <View style={styles.optionContent}>
+                    <Text
+                      style={[
+                        styles.optionText,
+                        selectedSeason?.year === item.year &&
+                          styles.selectedOptionText,
+                      ]}
+                    >
+                      {item.year}
+                    </Text>
+                    {showCurrent && item.current && (
+                      <View style={styles.currentBadge}>
+                        <Text style={styles.currentBadgeText}>
+                          {t("leagueDetail.current")}
+                        </Text>
+                      </View>
+                    )}
+                  </View>
                 </TouchableOpacity>
               )}
               style={styles.optionsList}
+              onScrollToIndexFailed={(info) => {
+                setTimeout(() => {
+                  listRef.current?.scrollToIndex({
+                    index: info.index,
+                    animated: false,
+                    viewPosition: 0.5,
+                  });
+                }, 0);
+              }}
             />
           </View>
         </TouchableOpacity>
@@ -196,6 +231,10 @@ const getStyles = (
     selectedOption: {
       backgroundColor: theme.colors.primary + "20",
     },
+    optionContent: {
+      flexDirection: "row",
+      alignItems: "center",
+    },
     optionText: {
       fontSize: 14,
       color: theme.colors.text,
@@ -203,6 +242,18 @@ const getStyles = (
     selectedOptionText: {
       fontWeight: "600",
       color: theme.colors.primary,
+    },
+    currentBadge: {
+      backgroundColor: theme.colors.primary + "20",
+      borderRadius: 4,
+      paddingHorizontal: 6,
+      paddingVertical: 2,
+      marginLeft: 8,
+    },
+    currentBadgeText: {
+      fontSize: 12,
+      color: theme.colors.primary,
+      fontWeight: "500",
     },
   });
 

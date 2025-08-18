@@ -1,7 +1,7 @@
-import { Country, LeagueItem } from "./api";
+import { Country, LeagueItem, Fixture } from "./api";
 
 export interface NavigationParams {
-  item: Country | LeagueItem;
+  item: Country | LeagueItem | Fixture;
 }
 
 export interface NavigationState {
@@ -17,6 +17,7 @@ export type ScoresTabFlow = {
   CountryDetail: { item: Country };
   LeagueDetail: { item: LeagueItem };
   CupDetail: { item: LeagueItem };
+  MatchDetail: { item: Fixture };
 };
 
 export type SettingsTabFlow = {
@@ -33,6 +34,7 @@ export type ScoresStackParamList = {
   CountryDetail: { item: Country };
   LeagueDetail: { item: LeagueItem };
   CupDetail: { item: LeagueItem };
+  MatchDetail: { item: Fixture };
 };
 
 export type SettingsStackParamList = {

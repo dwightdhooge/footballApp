@@ -23,7 +23,9 @@
     "leagueDetail": "League Details",
     "cupDetail": "Cup Details",
     "countryDetail": "Land Details",
-    "cupDetails": "Cup Details"
+    "cupDetails": "Cup Details",
+    "matchDetail": "Wedstrijd Details",
+    "matchDetails": "Wedstrijd Details"
   },
   "homescreen": {
     "title": "Voetbal Scores",
@@ -99,6 +101,85 @@
     "loadingMatches": "Wedstrijden laden...",
     "retry": "Opnieuw proberen"
   },
+  "lineups": {
+    "loadingLineups": "Lineups laden...",
+    "errorLoadingLineups": "Fout bij het laden van lineups",
+    "noLineupsAvailable": "Geen lineups beschikbaar",
+    "teamLineupsNotAvailable": "Team lineups zijn nog niet beschikbaar voor deze wedstrijd.",
+    "coach": "Coach",
+    "formation": "Formatie",
+    "substitutes": "Wissels"
+  },
+  "match": {
+    "status": {
+      "live": "Live - {{elapsed}}'",
+      "finished": "BEËINDIGD",
+      "halftime": "HALFTIME",
+      "notStarted": "NIEUWE WEDSTRIJD"
+    },
+    "competition": {
+      "default": "Competitie",
+      "type": {
+        "default": "League"
+      },
+      "season": "Seizoen"
+    },
+    "duration": {
+      "full": "90'"
+    },
+    "score": {
+      "halfTime": "HT: {{home}}-{{away}}"
+    },
+    "goal": {
+      "minute": "{{minute}}'"
+    },
+    "referee": {
+      "default": "Lawrence Visser"
+    },
+    "penalty": {
+      "label": "Penalty's"
+    }
+  },
+  "events": {
+    "title": "Wedstrijd Events",
+    "count": "{{count}} events",
+    "loading": "Events laden...",
+    "error": {
+      "title": "Fout bij laden events"
+    },
+    "empty": {
+      "title": "Geen events beschikbaar",
+      "message": "Er zijn nog geen events geregistreerd voor deze wedstrijd."
+    },
+    "time": {
+      "normal": "{{elapsed}}'",
+      "extra": "{{elapsed}}+{{extra}}'"
+    },
+    "types": {
+      "goal": "Goal",
+      "card": "Kaart",
+      "subst": "Wissel",
+      "var": "VAR",
+      "foul": "Overtreding",
+      "corner": "Corner",
+      "free kick": "Vrije Trap",
+      "throw in": "Inworp",
+      "offside": "Buitenspel",
+      "injury": "Blessure",
+      "break": "Pauze",
+      "missed penalty": "Gemiste Penalty",
+      "saved penalty": "Geredde Penalty",
+      "post": "Paal",
+      "crossbar": "Lat"
+    },
+    "noPlayer": "Geen speler",
+    "assist": "Assist"
+  },
+  "tabs": {
+    "info": "Info",
+    "events": "Events",
+    "lineups": "Opstellingen"
+  },
   "favorites": {
     "title": "Favorieten",
     "noFavorites": "Je hebt nog geen favorieten",
@@ -145,23 +226,6 @@
   },
   "leagues": {
     "noLeaguesFound": "Geen {{type}} gevonden"
-  },
-  "common": {
-    "loading": "Laden...",
-    "searching": "Zoeken...",
-    "error": "Er is een fout opgetreden",
-    "noResults": "Geen resultaten gevonden",
-    "retry": "Opnieuw proberen",
-    "cancel": "Annuleren",
-    "save": "Opslaan",
-    "delete": "Verwijderen",
-    "edit": "Bewerken",
-    "close": "Sluiten",
-    "back": "← Terug",
-    "next": "Volgende",
-    "previous": "Vorige",
-    "done": "Klaar",
-    "flagFallback": "🏳️"
   },
   "errors": {
     "networkError": "Netwerkfout. Controleer je internetverbinding.",

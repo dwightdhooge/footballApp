@@ -5,6 +5,7 @@ import Homescreen from "@/screens/scores/homescreen";
 import CountryDetailScreen from "@/screens/scores/country-detail";
 import LeagueDetailScreen from "@/screens/scores/league-detail";
 import CupDetailScreen from "@/screens/scores/cup-detail";
+import MatchDetailScreen from "@/screens/scores/match-detail";
 import { ScoresStackParamList } from "@/types/navigation";
 
 const Stack = createStackNavigator<ScoresStackParamList>();
@@ -21,7 +22,7 @@ const ScoresStackNavigator: React.FC = () => {
         headerTintColor: theme.colors.text,
         headerTitleStyle: {
           fontSize: 20, // theme.typography.h2
-          fontWeight: 'bold',
+          fontWeight: "bold",
         },
       }}
     >
@@ -51,6 +52,13 @@ const ScoresStackNavigator: React.FC = () => {
         component={CupDetailScreen}
         options={{
           headerShown: false, // We use our custom CupHeader component
+        }}
+      />
+      <Stack.Screen
+        name="MatchDetail"
+        component={MatchDetailScreen}
+        options={{
+          headerShown: false, // We use our custom header component
         }}
       />
     </Stack.Navigator>

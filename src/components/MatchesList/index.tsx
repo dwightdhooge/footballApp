@@ -1,16 +1,14 @@
 import React from "react";
-import {
-  View,
-  Text,
-  FlatList,
-  StyleSheet,
-  TouchableOpacity,
-  ActivityIndicator,
-} from "react-native";
+import { View, FlatList, StyleSheet, TouchableOpacity } from "react-native";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "@/context/ThemeContext";
 import { Fixture } from "../../types/api";
 import MatchCard from "../MatchCard";
+import {
+  LoadingState,
+  ErrorState,
+  EmptyState,
+} from "../common/StateComponents";
 
 interface MatchesListProps {
   fixtures: Fixture[];
@@ -44,36 +42,18 @@ const MatchesList: React.FC<MatchesListProps> = ({
     </View>
   );
 
-  const renderEmptyState = () => (
-    <View style={styles.emptyContainer}>
-      <Text style={styles.emptyText}>{t("matchCard.noMatches")}</Text>
-    </View>
-  );
-
-  const renderErrorState = () => (
-    <View style={styles.errorContainer}>
-      <Text style={styles.errorText}>{error}</Text>
-      {onRetry && (
-        <TouchableOpacity style={styles.retryButton} onPress={onRetry}>
-          <Text style={styles.retryText}>{t("matchCard.retry")}</Text>
-        </TouchableOpacity>
-      )}
-    </View>
-  );
-
-  const renderLoadingState = () => (
-    <View style={styles.loadingContainer}>
-      <ActivityIndicator size="large" color={theme.colors.primary} />
-      <Text style={styles.loadingText}>{t("matchCard.loadingMatches")}</Text>
-    </View>
-  );
-
   if (isLoading) {
-    return renderLoadingState();
+    return <LoadingState message={t("matchCard.loadingMatches")} />;
   }
 
   if (error) {
-    return renderErrorState();
+    return (
+      <ErrorState
+        error={error}
+        title={t("matchCard.errorLoading")}
+        onRetry={onRetry}
+      />
+    );
   }
 
   return (
@@ -82,7 +62,13 @@ const MatchesList: React.FC<MatchesListProps> = ({
       renderItem={renderMatch}
       keyExtractor={(item) => item.fixture.id.toString()}
       contentContainerStyle={styles.listContainer}
-      ListEmptyComponent={renderEmptyState}
+      ListEmptyComponent={() => (
+        <EmptyState
+          icon="⚽"
+          title={t("matchCard.noMatches")}
+          message={t("matchCard.noMatchesDescription")}
+        />
+      )}
       showsVerticalScrollIndicator={false}
     />
   );
@@ -96,51 +82,6 @@ const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
     },
     matchItem: {
       marginBottom: 12,
-    },
-    emptyContainer: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-      paddingVertical: 40,
-    },
-    emptyText: {
-      fontSize: 16,
-      textAlign: "center",
-      color: theme.colors.textSecondary,
-    },
-    errorContainer: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-      paddingVertical: 40,
-    },
-    errorText: {
-      fontSize: 16,
-      textAlign: "center",
-      marginBottom: 16,
-      color: theme.colors.error,
-    },
-    retryButton: {
-      paddingHorizontal: 20,
-      paddingVertical: 10,
-      borderRadius: 8,
-      backgroundColor: theme.colors.primary,
-    },
-    retryText: {
-      color: "white",
-      fontSize: 14,
-      fontWeight: "500",
-    },
-    loadingContainer: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-      paddingVertical: 40,
-    },
-    loadingText: {
-      fontSize: 16,
-      marginTop: 12,
-      color: theme.colors.textSecondary,
     },
   });
 

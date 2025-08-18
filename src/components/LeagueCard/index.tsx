@@ -56,11 +56,7 @@ const LeagueCard: React.FC<LeagueCardProps> = ({
           console.warn(`Failed to load logo for ${name}`);
         }}
       />
-      <Text
-        style={styles.name}
-        numberOfLines={3}
-        ellipsizeMode="tail"
-      >
+      <Text style={styles.name} numberOfLines={3} ellipsizeMode="tail">
         {name}
       </Text>
     </TouchableOpacity>
@@ -70,8 +66,8 @@ const LeagueCard: React.FC<LeagueCardProps> = ({
 const getStyles = (theme: ReturnType<typeof useTheme>["theme"], size: string) =>
   StyleSheet.create({
     container: {
-      width: size === "small" ? 100 : size === "large" ? 160 : 140,
-      marginHorizontal: 6,
+      width: theme.cards[size as keyof typeof theme.cards].width,
+      marginHorizontal: theme.spacing.xs,
       alignItems: "center",
       justifyContent: "center",
       borderWidth: 1,
@@ -79,28 +75,22 @@ const getStyles = (theme: ReturnType<typeof useTheme>["theme"], size: string) =>
       borderColor: theme.colors.border,
       borderRadius: theme.borderRadius.lg,
       padding: theme.spacing.md,
-      shadowColor: theme.colors.text,
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.1,
-      shadowRadius: 3.84,
-      elevation: 5,
-      minHeight: 120,
+      minHeight: theme.cards[size as keyof typeof theme.cards].height,
     },
     logo: {
-      width: size === "small" ? 32 : size === "large" ? 48 : 40,
-      height: size === "small" ? 32 : size === "large" ? 48 : 40,
+      width: theme.cards[size as keyof typeof theme.cards].logoSize,
+      height: theme.cards[size as keyof typeof theme.cards].logoSize,
       marginBottom: theme.spacing.sm,
     },
     name: {
-      fontSize: size === "small" ? 14 : size === "large" ? 18 : 16,
+      fontSize: theme.cards[size as keyof typeof theme.cards].fontSize,
       fontWeight: "600",
       textAlign: "center",
       color: theme.colors.text,
       marginBottom: theme.spacing.xs,
-      lineHeight: 20,
+      lineHeight:
+        theme.cards[size as keyof typeof theme.cards].lineHeight *
+        theme.cards[size as keyof typeof theme.cards].fontSize,
     },
     disabled: {
       opacity: 0.5,

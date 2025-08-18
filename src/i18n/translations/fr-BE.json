@@ -23,7 +23,9 @@
     "leagueDetail": "Détails de la Ligue",
     "cupDetail": "Détails de la Coupe",
     "countryDetail": "Détails du Pays",
-    "cupDetails": "Détails de la Coupe"
+    "cupDetails": "Détails de la Coupe",
+    "matchDetail": "Détails du Match",
+    "matchDetails": "Détails du Match"
   },
   "homescreen": {
     "title": "Scores de Football",
@@ -99,6 +101,15 @@
     "loadingMatches": "Chargement des matchs...",
     "retry": "Réessayer"
   },
+  "lineups": {
+    "loadingLineups": "Chargement des compositions...",
+    "errorLoadingLineups": "Erreur lors du chargement des compositions",
+    "noLineupsAvailable": "Aucune composition disponible",
+    "teamLineupsNotAvailable": "Les compositions d'équipe ne sont pas encore disponibles pour ce match.",
+    "coach": "Entraîneur",
+    "formation": "Formation",
+    "substitutes": "Remplaçants"
+  },
   "favorites": {
     "title": "Favoris",
     "noFavorites": "Vous n'avez pas encore de favoris",
@@ -154,5 +165,75 @@
     "forbidden": "Accès refusé",
     "timeout": "Délai d'attente dépassé",
     "unknownError": "Une erreur inconnue s'est produite"
+  },
+  "match": {
+    "status": {
+      "live": "En direct - {{elapsed}}'",
+      "finished": "TERMINÉ",
+      "halftime": "MI-TEMPS",
+      "notStarted": "NOUVEAU MATCH"
+    },
+    "competition": {
+      "default": "Compétition",
+      "type": {
+        "default": "Ligue"
+      },
+      "season": "Saison"
+    },
+    "duration": {
+      "full": "90'"
+    },
+    "score": {
+      "halfTime": "MT: {{home}}-{{away}}"
+    },
+    "goal": {
+      "minute": "{{minute}}'"
+    },
+    "referee": {
+      "default": "Lawrence Visser"
+    },
+    "penalty": {
+      "label": "Penaltys"
+    }
+  },
+  "events": {
+    "title": "Événements du Match",
+    "count": "{{count}} événements",
+    "loading": "Chargement des événements...",
+    "error": {
+      "title": "Erreur lors du chargement des événements"
+    },
+    "empty": {
+      "title": "Aucun événement disponible",
+      "message": "Il n'y a pas encore d'événements enregistrés pour ce match."
+    },
+    "time": {
+      "normal": "{{elapsed}}'",
+      "extra": "{{elapsed}}+{{extra}}'"
+    },
+    "types": {
+      "goal": "But",
+      "card": "Carton",
+      "subst": "Remplacement",
+      "var": "VAR",
+      "foul": "Faute",
+      "corner": "Corner",
+      "free kick": "Coup Franc",
+      "throw in": "Remise en Jeu",
+      "offside": "Hors-Jeu",
+      "injury": "Blessure",
+      "break": "Pause",
+      "missed penalty": "Penalty Manqué",
+      "saved penalty": "Penalty Sauvé",
+      "post": "Poteau",
+      "crossbar": "Barre"
+    },
+    "noPlayer": "Aucun joueur",
+    "assist": "Passe décisive"
+  },
+  "tabs": {
+    "info": "Info",
+    "events": "Événements",
+    "lineups": "Compositions"
   }
 }

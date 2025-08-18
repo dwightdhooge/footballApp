@@ -13,19 +13,15 @@ import {
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "@/context/ThemeContext";
+import { ScoresStackParamList } from "../../../types/navigation";
+import { useLeagueData } from "@/hooks";
 import {
   SeasonDropdown,
   StandingsTable,
   MatchCard,
   RoundDropdown,
 } from "../../../components";
-import {
-  fetchStandings,
-  fetchFixtures,
-  fetchRounds,
-  checkCurrentRound,
-} from "../../../services/api";
-import { LeagueItem, Season, Standing, Fixture } from "../../../types/api";
+import { LeagueItem, Fixture } from "../../../types/api";
 
 interface RouteParams {
   item: LeagueItem;
@@ -34,147 +30,62 @@ interface RouteParams {
 const LeagueDetailScreen: React.FC = () => {
   const { theme } = useTheme();
   const { t } = useTranslation();
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
   const route = useRoute();
   const { item } = route.params as RouteParams;
 
   const styles = getStyles(theme);
 
-  // State management
-  const [selectedSeason, setSelectedSeason] = useState<Season | null>(null);
+  // Local state for UI
   const [activeTab, setActiveTab] = useState<"standings" | "matches">(
     "standings"
   );
-  const [standings, setStandings] = useState<Standing[]>([]);
-  const [rounds, setRounds] = useState<string[]>([]);
   const [selectedRound, setSelectedRound] = useState<string | null>(null);
-  const [currentRound, setCurrentRound] = useState<string | null>(null);
-  const [fixtures, setFixtures] = useState<Fixture[]>([]);
-  const [isLoadingStandings, setIsLoadingStandings] = useState(false);
-  const [isLoadingRounds, setIsLoadingRounds] = useState(false);
-  const [isLoadingFixtures, setIsLoadingFixtures] = useState(false);
-  const [standingsError, setStandingsError] = useState<string | null>(null);
-  const [roundsError, setRoundsError] = useState<string | null>(null);
-  const [fixturesError, setFixturesError] = useState<string | null>(null);
 
-  // Initialize with first available season
+  // 🎯 Eén hook voor alle data logica!
+  const {
+    standings,
+    fixtures,
+    rounds,
+    currentRound,
+    selectedSeason,
+    setSelectedSeason,
+    availableSeasons, // 🎯 Nu uit de hook
+    isLoadingStandings,
+    isLoadingFixtures,
+    isLoadingRounds,
+    standingsError,
+    fixturesError,
+    roundsError,
+    refetchStandings,
+    refetchFixtures,
+    refetchRounds,
+    canShowStandings,
+    canShowFixtures,
+  } = useLeagueData(item.league.id, item.seasons, undefined, selectedRound);
+
+  // Set selected round when current round changes
   useEffect(() => {
-    if (item.seasons && item.seasons.length > 0) {
-      const currentSeason =
-        item.seasons.find((season) => season.current) || item.seasons[0];
-      setSelectedSeason(currentSeason);
+    if (currentRound && !selectedRound) {
+      setSelectedRound(currentRound);
     }
-  }, [item.seasons]);
+  }, [currentRound, selectedRound]);
 
-  // Fetch data when season changes
+  // Load fixtures when round changes
   useEffect(() => {
-    if (selectedSeason) {
-      if (activeTab === "standings") {
-        fetchStandingsData();
-      } else {
-        fetchRoundsData();
-      }
-    }
-  }, [selectedSeason, activeTab]);
-
-  // Fetch fixtures when round changes
-  useEffect(() => {
-    if (activeTab === "matches" && selectedSeason && selectedRound) {
-      fetchFixturesData();
+    if (selectedRound && activeTab === "matches") {
+      // Trigger fixtures fetch through the hook
+      // The hook will handle this automatically
     }
   }, [selectedRound, activeTab]);
 
-  const fetchStandingsData = async () => {
-    if (!selectedSeason) return;
-
-    try {
-      setIsLoadingStandings(true);
-      setStandingsError(null);
-
-      const standingsData = await fetchStandings(
-        item.league.id,
-        selectedSeason.year
-      );
-      setStandings(standingsData);
-    } catch (error) {
-      console.error("Error fetching standings:", error);
-      setStandingsError(
-        error instanceof Error ? error.message : t("errors.unknownError")
-      );
-      setStandings([]);
-    } finally {
-      setIsLoadingStandings(false);
-    }
-  };
-
-  const fetchRoundsData = async () => {
-    if (!selectedSeason) return;
-
-    try {
-      setIsLoadingRounds(true);
-      setRoundsError(null);
-
-      const roundsData = await fetchRounds(item.league.id, selectedSeason.year);
-      setRounds(roundsData);
-
-      // Check for current round
-      const currentRoundData = await checkCurrentRound(
-        item.league.id,
-        selectedSeason.year
-      );
-      if (currentRoundData) {
-        setCurrentRound(currentRoundData);
-        setSelectedRound(currentRoundData);
-      } else if (roundsData.length > 0) {
-        setSelectedRound(roundsData[0]);
-      }
-    } catch (error) {
-      console.error("Error fetching rounds:", error);
-      setRoundsError(
-        error instanceof Error ? error.message : t("errors.unknownError")
-      );
-      setRounds([]);
-    } finally {
-      setIsLoadingRounds(false);
-    }
-  };
-
-  const fetchFixturesData = async () => {
-    if (!selectedSeason || !selectedRound) return;
-
-    try {
-      setIsLoadingFixtures(true);
-      setFixturesError(null);
-
-      const fixturesData = await fetchFixtures(
-        item.league.id,
-        selectedSeason.year,
-        selectedRound
-      );
-      setFixtures(fixturesData);
-    } catch (error) {
-      console.error("Error fetching fixtures:", error);
-      setFixturesError(
-        error instanceof Error ? error.message : t("errors.unknownError")
-      );
-      setFixtures([]);
-    } finally {
-      setIsLoadingFixtures(false);
-    }
-  };
-
-  const handleSeasonChange = (season: Season) => {
+  const handleSeasonChange = (season: any) => {
     setSelectedSeason(season);
     setSelectedRound(null);
-    setCurrentRound(null);
-    setFixtures([]);
   };
 
   const handleTabChange = (tab: "standings" | "matches") => {
     setActiveTab(tab);
-    if (tab === "matches" && selectedSeason) {
-      fetchRoundsData();
-    }
   };
 
   const handleRoundChange = (round: string) => {
@@ -187,19 +98,15 @@ const LeagueDetailScreen: React.FC = () => {
   };
 
   const handleMatchPress = (fixture: Fixture) => {
-    // Navigate to match detail (to be implemented)
-    Alert.alert(
-      t("leagueDetail.matchDetail"),
-      `Navigate to match ${fixture.fixture.id}`
+    // Find the complete fixture data from our fixtures array
+    const completeFixture = fixtures.find(
+      (f) => f.fixture.id === fixture.fixture.id
     );
-  };
-
-  const canShowStandings = (season: Season): boolean => {
-    return season.coverage?.standings === true;
-  };
-
-  const canShowFixtures = (season: Season): boolean => {
-    return season.coverage?.fixtures?.events === true;
+    navigation.navigate("MatchDetail", {
+      item: completeFixture || fixture,
+      leagueId: item.league.id,
+      season: selectedSeason?.year,
+    });
   };
 
   const renderHeader = () => (
@@ -226,14 +133,14 @@ const LeagueDetailScreen: React.FC = () => {
   const renderSeasonDropdown = () => (
     <View style={styles.seasonContainer}>
       <SeasonDropdown
-        seasons={item.seasons}
+        seasons={availableSeasons}
         selectedSeason={selectedSeason}
         onSeasonChange={handleSeasonChange}
         disabled={isLoadingStandings || isLoadingFixtures || isLoadingRounds}
         placeholder={t("leagueDetail.selectSeason")}
         showCurrent={true}
         size="medium"
-        coverageType="standings"
+        coverageType={activeTab === "standings" ? "standings" : "fixtures"}
       />
     </View>
   );
@@ -303,7 +210,7 @@ const LeagueDetailScreen: React.FC = () => {
           <Text style={styles.errorText}>{standingsError}</Text>
           <TouchableOpacity
             style={styles.retryButton}
-            onPress={fetchStandingsData}
+            onPress={refetchStandings}
           >
             <Text style={styles.retryButtonText}>
               {t("leagueDetail.retry")}
@@ -334,10 +241,7 @@ const LeagueDetailScreen: React.FC = () => {
       ) : roundsError ? (
         <View style={styles.errorContainer}>
           <Text style={styles.errorText}>{roundsError}</Text>
-          <TouchableOpacity
-            style={styles.retryButton}
-            onPress={fetchRoundsData}
-          >
+          <TouchableOpacity style={styles.retryButton} onPress={refetchRounds}>
             <Text style={styles.retryButtonText}>
               {t("leagueDetail.retry")}
             </Text>
@@ -364,7 +268,7 @@ const LeagueDetailScreen: React.FC = () => {
               <Text style={styles.errorText}>{fixturesError}</Text>
               <TouchableOpacity
                 style={styles.retryButton}
-                onPress={fetchFixturesData}
+                onPress={refetchFixtures}
               >
                 <Text style={styles.retryButtonText}>
                   {t("leagueDetail.retry")}
