@@ -1,0 +1,158 @@
+{
+  "common": {
+    "loading": "Chargement...",
+    "searching": "Recherche...",
+    "error": "Une erreur s'est produite",
+    "noResults": "Aucun résultat trouvé",
+    "retry": "Réessayer",
+    "cancel": "Annuler",
+    "save": "Sauvegarder",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "close": "Fermer",
+    "back": "← Retour",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "done": "Terminé",
+    "flagFallback": "🏳️"
+  },
+  "navigation": {
+    "scores": "Scores",
+    "settings": "Paramètres",
+    "favorites": "Favoris",
+    "leagueDetail": "Détails de la Ligue",
+    "cupDetail": "Détails de la Coupe",
+    "countryDetail": "Détails du Pays",
+    "cupDetails": "Détails de la Coupe"
+  },
+  "homescreen": {
+    "title": "Scores de Football",
+    "subtitle": "Découvrez les données de football par pays",
+    "searchPlaceholder": "Rechercher des pays, des ligues...",
+    "suggestedCountries": "Pays Suggérés",
+    "recentMatches": "Matchs Récents",
+    "topLeagues": "Ligues Principales",
+    "noRecentMatches": "Aucun match récent",
+    "noTopLeagues": "Aucune ligue principale disponible"
+  },
+  "countryDetail": {
+    "leagues": "Ligues",
+    "noLeagues": "Aucune ligue disponible pour ce pays",
+    "loadingLeagues": "Chargement des ligues...",
+    "errorTitle": "Erreur",
+    "errorMessage": "Impossible de charger les ligues : {{message}}",
+    "unknownError": "Une erreur inconnue s'est produite"
+  },
+  "leagueDetail": {
+    "standings": "Classement",
+    "matches": "Matchs",
+    "rounds": "Tours",
+    "seasons": "Saisons",
+    "noStandings": "Aucun classement disponible",
+    "noMatches": "Aucun match disponible",
+    "selectRound": "Sélectionner le tour",
+    "selectSeason": "Sélectionner la saison",
+    "loadingStandings": "Chargement du classement...",
+    "loadingRounds": "Chargement des tours...",
+    "loadingMatches": "Chargement des matchs...",
+    "retry": "Réessayer",
+    "current": "(Actuel)",
+    "teamDetail": "Détails de l'Équipe",
+    "matchDetail": "Détails du Match",
+    "noStandingsForSeason": "Aucun classement disponible pour cette saison.",
+    "noRoundsAvailable": "Aucun tour disponible",
+    "noMatchesAvailable": "Aucun match disponible"
+  },
+  "cupDetail": {
+    "rounds": "Tours",
+    "matches": "Matchs",
+    "noRounds": "Aucun tour disponible",
+    "noMatches": "Aucun match disponible",
+    "selectRound": "Sélectionner le tour",
+    "roundNames": {
+      "Semi-finals": "Demi-finales",
+      "Quarter-finals": "Quarts de finale",
+      "Qualifying Round": "Tour de qualification",
+      "Preliminary Round": "Tour préliminaire"
+    },
+    "loadingRounds": "Chargement des tours...",
+    "loadingFixtures": "Chargement des matchs...",
+    "noRoundsForSeason": "Aucun tour disponible pour cette saison",
+    "noFixturesForRound": "Aucun match disponible pour ce tour"
+  },
+  "matchCard": {
+    "fullTime": "Temps Réglementaire",
+    "halfTime": "Mi-temps",
+    "extraTime": "Prolongations",
+    "penalties": "Tirs au But",
+    "live": "En Direct",
+    "finished": "Terminé",
+    "scheduled": "Programmé",
+    "postponed": "Reporté",
+    "cancelled": "Annulé",
+    "suspended": "Suspendu",
+    "interrupted": "Interrompu",
+    "abandoned": "Abandonné",
+    "penaltiesLabel": "TAB:",
+    "versus": "contre",
+    "noMatches": "Aucun match disponible",
+    "loadingMatches": "Chargement des matchs...",
+    "retry": "Réessayer"
+  },
+  "favorites": {
+    "title": "Favoris",
+    "noFavorites": "Vous n'avez pas encore de favoris",
+    "addToFavorites": "Ajouter aux favoris",
+    "removeFromFavorites": "Retirer des favoris",
+    "favoritesUpdated": "Favoris mis à jour"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "theme": "Thème",
+    "autoTheme": "Thème automatique",
+    "lightTheme": "Thème clair",
+    "darkTheme": "Thème sombre",
+    "language": "Langue",
+    "notifications": "Notifications",
+    "about": "À propos",
+    "version": "Version",
+    "privacyPolicy": "Politique de confidentialité",
+    "termsOfService": "Conditions d'utilisation"
+  },
+  "search": {
+    "noResults": "Aucun résultat trouvé pour '{{query}}'",
+    "resultsFor": "Résultats pour '{{query}}' ({{count}})",
+    "searchHistory": "Historique de recherche",
+    "clearHistory": "Effacer l'historique",
+    "recentSearches": "Recherches récentes",
+    "minCharacters": "{{count}}/3 caractères",
+    "searchError": "Une erreur s'est produite lors de la recherche"
+  },
+  "standings": {
+    "position": "Pos",
+    "team": "Équipe",
+    "played": "Joué",
+    "won": "Gagné",
+    "drawn": "Nul",
+    "lost": "Perdu",
+    "goalsFor": "Pour",
+    "goalsAgainst": "Contre",
+    "goalDifference": "Différence de buts",
+    "points": "Points",
+    "form": "Forme",
+    "championsLeague": "Ligue des Champions",
+    "europaLeague": "Ligue Europa"
+  },
+  "leagues": {
+    "noLeaguesFound": "Aucune {{type}} trouvée"
+  },
+  "errors": {
+    "networkError": "Erreur réseau. Vérifiez votre connexion internet.",
+    "serverError": "Erreur serveur. Veuillez réessayer plus tard.",
+    "notFound": "Non trouvé",
+    "unauthorized": "Non autorisé",
+    "forbidden": "Accès refusé",
+    "timeout": "Délai d'attente dépassé",
+    "unknownError": "Une erreur inconnue s'est produite"
+  }
+}

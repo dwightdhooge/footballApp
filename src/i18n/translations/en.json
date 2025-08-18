@@ -1,0 +1,158 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "searching": "Searching...",
+    "error": "An error occurred",
+    "noResults": "No results found",
+    "retry": "Try again",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "back": "← Back",
+    "next": "Next",
+    "previous": "Previous",
+    "done": "Done",
+    "flagFallback": "🏳️"
+  },
+  "navigation": {
+    "scores": "Scores",
+    "settings": "Settings",
+    "favorites": "Favorites",
+    "leagueDetail": "League Details",
+    "cupDetail": "Cup Details",
+    "countryDetail": "Country Details",
+    "cupDetails": "Cup Details"
+  },
+  "homescreen": {
+    "title": "Football Scores",
+    "subtitle": "Discover football data by country",
+    "searchPlaceholder": "Search for countries, leagues...",
+    "suggestedCountries": "Suggested Countries",
+    "recentMatches": "Recent Matches",
+    "topLeagues": "Top Leagues",
+    "noRecentMatches": "No recent matches",
+    "noTopLeagues": "No top leagues available"
+  },
+  "countryDetail": {
+    "leagues": "Leagues",
+    "noLeagues": "No leagues available for this country",
+    "loadingLeagues": "Loading leagues...",
+    "errorTitle": "Error",
+    "errorMessage": "Could not load leagues: {{message}}",
+    "unknownError": "Unknown error occurred"
+  },
+  "leagueDetail": {
+    "standings": "Standings",
+    "matches": "Matches",
+    "rounds": "Rounds",
+    "seasons": "Seasons",
+    "noStandings": "No standings available",
+    "noMatches": "No matches available",
+    "selectRound": "Select round",
+    "selectSeason": "Select season",
+    "loadingStandings": "Loading standings...",
+    "loadingRounds": "Loading rounds...",
+    "loadingMatches": "Loading matches...",
+    "retry": "Try again",
+    "current": "(Current)",
+    "teamDetail": "Team Detail",
+    "matchDetail": "Match Detail",
+    "noStandingsForSeason": "No standings available for this season.",
+    "noRoundsAvailable": "No rounds available",
+    "noMatchesAvailable": "No matches available"
+  },
+  "cupDetail": {
+    "rounds": "Rounds",
+    "matches": "Matches",
+    "noRounds": "No rounds available",
+    "noMatches": "No matches available",
+    "selectRound": "Select round",
+    "roundNames": {
+      "Semi-finals": "Semi-finals",
+      "Quarter-finals": "Quarter-finals",
+      "Qualifying Round": "Qualifying Round",
+      "Preliminary Round": "Preliminary Round"
+    },
+    "loadingRounds": "Loading rounds...",
+    "loadingFixtures": "Loading fixtures...",
+    "noRoundsForSeason": "No rounds available for this season",
+    "noFixturesForRound": "No fixtures available for this round"
+  },
+  "matchCard": {
+    "fullTime": "Full Time",
+    "halfTime": "Half Time",
+    "extraTime": "Extra Time",
+    "penalties": "Penalties",
+    "live": "Live",
+    "finished": "Finished",
+    "scheduled": "Scheduled",
+    "postponed": "Postponed",
+    "cancelled": "Cancelled",
+    "suspended": "Suspended",
+    "interrupted": "Interrupted",
+    "abandoned": "Abandoned",
+    "penaltiesLabel": "PEN:",
+    "versus": "vs",
+    "noMatches": "No matches available",
+    "loadingMatches": "Loading matches...",
+    "retry": "Try again"
+  },
+  "favorites": {
+    "title": "Favorites",
+    "noFavorites": "You don't have any favorites yet",
+    "addToFavorites": "Add to favorites",
+    "removeFromFavorites": "Remove from favorites",
+    "favoritesUpdated": "Favorites updated"
+  },
+  "settings": {
+    "title": "Settings",
+    "theme": "Theme",
+    "autoTheme": "Auto theme",
+    "lightTheme": "Light theme",
+    "darkTheme": "Dark theme",
+    "language": "Language",
+    "notifications": "Notifications",
+    "about": "About",
+    "version": "Version",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service"
+  },
+  "search": {
+    "noResults": "No results found for '{{query}}'",
+    "resultsFor": "Results for '{{query}}' ({{count}})",
+    "searchHistory": "Search History",
+    "clearHistory": "Clear History",
+    "recentSearches": "Recent Searches",
+    "minCharacters": "{{count}}/3 characters",
+    "searchError": "An error occurred while searching"
+  },
+  "standings": {
+    "position": "Pos",
+    "team": "Team",
+    "played": "Played",
+    "won": "Won",
+    "drawn": "Drawn",
+    "lost": "Lost",
+    "goalsFor": "For",
+    "goalsAgainst": "Against",
+    "goalDifference": "Goal Difference",
+    "points": "Points",
+    "form": "Form",
+    "championsLeague": "Champions League",
+    "europaLeague": "Europa League"
+  },
+  "leagues": {
+    "noLeaguesFound": "No {{type}} found"
+  },
+  "errors": {
+    "networkError": "Network error. Check your internet connection.",
+    "serverError": "Server error. Please try again later.",
+    "notFound": "Not found",
+    "unauthorized": "Unauthorized",
+    "forbidden": "Access denied",
+    "timeout": "Request timeout",
+    "unknownError": "Unknown error occurred"
+  }
+}
