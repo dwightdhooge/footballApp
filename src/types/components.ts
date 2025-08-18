@@ -1,4 +1,4 @@
-import { Country } from './api';
+import { Country } from "./api";
 
 export interface CountryCardProps {
   name: string;
@@ -17,4 +17,5 @@ export interface FlagSvgProps {
   size: number;
   onError?: (error: Error) => void;
   style?: any;
-} 
+  ttl?: number; // custom TTL in milliseconds for this specific SVG
+}

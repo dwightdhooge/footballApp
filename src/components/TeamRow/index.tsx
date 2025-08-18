@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "@/context/ThemeContext";
 import { Team, Standing } from "../../types/api";
+import CachedImage from "../common/CachedImage";
 
 interface TeamRowProps {
   rank: number;
@@ -94,7 +95,14 @@ const TeamRow: React.FC<TeamRowProps> = ({
 
       {/* Team Info */}
       <View style={styles.teamContainer}>
-        <Image source={{ uri: team.logo }} style={styles.teamLogo} />
+        <CachedImage
+          url={team.logo}
+          size={24}
+          fallbackText="Team"
+          borderRadius={4}
+          resizeMode="contain"
+          ttl={7 * 24 * 60 * 60 * 1000} // 7 days for team logos
+        />
         <Text style={styles.teamName} numberOfLines={1}>
           {team.name}
         </Text>
@@ -197,6 +205,7 @@ const getStyles = (
       fontWeight: "500",
       fontSize: size === "compact" ? 12 : size === "detailed" ? 16 : 14,
       color: theme.colors.text,
+      marginLeft: theme.spacing.sm,
     },
     statsContainer: {
       flexDirection: "row",

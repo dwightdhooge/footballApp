@@ -76,17 +76,6 @@ const getStyles = (theme: ReturnType<typeof useTheme>["theme"], size: string) =>
       position: "absolute",
       top: 8,
       right: 8,
-      backgroundColor: theme.colors.background,
-      borderRadius: 12,
-      padding: 4,
-      shadowColor: "#000",
-      shadowOffset: {
-        width: 0,
-        height: 1,
-      },
-      shadowOpacity: 0.2,
-      shadowRadius: 1.41,
-      elevation: 2,
       zIndex: 1,
     },
     contentContainer: {

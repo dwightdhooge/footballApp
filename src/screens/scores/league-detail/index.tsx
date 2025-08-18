@@ -1,27 +1,39 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
+  SafeAreaView,
   View,
   Text,
   StyleSheet,
-  ScrollView,
   TouchableOpacity,
-  Image,
+  ScrollView,
   ActivityIndicator,
   Alert,
-  SafeAreaView,
 } from "react-native";
-import { useNavigation, useRoute } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "@/context/ThemeContext";
-import { ScoresStackParamList } from "../../../types/navigation";
+import {
+  useRoute,
+  useNavigation,
+  RouteProp,
+  NavigationProp,
+} from "@react-navigation/native";
+import { ScoresStackParamList } from "@/types/navigation";
 import { useLeagueData } from "@/hooks";
 import {
   SeasonDropdown,
+  RoundDropdown,
   StandingsTable,
   MatchCard,
-  RoundDropdown,
-} from "../../../components";
-import { LeagueItem, Fixture } from "../../../types/api";
+  FlagSvg,
+} from "@/components";
+import CachedImage from "@/components/common/CachedImage";
+import { LeagueItem, Fixture } from "@/types/api";
+
+type LeagueDetailRouteProp = RouteProp<ScoresStackParamList, "LeagueDetail">;
+type LeagueDetailNavigationProp = NavigationProp<
+  ScoresStackParamList,
+  "LeagueDetail"
+>;
 
 interface RouteParams {
   item: LeagueItem;
@@ -122,7 +134,14 @@ const LeagueDetailScreen: React.FC = () => {
 
   const renderLeagueInfo = () => (
     <View style={styles.leagueInfoContainer}>
-      <Image source={{ uri: item.league.logo }} style={styles.leagueLogo} />
+      <CachedImage
+        url={item.league.logo}
+        size={40}
+        fallbackText="League"
+        borderRadius={8}
+        resizeMode="contain"
+        ttl={30 * 24 * 60 * 60 * 1000} // 30 days for league logos
+      />
       <View style={styles.leagueText}>
         <Text style={styles.leagueName}>{item.league.name}</Text>
         <Text style={styles.countryName}>{item.country.name}</Text>

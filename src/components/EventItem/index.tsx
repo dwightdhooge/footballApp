@@ -10,6 +10,7 @@ import {
   formatEventTime,
   isPenaltyGoal,
 } from "../../utils/matchUtils";
+import CachedImage from "../common/CachedImage";
 
 interface EventItemProps {
   event: Event;
@@ -92,7 +93,14 @@ const EventItem: React.FC<EventItemProps> = ({
 
       {/* Team Logo + Abbreviated Name */}
       <View style={styles.teamContainer}>
-        <Image source={{ uri: event.team.logo }} style={styles.teamLogo} />
+        <CachedImage
+          url={event.team.logo}
+          size={24}
+          fallbackText="Team"
+          borderRadius={4}
+          resizeMode="contain"
+          ttl={7 * 24 * 60 * 60 * 1000} // 7 days for team logos
+        />
         <Text style={styles.teamAbbreviation} numberOfLines={1}>
           {getTeamAbbreviation(event.team.name)}
         </Text>

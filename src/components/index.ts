@@ -37,8 +37,8 @@ export { default as EventsList } from "./EventsList";
 export { default as GoalIcon } from "./GoalIcon";
 export { default as PlayerRow } from "./PlayerRow";
 export { default as PlayerStatus } from "./PlayerStatus";
-export { default as TeamLineup } from "./TeamLineup";
 export { default as LineupsGrid } from "./LineupsGrid";
+export { default as TeamLineup } from "./TeamLineup";
 
 // Navigation Components
 export { default as TabNavigation } from "./TabNavigation";
@@ -63,6 +63,11 @@ export { default as SuggestedSection } from "./SuggestedSection";
 
 // Theme Components
 export { default as ManualThemeSelector } from "./ManualThemeSelector";
+
+// Common Components
+export { default as SvgImage } from "./common/SvgImage";
+export { default as CachedImage } from "./common/CachedImage";
+export { default as CacheManagement } from "./common/CacheManagement";
 
 // Common State Components
 export { LoadingState, ErrorState, EmptyState } from "./common/StateComponents";

@@ -7,6 +7,7 @@ import {
   AutoThemeSwitch,
   ManualThemeSelector,
   AppVersionSection,
+  CacheManagement,
 } from "@/components";
 
 const SettingsScreen: React.FC = () => {
@@ -55,6 +56,12 @@ const SettingsScreen: React.FC = () => {
             disabled={isAutoTheme}
             isReadOnly={isAutoTheme}
           />
+        </View>
+
+        {/* Cache Management Section */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Performance</Text>
+          <CacheManagement />
         </View>
 
         {/* App Information Section */}

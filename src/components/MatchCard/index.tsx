@@ -1,8 +1,9 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "@/context/ThemeContext";
 import { Fixture } from "../../types/api";
+import CachedImage from "../common/CachedImage";
 
 interface MatchCardProps {
   fixture: Fixture;
@@ -131,10 +132,13 @@ const MatchCard: React.FC<MatchCardProps> = ({
       <View style={styles.matchContent}>
         {/* Home Team */}
         <View style={styles.teamContainer}>
-          <Image
-            source={{ uri: fixture.teams.home.logo }}
-            style={styles.teamLogo}
+          <CachedImage
+            url={fixture.teams.home.logo}
+            size={24}
+            fallbackText="Team"
+            borderRadius={4}
             resizeMode="contain"
+            ttl={7 * 24 * 60 * 60 * 1000} // 7 days for team logos
           />
           <Text
             style={[styles.teamName, styles.teamNameText]}
@@ -189,10 +193,13 @@ const MatchCard: React.FC<MatchCardProps> = ({
           >
             {fixture.teams.away.name}
           </Text>
-          <Image
-            source={{ uri: fixture.teams.away.logo }}
-            style={styles.teamLogo}
+          <CachedImage
+            url={fixture.teams.away.logo}
+            size={24}
+            fallbackText="Team"
+            borderRadius={4}
             resizeMode="contain"
+            ttl={7 * 24 * 60 * 60 * 1000} // 7 days for team logos
           />
         </View>
       </View>
@@ -286,12 +293,7 @@ const getStyles = (theme: ReturnType<typeof useTheme>["theme"], size: string) =>
       flexDirection: "row",
       alignItems: "center",
       minHeight: 32,
-    },
-    teamLogo: {
-      width: 24,
-      height: 24,
-      marginHorizontal: 4,
-      resizeMode: "contain",
+      marginHorizontal: 8,
     },
     teamName: {
       flex: 1,

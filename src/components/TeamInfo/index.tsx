@@ -1,7 +1,8 @@
 import React from "react";
-import { View, Text, StyleSheet, Image } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { Team } from "../../types/api";
 import { useTheme } from "@/context/ThemeContext";
+import CachedImage from "../common/CachedImage";
 
 interface TeamInfoProps {
   team: Team;
@@ -24,7 +25,14 @@ const TeamInfo: React.FC<TeamInfoProps> = ({
   return (
     <View style={[styles.container, style]}>
       <View style={styles.logoContainer}>
-        <Image source={{ uri: team.logo }} style={styles.logo} />
+        <CachedImage
+          url={team.logo}
+          size={logoSize}
+          fallbackText="Team"
+          borderRadius={logoSize}
+          resizeMode="contain"
+          ttl={7 * 24 * 60 * 60 * 1000} // 7 days for team logos
+        />
         {showWinner && team.winner && <Text style={styles.crown}>👑</Text>}
       </View>
       <Text style={styles.name} numberOfLines={2}>

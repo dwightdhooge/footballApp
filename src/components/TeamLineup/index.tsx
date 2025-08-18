@@ -1,11 +1,19 @@
 import React from "react";
-import { View, Text, StyleSheet, Image } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { Lineup, Event } from "../../types/api";
-import PlayerRow from "../PlayerRow";
-import PlayerStatus from "../PlayerStatus";
 import { useTheme } from "@/context/ThemeContext";
 import { useTranslation } from "react-i18next";
-import { isPenaltyGoal } from "../../utils/matchUtils";
+import GoalIcon from "../GoalIcon";
+import {
+  hasPlayerScored,
+  hasPlayerScoredPenalty,
+  hasPlayerYellowCard,
+  hasPlayerRedCard,
+  hasPlayerBeenSubstitutedOut,
+  hasPlayerBeenSubstitutedIn,
+  getPlayerSubstitutionMinute,
+} from "../../utils/eventUtils";
+import CachedImage from "../common/CachedImage";
 
 interface TeamLineupProps {
   lineup: Lineup;
@@ -26,123 +34,124 @@ const TeamLineup: React.FC<TeamLineupProps> = ({
   const { t } = useTranslation();
   const styles = getStyles(theme);
 
-  const calculatePlayerStatus = (
-    playerId: number
-  ): {
-    yellowCards: number;
-    redCards: number;
-    goals: number;
-    isPenaltyGoal: boolean;
-    showOverlapping: boolean;
-    showMultiple: boolean;
-  } => {
-    const playerEvents = events.filter(
-      (event) => event.player?.id === playerId || event.assist?.id === playerId
+  // Player status functions using imported utilities
+  const getPlayerStatus = (playerName: string) => ({
+    hasScored: hasPlayerScored(playerName, events),
+    hasScoredPenalty: hasPlayerScoredPenalty(playerName, events),
+    hasYellowCard: hasPlayerYellowCard(playerName, events),
+    hasRedCard: hasPlayerRedCard(playerName, events),
+    hasBeenSubstitutedOut: hasPlayerBeenSubstitutedOut(playerName, events),
+    hasBeenSubstitutedIn: hasPlayerBeenSubstitutedIn(playerName, events),
+    substitutionMinute: getPlayerSubstitutionMinute(playerName, events),
+  });
+
+  const renderPlayer = (playerData: any, isStarting: boolean = true) => {
+    const playerStatus = getPlayerStatus(playerData.player.name);
+    const {
+      hasScored,
+      hasScoredPenalty,
+      hasYellowCard,
+      hasRedCard,
+      hasBeenSubstitutedOut,
+      hasBeenSubstitutedIn,
+    } = playerStatus;
+
+    return (
+      <View key={playerData.player.id} style={styles.playerItem}>
+        <Text style={styles.playerNumber}>{playerData.player.number}</Text>
+        <Text
+          style={[styles.playerName, { color: theme.colors.text }]}
+          numberOfLines={2}
+        >
+          {playerData.player.name}
+        </Text>
+        <View style={styles.eventIcons}>
+          {hasScored && <GoalIcon isPenalty={hasScoredPenalty} size={12} />}
+          {(hasYellowCard || hasRedCard) && (
+            <View style={styles.cardIcons}>
+              {hasYellowCard && <Text style={styles.yellowCardIcon}>🟨</Text>}
+              {hasRedCard && <Text style={styles.redCardIcon}>🟥</Text>}
+            </View>
+          )}
+          {hasBeenSubstitutedOut && (
+            <Text
+              style={[styles.substitutionIcon, { color: theme.colors.error }]}
+            >
+              ←
+            </Text>
+          )}
+          {hasBeenSubstitutedIn && (
+            <Text
+              style={[styles.substitutionIcon, { color: theme.colors.success }]}
+            >
+              →
+            </Text>
+          )}
+        </View>
+      </View>
     );
-
-    let yellowCards = 0;
-    let redCards = 0;
-    let goals = 0;
-    let penaltyGoal = false;
-
-    playerEvents.forEach((event) => {
-      if (event.type === "Card") {
-        if (event.detail.includes("Yellow")) {
-          yellowCards++;
-        } else if (event.detail.includes("Red")) {
-          redCards++;
-        }
-      } else if (event.type === "Goal") {
-        goals++;
-        if (isPenaltyGoal(event.detail)) {
-          penaltyGoal = true;
-        }
-      }
-    });
-
-    // Handle second yellow = red card logic
-    if (yellowCards >= 2) {
-      redCards = Math.max(redCards, 1);
-      yellowCards = 0; // Reset yellow cards when converted to red
-    }
-
-    return {
-      yellowCards,
-      redCards,
-      goals,
-      isPenaltyGoal: penaltyGoal,
-      showOverlapping: yellowCards > 0 && redCards > 0,
-      showMultiple:
-        (goals > 0 && (yellowCards > 0 || redCards > 0)) ||
-        (yellowCards > 0 && redCards > 0),
-    };
   };
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <View style={styles.teamInfo}>
-          <Image source={{ uri: lineup.team.logo }} style={styles.teamLogo} />
-          <Text style={styles.teamName}>{lineup.team.name}</Text>
-        </View>
-        {showFormation && (
-          <Text style={styles.formation}>{lineup.formation}</Text>
-        )}
-      </View>
-
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>
-          {t("lineups.sections.startingXI")}
-        </Text>
-        {lineup.startXI.map((playerData, index) => (
-          <PlayerRow
-            key={`start-${playerData.player.id}`}
-            player={playerData.player}
-            position={playerData.player.pos}
-            isStarting={true}
-            onPress={
-              onPlayerPress ? () => onPlayerPress(playerData.player) : undefined
-            }
-            showPosition={true}
-            showNumber={true}
-            playerStatus={calculatePlayerStatus(playerData.player.id)}
+      {/* Team Header */}
+      <View style={styles.teamHeader}>
+        {lineup.team.logo && (
+          <CachedImage
+            url={lineup.team.logo}
+            size={24}
+            fallbackText="Team"
+            borderRadius={4}
+            resizeMode="contain"
+            ttl={7 * 24 * 60 * 60 * 1000} // 7 days for team logos
           />
-        ))}
+        )}
+        <View style={styles.teamInfo}>
+          <Text style={[styles.teamName, { color: theme.colors.text }]}>
+            {lineup.team.name}
+          </Text>
+        </View>
       </View>
 
-      {lineup.substitutes.length > 0 && (
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>
-            {t("lineups.sections.substitutes")}
-          </Text>
-          {lineup.substitutes.map((playerData, index) => (
-            <PlayerRow
-              key={`sub-${playerData.player.id}`}
-              player={playerData.player}
-              position={playerData.player.pos}
-              isStarting={false}
-              onPress={
-                onPlayerPress
-                  ? () => onPlayerPress(playerData.player)
-                  : undefined
-              }
-              showPosition={false}
-              showNumber={true}
-              playerStatus={calculatePlayerStatus(playerData.player.id)}
-            />
-          ))}
+      {/* Coach & Formation Info */}
+      {(showCoach && lineup.coach) || (showFormation && lineup.formation) ? (
+        <View style={styles.teamDetails}>
+          {showCoach && lineup.coach && (
+            <Text
+              style={[styles.coachName, { color: theme.colors.textSecondary }]}
+            >
+              {t("lineups.coach")}: {lineup.coach.name}
+            </Text>
+          )}
+          {showFormation && lineup.formation && (
+            <Text
+              style={[styles.formation, { color: theme.colors.textSecondary }]}
+            >
+              {t("lineups.formation")}: {lineup.formation}
+            </Text>
+          )}
         </View>
-      )}
+      ) : null}
 
-      {showCoach && lineup.coach && (
-        <View style={styles.coachSection}>
-          <Text style={styles.sectionTitle}>{t("lineups.sections.coach")}</Text>
-          <View style={styles.coachInfo}>
-            <Image
-              source={{ uri: lineup.coach.photo }}
-              style={styles.coachPhoto}
-            />
-            <Text style={styles.coachName}>{lineup.coach.name}</Text>
+      {/* Starting XI */}
+      <View style={styles.section}>
+        <View style={styles.playersGrid}>
+          {lineup.startXI.map((playerData, index) =>
+            renderPlayer(playerData, true)
+          )}
+        </View>
+      </View>
+
+      {/* Substitutes */}
+      {lineup.substitutes && lineup.substitutes.length > 0 && (
+        <View style={styles.section}>
+          <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
+            {t("lineups.substitutes")} ({lineup.substitutes.length})
+          </Text>
+          <View style={styles.playersGrid}>
+            {lineup.substitutes.map((playerData, index) =>
+              renderPlayer(playerData, false)
+            )}
           </View>
         </View>
       )}
@@ -153,44 +162,40 @@ const TeamLineup: React.FC<TeamLineupProps> = ({
 const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
   StyleSheet.create({
     container: {
-      flex: 1,
       backgroundColor: theme.colors.surface,
       borderRadius: theme.borderRadius.md,
       padding: theme.spacing.md,
-      marginHorizontal: theme.spacing.sm,
-    },
-    header: {
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
       marginBottom: theme.spacing.md,
-      paddingBottom: theme.spacing.sm,
-      borderBottomWidth: 1,
-      borderBottomColor: theme.colors.border,
     },
-    teamInfo: {
+    teamHeader: {
       flexDirection: "row",
       alignItems: "center",
-      flex: 1,
+      marginBottom: theme.spacing.md,
     },
     teamLogo: {
       width: theme.spacing.xl * 1.5,
       height: theme.spacing.xl * 1.5,
-      marginRight: theme.spacing.sm,
+      marginRight: theme.spacing.md,
+    },
+    teamInfo: {
+      flex: 1,
     },
     teamName: {
-      fontSize: theme.typography.body.fontSize,
-      fontWeight: "bold",
-      color: theme.colors.text,
+      fontSize: theme.typography.h3.fontSize,
+      fontWeight: "600",
+      marginBottom: theme.spacing.xs,
+      marginLeft: theme.spacing.sm,
+    },
+    teamDetails: {
+      marginBottom: theme.spacing.sm,
+      paddingLeft: 0,
+    },
+    coachName: {
+      fontSize: theme.typography.caption.fontSize,
+      marginBottom: theme.spacing.xs / 2,
     },
     formation: {
       fontSize: theme.typography.caption.fontSize,
-      fontWeight: "600",
-      color: theme.colors.textSecondary,
-      backgroundColor: theme.colors.background,
-      paddingHorizontal: theme.spacing.sm,
-      paddingVertical: theme.spacing.xs,
-      borderRadius: theme.borderRadius.sm,
     },
     section: {
       marginBottom: theme.spacing.md,
@@ -198,27 +203,57 @@ const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
     sectionTitle: {
       fontSize: theme.typography.caption.fontSize,
       fontWeight: "600",
-      color: theme.colors.textSecondary,
       marginBottom: theme.spacing.sm,
-      textTransform: "uppercase",
-      letterSpacing: 0.5,
     },
-    coachSection: {
-      marginTop: theme.spacing.sm,
+    playersGrid: {
+      flexDirection: "column",
     },
-    coachInfo: {
+    playerItem: {
       flexDirection: "row",
       alignItems: "center",
+      marginBottom: theme.spacing.xs,
+      padding: theme.spacing.xs,
+      borderRadius: theme.borderRadius.sm,
+      justifyContent: "space-between",
     },
-    coachPhoto: {
-      width: theme.spacing.xl,
-      height: theme.spacing.xl,
+    playerNumber: {
+      fontSize: theme.typography.body.fontSize,
       marginRight: theme.spacing.sm,
-      borderRadius: theme.spacing.xl / 2,
+      minWidth: theme.spacing.xl,
     },
-    coachName: {
+    playerName: {
       fontSize: theme.typography.caption.fontSize,
-      color: theme.colors.text,
+      flex: 1,
+      marginRight: theme.spacing.sm,
+    },
+    yellowCardIcon: {
+      fontSize: theme.typography.caption.fontSize,
+      marginRight: theme.spacing.xs / 2,
+    },
+    redCardIcon: {
+      fontSize: theme.typography.caption.fontSize,
+      marginRight: theme.spacing.xs / 2,
+      position: "absolute",
+      top: -theme.spacing.xs / 2,
+      left: 0,
+      zIndex: 1,
+    },
+    cardIcons: {
+      flexDirection: "row",
+      alignItems: "center",
+      position: "relative",
+      marginLeft: theme.spacing.xs / 2,
+    },
+    eventIcons: {
+      flexDirection: "row",
+      alignItems: "center",
+      marginLeft: theme.spacing.xs,
+    },
+    substitutionIcon: {
+      fontSize: theme.typography.caption.fontSize,
+      fontWeight: "bold",
+      marginLeft: theme.spacing.xs,
+      marginRight: theme.spacing.xs / 2,
     },
   });
 
