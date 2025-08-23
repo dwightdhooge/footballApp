@@ -14,38 +14,58 @@
     "next": "Volgende",
     "previous": "Vorige",
     "done": "Klaar",
-    "flagFallback": "🏳️"
+    "flagFallback": "🏳️",
+    "onPrimary": "Op Primair"
   },
   "navigation": {
     "scores": "Scores",
     "settings": "Instellingen",
     "favorites": "Favorieten",
+    "back": "Terug",
     "leagueDetail": "League Details",
-    "cupDetail": "Cup Details",
+    "cupDetail": "Beker Details",
     "countryDetail": "Land Details",
-    "cupDetails": "Cup Details",
+    "cupDetails": "Beker Details",
     "matchDetail": "Wedstrijd Details",
     "matchDetails": "Wedstrijd Details"
+  },
+  "favorites": {
+    "title": "Mijn Favorieten",
+    "subtitle": "Snelle toegang tot je opgeslagen items",
+    "categories": {
+      "countries": "Landen",
+      "competitions": "Competities",
+      "teams": "Teams",
+      "players": "Spelers"
+    },
+    "emptyCountries": "Nog geen favoriete landen. Begin met het toevoegen van landen aan je favorieten vanuit het Scores tabblad.",
+    "emptyCompetitions": "Nog geen favoriete competities. Begin met het toevoegen van leagues en bekers aan je favorieten vanuit het Scores tabblad.",
+    "emptyTeams": "Nog geen favoriete teams. Begin met het toevoegen van teams aan je favorieten vanuit het Scores tabblad.",
+    "emptyPlayers": "Nog geen favoriete spelers. Begin met het toevoegen van spelers aan je favorieten vanuit het Scores tabblad.",
+    "emptyGeneral": "Nog geen favorieten in deze categorie."
   },
   "homescreen": {
     "title": "Voetbal Scores",
     "subtitle": "Ontdek voetbaldata per land",
-    "searchPlaceholder": "Zoek naar landen, competities...",
+    "searchPlaceholder": "Zoek naar landen, leagues...",
     "suggestedCountries": "Voorgestelde Landen",
     "recentMatches": "Recente Wedstrijden",
-    "topLeagues": "Top Competities",
+    "topLeagues": "Top Leagues",
     "noRecentMatches": "Geen recente wedstrijden",
-    "noTopLeagues": "Geen top competities beschikbaar"
+    "noTopLeagues": "Geen top leagues beschikbaar"
   },
   "countryDetail": {
-    "leagues": "Competities",
-    "noLeagues": "Geen competities beschikbaar voor dit land",
-    "loadingLeagues": "Competities laden...",
+    "leagues": "Leagues",
+    "cups": "Bekers",
+    "noLeagues": "Geen leagues beschikbaar voor dit land",
+    "loadingLeagues": "Leagues laden...",
     "errorTitle": "Fout",
-    "errorMessage": "Kon competities niet laden: {{message}}",
-    "unknownError": "Onbekende fout opgetreden"
+    "errorMessage": "Kon leagues niet laden: {{message}}",
+    "errorLoadingCompetitions": "Kon competities niet laden: {{error}}",
+    "unknownError": "Er is een onbekende fout opgetreden"
   },
   "leagueDetail": {
+    "league": "League",
     "standings": "Stand",
     "matches": "Wedstrijden",
     "rounds": "Rondes",
@@ -54,16 +74,16 @@
     "noMatches": "Geen wedstrijden beschikbaar",
     "selectRound": "Selecteer ronde",
     "selectSeason": "Selecteer seizoen",
-    "loadingStandings": "Laden standings...",
-    "loadingRounds": "Laden rounds...",
-    "loadingMatches": "Laden matches...",
+    "loadingStandings": "Stand laden...",
+    "loadingRounds": "Rondes laden...",
+    "loadingMatches": "Wedstrijden laden...",
     "retry": "Opnieuw proberen",
     "current": "(Huidig)",
-    "teamDetail": "Team Detail",
-    "matchDetail": "Match Detail",
-    "noStandingsForSeason": "Geen standings beschikbaar voor dit seizoen.",
-    "noRoundsAvailable": "Geen rounds beschikbaar",
-    "noMatchesAvailable": "Geen matches beschikbaar"
+    "teamDetail": "Team Details",
+    "matchDetail": "Wedstrijd Details",
+    "noStandingsForSeason": "Geen stand beschikbaar voor dit seizoen.",
+    "noRoundsAvailable": "Geen rondes beschikbaar",
+    "noMatchesAvailable": "Geen wedstrijden beschikbaar"
   },
   "cupDetail": {
     "rounds": "Rondes",
@@ -74,166 +94,210 @@
     "roundNames": {
       "Semi-finals": "Halve Finale",
       "Quarter-finals": "Kwart Finale",
-      "Qualifying Round": "Kwalificatie",
+      "Qualifying Round": "Kwalificatie Ronde",
       "Preliminary Round": "Voorronde"
     },
-    "loadingRounds": "Laden rondes...",
-    "loadingFixtures": "Laden wedstrijden...",
+    "loadingRounds": "Rondes laden...",
+    "loadingFixtures": "Wedstrijden laden...",
     "noRoundsForSeason": "Geen rondes beschikbaar voor dit seizoen",
     "noFixturesForRound": "Geen wedstrijden beschikbaar voor deze ronde"
   },
   "matchCard": {
-    "fullTime": "Eindstand",
-    "halfTime": "Ruststand",
-    "extraTime": "Verlenging",
+    "fullTime": "Volle Tijd",
+    "halfTime": "Rust",
+    "extraTime": "Extra Tijd",
     "penalties": "Penalty's",
     "live": "Live",
-    "finished": "Beëindigd",
+    "finished": "Afgelopen",
     "scheduled": "Gepland",
     "postponed": "Uitgesteld",
     "cancelled": "Geannuleerd",
-    "suspended": "Onderbroken",
+    "suspended": "Geschorst",
     "interrupted": "Onderbroken",
     "abandoned": "Afgebroken",
     "penaltiesLabel": "PEN:",
-    "versus": "vs",
+    "versus": "tegen",
     "noMatches": "Geen wedstrijden beschikbaar",
+    "noMatchesForRound": "Geen wedstrijden beschikbaar voor deze ronde",
+    "noMatchesForSeason": "Geen wedstrijden beschikbaar voor dit seizoen",
     "loadingMatches": "Wedstrijden laden...",
-    "retry": "Opnieuw proberen"
+    "errorLoadingMatches": "Fout bij het laden van wedstrijden",
+    "retry": "Opnieuw proberen",
+    "selectRound": "Selecteer ronde",
+    "selectSeason": "Selecteer seizoen",
+    "current": "(Huidig)",
+    "teamDetail": "Team Details",
+    "matchDetail": "Wedstrijd Details",
+    "noStandingsForSeason": "Geen stand beschikbaar voor dit seizoen.",
+    "noRoundsAvailable": "Geen rondes beschikbaar",
+    "noMatchesAvailable": "Geen wedstrijden beschikbaar"
   },
-  "lineups": {
-    "loadingLineups": "Lineups laden...",
-    "errorLoadingLineups": "Fout bij het laden van lineups",
-    "noLineupsAvailable": "Geen lineups beschikbaar",
-    "teamLineupsNotAvailable": "Team lineups zijn nog niet beschikbaar voor deze wedstrijd.",
-    "coach": "Coach",
-    "formation": "Formatie",
-    "substitutes": "Wissels"
+  "standings": {
+    "title": "Stand",
+    "position": "Pos",
+    "team": "Team",
+    "played": "G",
+    "won": "W",
+    "drawn": "G",
+    "lost": "V",
+    "goalsFor": "DV",
+    "goalsAgainst": "DT",
+    "goalDifference": "DS",
+    "points": "Ptn",
+    "form": "Form",
+    "status": "Status",
+    "description": "Beschrijving",
+    "noStandings": "Geen stand beschikbaar",
+    "loadingStandings": "Stand laden...",
+    "errorLoadingStandings": "Fout bij het laden van de stand",
+    "retry": "Opnieuw proberen",
+    "selectSeason": "Selecteer seizoen",
+    "current": "(Huidig)",
+    "teamDetail": "Team Details",
+    "matchDetail": "Wedstrijd Details",
+    "noStandingsForSeason": "Geen stand beschikbaar voor dit seizoen.",
+    "noRoundsAvailable": "Geen rondes beschikbaar",
+    "noMatchesAvailable": "Geen wedstrijden beschikbaar"
   },
-  "match": {
-    "status": {
-      "live": "Live - {{elapsed}}'",
-      "finished": "BEËINDIGD",
-      "halftime": "HALFTIME",
-      "notStarted": "NIEUWE WEDSTRIJD"
-    },
-    "competition": {
-      "default": "Competitie",
-      "type": {
-        "default": "League"
-      },
-      "season": "Seizoen"
-    },
-    "duration": {
-      "full": "90'"
-    },
-    "score": {
-      "halfTime": "HT: {{home}}-{{away}}"
-    },
-    "goal": {
-      "minute": "{{minute}}'"
-    },
-    "referee": {
-      "default": "Lawrence Visser"
-    },
-    "penalty": {
-      "label": "Penalty's"
-    }
+  "matchDetail": {
+    "title": "Wedstrijd Details",
+    "events": "Gebeurtenissen",
+    "lineups": "Opstellingen",
+    "statistics": "Statistieken",
+    "noEvents": "Geen gebeurtenissen beschikbaar",
+    "noLineups": "Geen opstellingen beschikbaar",
+    "noStatistics": "Geen statistieken beschikbaar",
+    "loadingEvents": "Gebeurtenissen laden...",
+    "loadingLineups": "Opstellingen laden...",
+    "loadingStatistics": "Statistieken laden...",
+    "errorLoadingEvents": "Fout bij het laden van gebeurtenissen",
+    "errorLoadingLineups": "Fout bij het laden van opstellingen",
+    "errorLoadingStatistics": "Fout bij het laden van statistieken",
+    "retry": "Opnieuw proberen",
+    "teamDetail": "Team Details",
+    "playerDetail": "Speler Details",
+    "noEventsForMatch": "Geen gebeurtenissen beschikbaar voor deze wedstrijd",
+    "noLineupsForMatch": "Geen opstellingen beschikbaar voor deze wedstrijd",
+    "noStatisticsForMatch": "Geen statistieken beschikbaar voor deze wedstrijd"
   },
-  "events": {
-    "title": "Wedstrijd Events",
-    "count": "{{count}} events",
-    "loading": "Events laden...",
-    "error": {
-      "title": "Fout bij laden events"
-    },
-    "empty": {
-      "title": "Geen events beschikbaar",
-      "message": "Er zijn nog geen events geregistreerd voor deze wedstrijd."
-    },
-    "time": {
-      "normal": "{{elapsed}}'",
-      "extra": "{{elapsed}}+{{extra}}'"
-    },
-    "types": {
-      "goal": "Goal",
-      "card": "Kaart",
-      "subst": "Wissel",
-      "var": "VAR",
-      "foul": "Overtreding",
-      "corner": "Corner",
-      "free kick": "Vrije Trap",
-      "throw in": "Inworp",
-      "offside": "Buitenspel",
-      "injury": "Blessure",
-      "break": "Pauze",
-      "missed penalty": "Gemiste Penalty",
-      "saved penalty": "Geredde Penalty",
-      "post": "Paal",
-      "crossbar": "Lat"
-    },
-    "noPlayer": "Geen speler",
-    "assist": "Assist"
-  },
-  "tabs": {
-    "info": "Info",
-    "events": "Events",
-    "lineups": "Opstellingen"
-  },
-  "favorites": {
-    "title": "Favorieten",
-    "noFavorites": "Je hebt nog geen favorieten",
-    "addToFavorites": "Toevoegen aan favorieten",
-    "removeFromFavorites": "Verwijderen uit favorieten",
-    "favoritesUpdated": "Favorieten bijgewerkt"
+  "playerDetail": {
+    "title": "Speler Details",
+    "personalInfo": "Persoonlijke Informatie",
+    "career": "Carrière",
+    "statistics": "Statistieken",
+    "noPersonalInfo": "Geen persoonlijke informatie beschikbaar",
+    "noCareer": "Geen carrière-informatie beschikbaar",
+    "noStatistics": "Geen statistieken beschikbaar",
+    "loadingPersonalInfo": "Persoonlijke informatie laden...",
+    "loadingCareer": "Carrière-informatie laden...",
+    "loadingStatistics": "Statistieken laden...",
+    "errorLoadingPersonalInfo": "Fout bij het laden van persoonlijke informatie",
+    "errorLoadingCareer": "Fout bij het laden van carrière-informatie",
+    "errorLoadingStatistics": "Fout bij het laden van statistieken",
+    "retry": "Opnieuw proberen",
+    "teamDetail": "Team Details",
+    "matchDetail": "Wedstrijd Details",
+    "noPersonalInfoForPlayer": "Geen persoonlijke informatie beschikbaar voor deze speler",
+    "noCareerForPlayer": "Geen carrière-informatie beschikbaar voor deze speler",
+    "noStatisticsForPlayer": "Geen statistieken beschikbaar voor deze speler",
+    "age": "Leeftijd",
+    "nationality": "Nationaliteit",
+    "height": "Lengte",
+    "weight": "Gewicht",
+    "player": "Speler",
+    "team": "Team",
+    "loadingProfile": "Speler profiel laden...",
+    "errorLoadingProfile": "Kon speler profiel niet laden",
+    "noCareerData": "Geen carrière data beschikbaar",
+    "statisticsComingSoon": "Statistieken worden in een toekomstige versie toegevoegd"
   },
   "settings": {
     "title": "Instellingen",
     "theme": "Thema",
-    "autoTheme": "Automatisch thema",
-    "lightTheme": "Licht thema",
-    "darkTheme": "Donker thema",
     "language": "Taal",
-    "notifications": "Meldingen",
     "about": "Over",
     "version": "Versie",
-    "privacyPolicy": "Privacybeleid",
-    "termsOfService": "Gebruiksvoorwaarden"
+    "build": "Build",
+    "autoTheme": "Auto Thema",
+    "lightTheme": "Licht Thema",
+    "darkTheme": "Donker Thema",
+    "themeOptions": {
+      "auto": "Auto",
+      "light": "Licht",
+      "dark": "Donker"
+    },
+    "languageOptions": {
+      "auto": "Auto",
+      "en": "English",
+      "fr-BE": "Français (Belgique)",
+      "nl-BE": "Nederlands (België)"
+    },
+    "themeDescription": "Kies je voorkeursthema",
+    "languageDescription": "Kies je voorkeurstaal",
+    "aboutDescription": "Meer informatie over deze app",
+    "versionDescription": "Huidige app-versie",
+    "buildDescription": "Huidige build-nummer"
   },
   "search": {
-    "noResults": "Geen resultaten gevonden voor '{{query}}'",
-    "resultsFor": "Resultaten voor '{{query}}' ({{count}})",
-    "searchHistory": "Zoekgeschiedenis",
-    "clearHistory": "Geschiedenis wissen",
-    "recentSearches": "Recente zoekopdrachten",
-    "minCharacters": "{{count}}/3 karakters",
-    "searchError": "Er is een fout opgetreden bij het zoeken"
+    "placeholder": "Zoek naar landen, leagues, teams...",
+    "noResults": "Geen resultaten gevonden",
+    "searching": "Zoeken...",
+    "error": "Er is een fout opgetreden tijdens het zoeken",
+    "retry": "Opnieuw proberen",
+    "recentSearches": "Recente Zoekopdrachten",
+    "clearRecent": "Recente Wissen",
+    "noRecentSearches": "Geen recente zoekopdrachten"
   },
-  "standings": {
-    "position": "Pos",
-    "team": "Team",
-    "played": "Gespeeld",
-    "won": "Gewonnen",
-    "drawn": "Gelijkspel",
-    "lost": "Verloren",
-    "goalsFor": "Voor",
-    "goalsAgainst": "Tegen",
-    "goalDifference": "Doelsaldo",
-    "points": "Punten",
-    "form": "Form",
-    "championsLeague": "Champions League",
-    "europaLeague": "Europa League"
+  "tabs": {
+    "info": "Info",
+    "events": "Gebeurtenissen",
+    "lineups": "Opstellingen"
   },
-  "leagues": {
-    "noLeaguesFound": "Geen {{type}} gevonden"
+  "match": {
+    "status": {
+      "live": "{{elapsed}}'",
+      "finished": "Volle Tijd",
+      "halftime": "Rust",
+      "notStarted": "Niet Begonnen"
+    },
+    "goal": {
+      "minute": "{{minute}}'"
+    },
+    "competition": {
+      "default": "Competitie"
+    },
+    "referee": {
+      "default": "Scheidsrechter"
+    }
   },
-  "errors": {
-    "networkError": "Netwerkfout. Controleer je internetverbinding.",
-    "serverError": "Serverfout. Probeer het later opnieuw.",
-    "notFound": "Niet gevonden",
-    "unauthorized": "Niet geautoriseerd",
-    "forbidden": "Toegang geweigerd",
-    "timeout": "Tijdslimiet overschreden",
-    "unknownError": "Onbekende fout opgetreden"
+  "events": {
+    "loading": "Gebeurtenissen laden...",
+    "error": {
+      "title": "Fout bij het laden van gebeurtenissen"
+    },
+    "empty": {
+      "title": "Geen gebeurtenissen",
+      "message": "Geen gebeurtenissen beschikbaar voor deze wedstrijd"
+    },
+    "types": {
+      "goal": "Doel",
+      "card": "Kaart",
+      "subst": "Wissel"
+    },
+    "assist": "Assist"
+  },
+  "lineups": {
+    "loadingLineups": "Opstellingen laden...",
+    "errorLoadingLineups": "Fout bij het laden van opstellingen",
+    "noLineupsAvailable": "Geen opstellingen beschikbaar",
+    "teamLineupsNotAvailable": "Team opstellingen zijn niet beschikbaar voor deze wedstrijd",
+    "coach": "Trainer",
+    "formation": "Formatie",
+    "substitutes": "Wissels"
+  },
+  "debug": {
+    "title": "Debug Menu",
+    "subtitle": "Ontwikkelaarstools en prestatiebewaking",
+    "performance": "Prestaties"
   }
 }

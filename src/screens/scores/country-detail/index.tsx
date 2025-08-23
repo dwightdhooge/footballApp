@@ -9,19 +9,20 @@ import {
 } from "react-native";
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
+import { useTranslation } from "react-i18next";
 import { LeagueItem } from "@/types/api";
 import { ScoresStackParamList } from "@/types/navigation";
 import { useTheme } from "@/context/ThemeContext";
 import { useCountryData } from "@/hooks";
-import CountryHeader from "../../../components/CountryHeader";
-import CountryInfo from "../../../components/CountryInfo";
-import LeaguesSection from "../../../components/LeaguesSection";
+import CountryInfo from "../../../components/country/CountryInfo";
+import LeaguesSection from "../../../components/country/LeaguesSection";
 
 type CountryDetailRouteProp = RouteProp<ScoresStackParamList, "CountryDetail">;
 type CountryDetailNavigationProp = StackNavigationProp<ScoresStackParamList>;
 
 const CountryDetailScreen: React.FC = () => {
   const { theme } = useTheme();
+  const { t } = useTranslation();
   const navigation = useNavigation<CountryDetailNavigationProp>();
   const route = useRoute<CountryDetailRouteProp>();
   const { item: country } = route.params;
@@ -37,10 +38,6 @@ const CountryDetailScreen: React.FC = () => {
     clearError,
   } = useCountryData(country.code);
 
-  const handleBack = () => {
-    navigation.goBack();
-  };
-
   const handleLeaguePress = (league: LeagueItem) => {
     if (league.league.type === "League") {
       navigation.navigate("LeagueDetail", { item: league });
@@ -52,17 +49,19 @@ const CountryDetailScreen: React.FC = () => {
   // Show error alert if there's an error
   React.useEffect(() => {
     if (error) {
-      Alert.alert("Fout", `Kon competities niet laden: ${error}`);
+      Alert.alert(
+        t("common.error"),
+        t("countryDetail.errorLoadingCompetitions", { error })
+      );
       clearError();
     }
-  }, [error, clearError]);
+  }, [error, clearError, t]);
 
   const styles = getStyles(theme);
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-        <CountryHeader country={country} onBack={handleBack} />
         <CountryInfo country={country} />
 
         <ScrollView
@@ -78,7 +77,7 @@ const CountryDetailScreen: React.FC = () => {
           }
         >
           <LeaguesSection
-            title="Leagues"
+            title={t("countryDetail.leagues")}
             leagues={leagues}
             onLeaguePress={handleLeaguePress}
             isLoading={isLoading}
@@ -86,7 +85,7 @@ const CountryDetailScreen: React.FC = () => {
           />
 
           <LeaguesSection
-            title="Cups"
+            title={t("countryDetail.cups")}
             leagues={cups}
             onLeaguePress={handleLeaguePress}
             isLoading={isLoading}

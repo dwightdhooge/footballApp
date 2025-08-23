@@ -10,11 +10,10 @@ import { useTheme } from "@/context/ThemeContext";
 import { useCupData } from "@/hooks";
 
 // Components
-import CupHeader from "../../../components/CupHeader";
-import CupInfo from "../../../components/CupInfo";
-import SeasonDropdown from "../../../components/SeasonDropdown";
-import RoundDropdown from "../../../components/RoundDropdown";
-import MatchesList from "../../../components/MatchesList";
+import CupInfo from "../../../components/cup/CupInfo";
+import SeasonDropdown from "../../../components/league/SeasonDropdown";
+import RoundDropdown from "../../../components/cup/RoundDropdown";
+import MatchesList from "../../../components/match/MatchesList";
 
 // Verwijderd: canShowFixtures import (nu in hook)
 // import { canShowFixtures } from "../../../utils/helpers";
@@ -84,7 +83,6 @@ const CupDetailScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <CupHeader title={cup.league.name} />
       <CupInfo cup={cup} />
 
       <View style={styles.content}>
@@ -98,31 +96,28 @@ const CupDetailScreen: React.FC = () => {
             showCurrent={true}
             size="medium"
             coverageType="fixtures"
-            style={styles.seasonDropdown}
           />
 
-          <RoundDropdown
-            rounds={rounds}
-            selectedRound={selectedRound}
-            currentRound={currentRound}
-            onRoundChange={handleRoundChange}
-            disabled={isLoadingRounds || !selectedSeason}
-            placeholder={t("cupDetail.selectRound")}
-            showCurrent={true}
-            size="medium"
-            style={styles.roundDropdown}
-          />
+          {selectedSeason && (
+            <RoundDropdown
+              rounds={rounds}
+              selectedRound={selectedRound}
+              onRoundChange={handleRoundChange}
+              currentRound={currentRound}
+              disabled={isLoadingRounds}
+              placeholder={t("leagueDetail.selectRound")}
+              size="medium"
+            />
+          )}
         </View>
 
-        <View style={styles.matchesContainer}>
-          <MatchesList
-            fixtures={fixtures}
-            isLoading={isLoadingFixtures}
-            error={fixturesError}
-            onMatchPress={handleMatchPress}
-            onRetry={handleRetry}
-          />
-        </View>
+        <MatchesList
+          fixtures={fixtures}
+          onMatchPress={handleMatchPress}
+          isLoading={isLoadingFixtures}
+          error={fixturesError}
+          onRetry={refetchFixtures}
+        />
       </View>
     </SafeAreaView>
   );

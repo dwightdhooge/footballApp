@@ -8,8 +8,8 @@ interface CacheStats {
   size: number;
   oldest: number | null;
   newest: number | null;
-  totalSize: number;
-  typeBreakdown: Record<string, number>;
+  totalSize?: number;
+  typeBreakdown?: Record<string, number>;
 }
 
 const CacheManagement: React.FC = () => {
@@ -47,8 +47,26 @@ const CacheManagement: React.FC = () => {
         getSvgStats(),
         getImageStats(),
       ]);
-      setSvgStats(svgCacheStats);
-      setImageStats(imageCacheStats);
+
+      // Ensure all required properties are present
+      const normalizedSvgStats: CacheStats = {
+        size: svgCacheStats.size || 0,
+        oldest: svgCacheStats.oldest || null,
+        newest: svgCacheStats.newest || null,
+        totalSize: (svgCacheStats as any).totalSize || 0,
+        typeBreakdown: (svgCacheStats as any).typeBreakdown || {},
+      };
+
+      const normalizedImageStats: CacheStats = {
+        size: imageCacheStats.size || 0,
+        oldest: imageCacheStats.oldest || null,
+        newest: imageCacheStats.newest || null,
+        totalSize: (imageCacheStats as any).totalSize || 0,
+        typeBreakdown: (imageCacheStats as any).typeBreakdown || {},
+      };
+
+      setSvgStats(normalizedSvgStats);
+      setImageStats(normalizedImageStats);
     } catch (error) {
       console.warn("Error loading cache stats:", error);
     }
@@ -102,7 +120,7 @@ const CacheManagement: React.FC = () => {
     return new Date(timestamp).toLocaleDateString();
   };
 
-  const formatFileSize = (bytes: number) => {
+  const formatSize = (bytes: number) => {
     if (bytes === 0) return "0 B";
     const k = 1024;
     const sizes = ["B", "KB", "MB", "GB"];
@@ -110,183 +128,234 @@ const CacheManagement: React.FC = () => {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
   };
 
-  const styles = getStyles(theme);
-
-  const totalCachedItems = svgStats.size + imageStats.size;
-  const totalCacheSize = svgStats.totalSize + imageStats.totalSize;
+  const totalCacheSize =
+    (svgStats.totalSize || 0) + (imageStats.totalSize || 0);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Image Cache Management</Text>
+    <View
+      style={[styles.container, { backgroundColor: theme.colors.background }]}
+    >
+      <Text style={[styles.title, { color: theme.colors.text }]}>
+        Cache Management
+      </Text>
 
-      {/* Overall Stats */}
-      <View style={styles.overallStatsContainer}>
-        <Text style={styles.statsTitle}>Overall Cache Statistics</Text>
-        <View style={styles.statRow}>
-          <Text style={styles.statLabel}>Total Cached Items:</Text>
-          <Text style={styles.statValue}>{totalCachedItems}</Text>
-        </View>
-        <View style={styles.statRow}>
-          <Text style={styles.statLabel}>Total Cache Size:</Text>
-          <Text style={styles.statValue}>{formatFileSize(totalCacheSize)}</Text>
-        </View>
-      </View>
-
-      {/* SVG Cache Stats */}
       <View style={styles.statsContainer}>
-        <Text style={styles.statsTitle}>SVG Cache (Flags, Icons)</Text>
-        <View style={styles.statRow}>
-          <Text style={styles.statLabel}>Cached Items:</Text>
-          <Text style={styles.statValue}>{svgStats.size}</Text>
-        </View>
-        <View style={styles.statRow}>
-          <Text style={styles.statLabel}>Cache Size:</Text>
-          <Text style={styles.statValue}>
-            {formatFileSize(svgStats.totalSize)}
+        <View
+          style={[styles.statCard, { backgroundColor: theme.colors.surface }]}
+        >
+          <Text style={[styles.statTitle, { color: theme.colors.text }]}>
+            Total Cache Size
+          </Text>
+          <Text style={[styles.statValue, { color: theme.colors.primary }]}>
+            {formatSize(totalCacheSize)}
           </Text>
         </View>
-        <View style={styles.statRow}>
-          <Text style={styles.statLabel}>Oldest Cache:</Text>
-          <Text style={styles.statValue}>{formatDate(svgStats.oldest)}</Text>
-        </View>
-        <View style={styles.statRow}>
-          <Text style={styles.statLabel}>Newest Cache:</Text>
-          <Text style={styles.statValue}>{formatDate(svgStats.newest)}</Text>
-        </View>
-      </View>
 
-      {/* Image Cache Stats */}
-      <View style={styles.statsContainer}>
-        <Text style={styles.statsTitle}>Image Cache (Team Logos, etc.)</Text>
-        <View style={styles.statRow}>
-          <Text style={styles.statLabel}>Cached Items:</Text>
-          <Text style={styles.statValue}>{imageStats.size}</Text>
-        </View>
-        <View style={styles.statRow}>
-          <Text style={styles.statLabel}>Cache Size:</Text>
-          <Text style={styles.statValue}>
-            {formatFileSize(imageStats.totalSize)}
+        <View
+          style={[styles.statCard, { backgroundColor: theme.colors.surface }]}
+        >
+          <Text style={[styles.statTitle, { color: theme.colors.text }]}>
+            SVG Files
+          </Text>
+          <Text style={[styles.statValue, { color: theme.colors.primary }]}>
+            {svgStats.size}
+          </Text>
+          <Text
+            style={[styles.statSubtext, { color: theme.colors.textSecondary }]}
+          >
+            {formatSize(svgStats.totalSize || 0)}
           </Text>
         </View>
-        <View style={styles.statRow}>
-          <Text style={styles.statLabel}>Oldest Cache:</Text>
-          <Text style={styles.statValue}>{formatDate(imageStats.oldest)}</Text>
-        </View>
-        <View style={styles.statRow}>
-          <Text style={styles.statLabel}>Newest Cache:</Text>
-          <Text style={styles.statValue}>{formatDate(imageStats.newest)}</Text>
+
+        <View
+          style={[styles.statCard, { backgroundColor: theme.colors.surface }]}
+        >
+          <Text style={[styles.statTitle, { color: theme.colors.text }]}>
+            Image Files
+          </Text>
+          <Text style={[styles.statValue, { color: theme.colors.primary }]}>
+            {imageStats.size}
+          </Text>
+          <Text
+            style={[styles.statSubtext, { color: theme.colors.textSecondary }]}
+          >
+            {formatSize(imageStats.totalSize || 0)}
+          </Text>
         </View>
       </View>
 
-      {/* Type Breakdown */}
-      {Object.keys(imageStats.typeBreakdown).length > 0 && (
-        <View style={styles.statsContainer}>
-          <Text style={styles.statsTitle}>Image Type Breakdown</Text>
-          {Object.entries(imageStats.typeBreakdown).map(([type, count]) => (
-            <View key={type} style={styles.statRow}>
-              <Text style={styles.statLabel}>{type.toUpperCase()}:</Text>
-              <Text style={styles.statValue}>{count}</Text>
-            </View>
-          ))}
+      <View style={styles.detailsContainer}>
+        <View
+          style={[
+            styles.detailSection,
+            { backgroundColor: theme.colors.surface },
+          ]}
+        >
+          <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
+            SVG Cache Details
+          </Text>
+          <Text
+            style={[styles.detailText, { color: theme.colors.textSecondary }]}
+          >
+            Oldest: {formatDate(svgStats.oldest)}
+          </Text>
+          <Text
+            style={[styles.detailText, { color: theme.colors.textSecondary }]}
+          >
+            Newest: {formatDate(svgStats.newest)}
+          </Text>
+          {svgStats.typeBreakdown &&
+            Object.keys(svgStats.typeBreakdown).length > 0 && (
+              <Text
+                style={[
+                  styles.detailText,
+                  { color: theme.colors.textSecondary },
+                ]}
+              >
+                Types: {Object.keys(svgStats.typeBreakdown).join(", ")}
+              </Text>
+            )}
         </View>
-      )}
+
+        <View
+          style={[
+            styles.detailSection,
+            { backgroundColor: theme.colors.surface },
+          ]}
+        >
+          <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
+            Image Cache Details
+          </Text>
+          <Text
+            style={[styles.detailText, { color: theme.colors.textSecondary }]}
+          >
+            Oldest: {formatDate(imageStats.oldest)}
+          </Text>
+          <Text
+            style={[styles.detailText, { color: theme.colors.textSecondary }]}
+          >
+            Newest: {formatDate(imageStats.newest)}
+          </Text>
+          {imageStats.typeBreakdown &&
+            Object.keys(imageStats.typeBreakdown).length > 0 && (
+              <Text
+                style={[
+                  styles.detailText,
+                  { color: theme.colors.textSecondary },
+                ]}
+              >
+                Types: {Object.keys(imageStats.typeBreakdown).join(", ")}
+              </Text>
+            )}
+        </View>
+      </View>
 
       <View style={styles.actionsContainer}>
         <TouchableOpacity
-          style={[styles.button, styles.cleanupButton]}
+          style={[
+            styles.actionButton,
+            { backgroundColor: theme.colors.primary },
+          ]}
           onPress={handleCleanupAllCache}
           disabled={isLoading}
+          activeOpacity={0.7}
         >
-          <Text style={styles.buttonText}>Cleanup Expired</Text>
+          <Text style={[styles.actionButtonText, { color: theme.colors.text }]}>
+            {isLoading ? "Cleaning..." : "Cleanup All Cache"}
+          </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={[styles.button, styles.clearButton]}
+          style={[styles.clearButton, { backgroundColor: theme.colors.error }]}
           onPress={handleClearAllCache}
           disabled={isLoading}
+          activeOpacity={0.7}
         >
-          <Text style={styles.buttonText}>Clear All Cache</Text>
+          <Text style={[styles.clearButtonText, { color: theme.colors.text }]}>
+            {isLoading ? "Clearing..." : "Clear All Cache"}
+          </Text>
         </TouchableOpacity>
       </View>
-
-      <Text style={styles.infoText}>
-        Images are automatically cached to improve performance and reduce data
-        usage. SVG files (flags, icons) are cached for 24 hours, team logos for
-        7 days. Cache can hold up to 1000 items before automatic cleanup.
-      </Text>
     </View>
   );
 };
 
-const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
-  StyleSheet.create({
-    container: {
-      padding: 16,
-      backgroundColor: theme.colors.surface,
-      borderRadius: 8,
-      marginVertical: 8,
-    },
-    title: {
-      fontSize: 18,
-      fontWeight: "600",
-      color: theme.colors.onSurface,
-      marginBottom: 16,
-    },
-    overallStatsContainer: {
-      marginBottom: 20,
-    },
-    statsContainer: {
-      marginBottom: 20,
-    },
-    statsTitle: {
-      fontSize: 16,
-      fontWeight: "500",
-      color: theme.colors.onSurface,
-      marginBottom: 12,
-    },
-    statRow: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      marginBottom: 8,
-    },
-    statLabel: {
-      fontSize: 14,
-      color: theme.colors.onSurfaceVariant,
-    },
-    statValue: {
-      fontSize: 14,
-      fontWeight: "500",
-      color: theme.colors.onSurface,
-    },
-    actionsContainer: {
-      flexDirection: "row",
-      gap: 12,
-      marginBottom: 16,
-    },
-    button: {
-      flex: 1,
-      paddingVertical: 12,
-      paddingHorizontal: 16,
-      borderRadius: 6,
-      alignItems: "center",
-    },
-    cleanupButton: {
-      backgroundColor: theme.colors.primary,
-    },
-    clearButton: {
-      backgroundColor: theme.colors.error,
-    },
-    buttonText: {
-      color: theme.colors.onPrimary,
-      fontSize: 14,
-      fontWeight: "500",
-    },
-    infoText: {
-      fontSize: 12,
-      color: theme.colors.onSurfaceVariant,
-      textAlign: "center",
-      lineHeight: 16,
-    },
-  });
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 16,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 20,
+    textAlign: "center",
+  },
+  statsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 20,
+  },
+  statCard: {
+    flex: 1,
+    padding: 16,
+    borderRadius: 8,
+    marginHorizontal: 4,
+    alignItems: "center",
+  },
+  statTitle: {
+    fontSize: 12,
+    fontWeight: "600",
+    marginBottom: 8,
+    textAlign: "center",
+  },
+  statValue: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 4,
+  },
+  statSubtext: {
+    fontSize: 10,
+    textAlign: "center",
+  },
+  detailsContainer: {
+    marginBottom: 20,
+  },
+  detailSection: {
+    padding: 16,
+    borderRadius: 8,
+    marginBottom: 12,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: "600",
+    marginBottom: 12,
+  },
+  detailText: {
+    fontSize: 14,
+    marginBottom: 4,
+  },
+  actionsContainer: {
+    gap: 12,
+  },
+  actionButton: {
+    padding: 16,
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  actionButtonText: {
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  clearButton: {
+    padding: 16,
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  clearButtonText: {
+    fontSize: 16,
+    fontWeight: "600",
+  },
+});
 
 export default CacheManagement;

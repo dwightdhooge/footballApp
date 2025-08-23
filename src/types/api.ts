@@ -310,3 +310,62 @@ export interface PlayerStatus {
   showOverlapping: boolean;
   showMultiple: boolean;
 }
+
+// New types for Player Detail Screen
+export interface PlayerProfile {
+  player: {
+    id: number;
+    name: string;
+    firstname: string;
+    lastname: string;
+    age: number;
+    birth: {
+      date: string;
+      place: string;
+      country: string;
+    };
+    nationality: string;
+    height: string;
+    weight: string;
+    number: number;
+    position: string;
+    photo: string;
+  };
+}
+
+export interface PlayerProfileApiResponse {
+  get: string;
+  parameters: {
+    player: string;
+  };
+  errors: any[];
+  results: number;
+  paging: {
+    current: number;
+    total: number;
+  };
+  response: PlayerProfile[];
+}
+
+export interface PlayerTeam {
+  team: {
+    id: number;
+    name: string;
+    logo: string;
+  };
+  seasons: number[];
+}
+
+export interface PlayerTeamsApiResponse {
+  get: string;
+  parameters: {
+    player: string;
+  };
+  errors: any[];
+  results: number;
+  paging: {
+    current: number;
+    total: number;
+  };
+  response: PlayerTeam[];
+}

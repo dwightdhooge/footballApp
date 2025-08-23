@@ -28,6 +28,8 @@ import {
 } from "@/components";
 import CachedImage from "@/components/common/CachedImage";
 import { LeagueItem, Fixture } from "@/types/api";
+import { Ionicons } from "@expo/vector-icons";
+import { useFavorites } from "@/context/FavoritesContext";
 
 type LeagueDetailRouteProp = RouteProp<ScoresStackParamList, "LeagueDetail">;
 type LeagueDetailNavigationProp = NavigationProp<
@@ -76,6 +78,28 @@ const LeagueDetailScreen: React.FC = () => {
     canShowFixtures,
   } = useLeagueData(item.league.id, item.seasons, undefined, selectedRound);
 
+  // Favorites functionality
+  const {
+    isItemFavorite,
+    addFavoriteItem,
+    removeFavoriteItem,
+  } = useFavorites();
+
+  const handleToggleFavorite = async () => {
+    try {
+      if (isItemFavorite(item, "competition")) {
+        await removeFavoriteItem(
+          `competition_${item.league.id}`,
+          "competition"
+        );
+      } else {
+        await addFavoriteItem(item, "competition");
+      }
+    } catch (error) {
+      console.error("Error toggling favorite:", error);
+    }
+  };
+
   // Set selected round when current round changes
   useEffect(() => {
     if (currentRound && !selectedRound) {
@@ -110,42 +134,58 @@ const LeagueDetailScreen: React.FC = () => {
   };
 
   const handleMatchPress = (fixture: Fixture) => {
-    // Find the complete fixture data from our fixtures array
-    const completeFixture = fixtures.find(
-      (f) => f.fixture.id === fixture.fixture.id
-    );
     navigation.navigate("MatchDetail", {
-      item: completeFixture || fixture,
+      item: fixture,
       leagueId: item.league.id,
       season: selectedSeason?.year,
     });
   };
 
-  const renderHeader = () => (
-    <View style={styles.header}>
-      <TouchableOpacity
-        style={styles.backButton}
-        onPress={() => navigation.goBack()}
-      >
-        <Text style={styles.backButtonText}>{t("common.back")}</Text>
-      </TouchableOpacity>
-    </View>
-  );
-
   const renderLeagueInfo = () => (
-    <View style={styles.leagueInfoContainer}>
+    <View
+      style={[
+        styles.leagueInfoContainer,
+        {
+          backgroundColor: theme.colors.background,
+          borderBottomColor: theme.colors.border,
+        },
+      ]}
+    >
       <CachedImage
         url={item.league.logo}
-        size={40}
-        fallbackText="League"
+        size={48}
+        fallbackText={t("leagueDetail.league")}
         borderRadius={8}
         resizeMode="contain"
         ttl={30 * 24 * 60 * 60 * 1000} // 30 days for league logos
+        style={styles.leagueLogo}
       />
       <View style={styles.leagueText}>
-        <Text style={styles.leagueName}>{item.league.name}</Text>
-        <Text style={styles.countryName}>{item.country.name}</Text>
+        <Text style={[styles.leagueName, { color: theme.colors.text }]}>
+          {item.league.name}
+        </Text>
+        <Text
+          style={[styles.countryName, { color: theme.colors.textSecondary }]}
+        >
+          {item.country.name}
+        </Text>
       </View>
+
+      <TouchableOpacity
+        style={styles.heartButton}
+        onPress={handleToggleFavorite}
+        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+      >
+        <Ionicons
+          name={isItemFavorite(item, "competition") ? "heart" : "heart-outline"}
+          size={24}
+          color={
+            isItemFavorite(item, "competition")
+              ? theme.colors.error
+              : theme.colors.textSecondary
+          }
+        />
+      </TouchableOpacity>
     </View>
   );
 
@@ -332,7 +372,6 @@ const LeagueDetailScreen: React.FC = () => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-        {renderHeader()}
         {renderLeagueInfo()}
         {renderSeasonDropdown()}
         {renderTabNavigation()}
@@ -354,42 +393,26 @@ const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
       flex: 1,
       backgroundColor: theme.colors.background,
     },
-    header: {
-      flexDirection: "row",
-      alignItems: "center",
-      padding: theme.spacing.md,
-      backgroundColor: theme.colors.background,
-    },
-    backButton: {
-      padding: theme.spacing.sm,
-    },
-    backButtonText: {
-      color: theme.colors.primary,
-      ...theme.typography.body,
-    },
     leagueInfoContainer: {
+      paddingHorizontal: 16,
+      paddingVertical: 16,
       flexDirection: "row",
       alignItems: "center",
-      padding: theme.spacing.md,
-      backgroundColor: theme.colors.background,
+      borderBottomWidth: 1,
     },
     leagueLogo: {
-      width: 48,
-      height: 48,
-      marginRight: theme.spacing.sm,
+      marginRight: 16,
     },
     leagueText: {
       flex: 1,
     },
     leagueName: {
-      marginBottom: theme.spacing.xs,
-      color: theme.colors.text,
-      ...theme.typography.h3,
+      fontSize: 24,
+      fontWeight: "bold",
+      marginBottom: 4,
     },
     countryName: {
-      opacity: 0.7,
-      color: theme.colors.textSecondary,
-      ...theme.typography.caption,
+      fontSize: 16,
     },
     seasonContainer: {
       padding: theme.spacing.md,
@@ -456,7 +479,7 @@ const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
       backgroundColor: theme.colors.primary,
     },
     retryButtonText: {
-      color: "white",
+      color: theme.colors.onPrimary,
       ...theme.typography.caption,
     },
     emptyContainer: {
@@ -481,6 +504,9 @@ const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
     },
     matchCardSpacing: {
       marginBottom: theme.spacing.sm,
+    },
+    heartButton: {
+      padding: 8,
     },
   });
 

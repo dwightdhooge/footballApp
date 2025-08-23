@@ -11,6 +11,10 @@ const lightColors = {
   success: "#4CAF50",
   warning: "#FF9800",
   info: "#2196F3",
+  // Additional colors for better contrast
+  onPrimary: "#FFFFFF",
+  onSurface: "#212121",
+  onSurfaceVariant: "#666666",
 };
 
 const darkColors = {
@@ -25,6 +29,10 @@ const darkColors = {
   success: "#66BB6A", // Lichtere groen voor dark mode
   warning: "#FFB74D", // Lichtere oranje voor dark mode
   info: "#42A5F5", // Lichtere blauwe voor dark mode
+  // Additional colors for better contrast
+  onPrimary: "#000000",
+  onSurface: "#FFFFFF",
+  onSurfaceVariant: "#B0B0B0",
 };
 
 // Export color sets for direct access

@@ -1,52 +1,179 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { Country } from '@/types/api';
-import { loadFavorites, addFavorite, removeFavorite } from '@/services/storage/favorites';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
+import { Country, LeagueItem, Team, PlayerProfile } from "@/types/api";
+import {
+  loadFavorites,
+  addFavorite,
+  removeFavorite,
+  loadGenericFavorites,
+  addGenericFavorite,
+  removeGenericFavorite,
+  getFavoritesByType,
+  FavoriteItem,
+  FavoriteType,
+} from "@/services/storage/favorites";
 
 interface FavoritesContextType {
+  // Legacy support for existing country favorites
   favorites: Country[];
   isFavorite: (countryCode: string) => boolean;
   toggleFavorite: (country: Country) => Promise<void>;
   loadFavoritesFromStorage: () => Promise<void>;
+
+  // New generic favorites support
+  favoriteCountries: Country[];
+  favoriteCompetitions: LeagueItem[];
+  favoriteTeams: Team[];
+  favoritePlayers: PlayerProfile[];
+
+  // Generic methods
+  addFavoriteItem: (item: FavoriteItem, type: FavoriteType) => Promise<void>;
+  removeFavoriteItem: (itemId: string, type: FavoriteType) => Promise<void>;
+  isItemFavorite: (item: FavoriteItem, type: FavoriteType) => boolean;
+  loadGenericFavoritesFromStorage: () => Promise<void>;
 }
 
-const FavoritesContext = createContext<FavoritesContextType | undefined>(undefined);
+const FavoritesContext = createContext<FavoritesContextType | undefined>(
+  undefined
+);
 
 interface FavoritesProviderProps {
   children: ReactNode;
 }
 
-export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({ children }) => {
+export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({
+  children,
+}) => {
   const [favorites, setFavorites] = useState<Country[]>([]);
+
+  // New state for generic favorites
+  const [favoriteCountries, setFavoriteCountries] = useState<Country[]>([]);
+  const [favoriteCompetitions, setFavoriteCompetitions] = useState<
+    LeagueItem[]
+  >([]);
+  const [favoriteTeams, setFavoriteTeams] = useState<Team[]>([]);
+  const [favoritePlayers, setFavoritePlayers] = useState<PlayerProfile[]>([]);
 
   const loadFavoritesFromStorage = async () => {
     try {
       const storedFavorites = await loadFavorites();
       setFavorites(storedFavorites);
+
+      // Migrate old country favorites to new generic system
+      for (const country of storedFavorites) {
+        try {
+          await addGenericFavorite(country, "country");
+        } catch (error) {
+          // Item might already exist, ignore error
+          console.log("Country already in generic favorites:", country.code);
+        }
+      }
+
+      // Reload generic favorites after migration
+      await loadGenericFavoritesFromStorage();
     } catch (error) {
-      console.error('Error loading favorites:', error);
+      console.error("Error loading favorites:", error);
+    }
+  };
+
+  const loadGenericFavoritesFromStorage = async () => {
+    try {
+      const [countries, competitions, teams, players] = await Promise.all([
+        getFavoritesByType("country"),
+        getFavoritesByType("competition"),
+        getFavoritesByType("team"),
+        getFavoritesByType("player"),
+      ]);
+
+      setFavoriteCountries(countries as Country[]);
+      setFavoriteCompetitions(competitions as LeagueItem[]);
+      setFavoriteTeams(teams as Team[]);
+      setFavoritePlayers(players as PlayerProfile[]);
+    } catch (error) {
+      console.error("Error loading generic favorites:", error);
     }
   };
 
   const isFavorite = (countryCode: string): boolean => {
-    return favorites.some(fav => fav.code === countryCode);
+    return favoriteCountries.some((fav) => fav.code === countryCode);
   };
 
   const toggleFavorite = async (country: Country) => {
     try {
       if (isFavorite(country.code)) {
+        // Remove from both old and new systems
         await removeFavorite(country.code);
-        setFavorites(prev => prev.filter(fav => fav.code !== country.code));
+        const itemId = `country_${country.code}`;
+        await removeGenericFavorite(itemId, "country");
+        setFavorites((prev) => prev.filter((fav) => fav.code !== country.code));
+        setFavoriteCountries((prev) =>
+          prev.filter((fav) => fav.code !== country.code)
+        );
       } else {
+        // Add to both old and new systems
         await addFavorite(country);
-        setFavorites(prev => [...prev, country]);
+        await addGenericFavorite(country, "country");
+        setFavorites((prev) => [...prev, country]);
+        setFavoriteCountries((prev) => [...prev, country]);
       }
     } catch (error) {
-      console.error('Error toggling favorite:', error);
+      console.error("Error toggling favorite:", error);
+    }
+  };
+
+  // New generic favorite methods
+  const addFavoriteItem = async (item: FavoriteItem, type: FavoriteType) => {
+    try {
+      await addGenericFavorite(item, type);
+      await loadGenericFavoritesFromStorage();
+    } catch (error) {
+      console.error("Error adding favorite item:", error);
+      throw error;
+    }
+  };
+
+  const removeFavoriteItem = async (itemId: string, type: FavoriteType) => {
+    try {
+      await removeGenericFavorite(itemId, type);
+      await loadGenericFavoritesFromStorage();
+    } catch (error) {
+      console.error("Error removing favorite item:", error);
+      throw error;
+    }
+  };
+
+  const isItemFavorite = (item: FavoriteItem, type: FavoriteType): boolean => {
+    switch (type) {
+      case "country":
+        return favoriteCountries.some(
+          (fav) => fav.code === (item as Country).code
+        );
+      case "competition":
+        return favoriteCompetitions.some(
+          (fav) => fav.league.id === (item as LeagueItem).league.id
+        );
+      case "team":
+        return favoriteTeams.some((fav) => fav.id === (item as Team).id);
+      case "player":
+        return favoritePlayers.some(
+          (fav) => fav.player.id === (item as PlayerProfile).player.id
+        );
+      default:
+        return false;
     }
   };
 
   useEffect(() => {
-    loadFavoritesFromStorage();
+    const initializeFavorites = async () => {
+      await loadFavoritesFromStorage();
+    };
+
+    initializeFavorites();
   }, []);
 
   const value: FavoritesContextType = {
@@ -54,6 +181,14 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({ children }
     isFavorite,
     toggleFavorite,
     loadFavoritesFromStorage,
+    favoriteCountries,
+    favoriteCompetitions,
+    favoriteTeams,
+    favoritePlayers,
+    addFavoriteItem,
+    removeFavoriteItem,
+    isItemFavorite,
+    loadGenericFavoritesFromStorage,
   };
 
   return (
@@ -66,7 +201,7 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({ children }
 export const useFavorites = (): FavoritesContextType => {
   const context = useContext(FavoritesContext);
   if (context === undefined) {
-    throw new Error('useFavorites must be used within a FavoritesProvider');
+    throw new Error("useFavorites must be used within a FavoritesProvider");
   }
   return context;
-}; 
+};

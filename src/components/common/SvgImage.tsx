@@ -97,7 +97,7 @@ const getStyles = (
     },
     fallbackText: {
       fontSize: Math.max(12, size * 0.4), // responsive font size
-      color: theme.colors.onSurface,
+      color: theme.colors.textSecondary,
       textAlign: "center",
     },
   });

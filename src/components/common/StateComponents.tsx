@@ -127,7 +127,7 @@ const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
       elevation: 2,
     },
     retryText: {
-      color: "white",
+      color: theme.colors.onPrimary,
       fontSize: theme.typography.caption.fontSize,
       fontWeight: "500",
     },

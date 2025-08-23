@@ -7,10 +7,10 @@ import { Country } from "@/types/api";
 import { ScoresStackParamList } from "@/types/navigation";
 import { useTheme } from "@/context/ThemeContext";
 import { useCountries } from "@/hooks";
-import SearchBar from "@/components/SearchBar";
-import SearchResults from "@/components/SearchResults";
-import FavoritesSection from "@/components/FavoritesSection";
-import SuggestedSection from "@/components/SuggestedSection";
+import SearchBar from "@/components/homescreen/SearchBar";
+import SearchResults from "@/components/homescreen/SearchResults";
+import FavoritesSection from "@/components/homescreen/FavoritesSection";
+import SuggestedSection from "@/components/homescreen/SuggestedSection";
 
 type ScoresNavigationProp = StackNavigationProp<ScoresStackParamList>;
 
@@ -100,7 +100,6 @@ const Homescreen: React.FC = () => {
             <FavoritesSection
               favorites={favorites}
               onCountryPress={handleCountryPress}
-              onHeartPress={toggleFavorite}
             />
           )}
 

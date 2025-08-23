@@ -14,18 +14,35 @@
     "next": "Next",
     "previous": "Previous",
     "done": "Done",
-    "flagFallback": "🏳️"
+    "flagFallback": "🏳️",
+    "onPrimary": "On Primary"
   },
   "navigation": {
     "scores": "Scores",
     "settings": "Settings",
     "favorites": "Favorites",
+    "back": "Back",
     "leagueDetail": "League Details",
     "cupDetail": "Cup Details",
     "countryDetail": "Country Details",
     "cupDetails": "Cup Details",
     "matchDetail": "Match Details",
     "matchDetails": "Match Details"
+  },
+  "favorites": {
+    "title": "My Favorites",
+    "subtitle": "Quick access to your saved items",
+    "categories": {
+      "countries": "Countries",
+      "competitions": "Competitions",
+      "teams": "Teams",
+      "players": "Players"
+    },
+    "emptyCountries": "No favorite countries yet. Start by adding countries to your favorites from the Scores tab.",
+    "emptyCompetitions": "No favorite competitions yet. Start by adding leagues and cups to your favorites from the Scores tab.",
+    "emptyTeams": "No favorite teams yet. Start by adding teams to your favorites from the Scores tab.",
+    "emptyPlayers": "No favorite players yet. Start by adding players to your favorites from the Scores tab.",
+    "emptyGeneral": "No favorites in this category yet."
   },
   "homescreen": {
     "title": "Football Scores",
@@ -39,13 +56,16 @@
   },
   "countryDetail": {
     "leagues": "Leagues",
+    "cups": "Cups",
     "noLeagues": "No leagues available for this country",
     "loadingLeagues": "Loading leagues...",
     "errorTitle": "Error",
     "errorMessage": "Could not load leagues: {{message}}",
+    "errorLoadingCompetitions": "Could not load competitions: {{error}}",
     "unknownError": "Unknown error occurred"
   },
   "leagueDetail": {
+    "league": "League",
     "standings": "Standings",
     "matches": "Matches",
     "rounds": "Rounds",
@@ -98,142 +118,186 @@
     "penaltiesLabel": "PEN:",
     "versus": "vs",
     "noMatches": "No matches available",
+    "noMatchesForRound": "No matches available for this round",
+    "noMatchesForSeason": "No matches available for this season",
     "loadingMatches": "Loading matches...",
-    "retry": "Try again"
+    "errorLoadingMatches": "Error loading matches",
+    "retry": "Try again",
+    "selectRound": "Select round",
+    "selectSeason": "Select season",
+    "current": "(Current)",
+    "teamDetail": "Team Detail",
+    "matchDetail": "Match Detail",
+    "noStandingsForSeason": "No standings available for this season.",
+    "noRoundsAvailable": "No rounds available",
+    "noMatchesAvailable": "No matches available"
   },
-  "lineups": {
+  "standings": {
+    "title": "Standings",
+    "position": "Pos",
+    "team": "Team",
+    "played": "P",
+    "won": "W",
+    "drawn": "D",
+    "lost": "L",
+    "goalsFor": "GF",
+    "goalsAgainst": "GA",
+    "goalDifference": "GD",
+    "points": "Pts",
+    "form": "Form",
+    "status": "Status",
+    "description": "Description",
+    "noStandings": "No standings available",
+    "loadingStandings": "Loading standings...",
+    "errorLoadingStandings": "Error loading standings",
+    "retry": "Try again",
+    "selectSeason": "Select season",
+    "current": "(Current)",
+    "teamDetail": "Team Detail",
+    "matchDetail": "Match Detail",
+    "noStandingsForSeason": "No standings available for this season.",
+    "noRoundsAvailable": "No rounds available",
+    "noMatchesAvailable": "No matches available"
+  },
+  "matchDetail": {
+    "title": "Match Details",
+    "events": "Events",
+    "lineups": "Lineups",
+    "statistics": "Statistics",
+    "noEvents": "No events available",
+    "noLineups": "No lineups available",
+    "noStatistics": "No statistics available",
+    "loadingEvents": "Loading events...",
     "loadingLineups": "Loading lineups...",
+    "loadingStatistics": "Loading statistics...",
+    "errorLoadingEvents": "Error loading events",
     "errorLoadingLineups": "Error loading lineups",
-    "noLineupsAvailable": "No lineups available",
-    "teamLineupsNotAvailable": "Team lineups are not available for this match yet.",
-    "coach": "Coach",
-    "formation": "Formation",
-    "substitutes": "Substitutes"
+    "errorLoadingStatistics": "Error loading statistics",
+    "retry": "Try again",
+    "teamDetail": "Team Detail",
+    "playerDetail": "Player Detail",
+    "noEventsForMatch": "No events available for this match",
+    "noLineupsForMatch": "No lineups available for this match",
+    "noStatisticsForMatch": "No statistics available for this match"
   },
-  "favorites": {
-    "title": "Favorites",
-    "noFavorites": "You don't have any favorites yet",
-    "addToFavorites": "Add to favorites",
-    "removeFromFavorites": "Remove from favorites",
-    "favoritesUpdated": "Favorites updated"
+  "playerDetail": {
+    "title": "Player Details",
+    "personalInfo": "Personal Information",
+    "career": "Career",
+    "statistics": "Statistics",
+    "noPersonalInfo": "No personal information available",
+    "noCareer": "No career information available",
+    "noStatistics": "No statistics available",
+    "loadingPersonalInfo": "Loading personal information...",
+    "loadingCareer": "Loading career information...",
+    "loadingStatistics": "Loading statistics...",
+    "errorLoadingPersonalInfo": "Error loading personal information",
+    "errorLoadingCareer": "Error loading career information",
+    "errorLoadingStatistics": "Error loading statistics...",
+    "retry": "Try again",
+    "teamDetail": "Team Detail",
+    "matchDetail": "Match Detail",
+    "noPersonalInfoForPlayer": "No personal information available for this player",
+    "noCareerForPlayer": "No career information available for this player",
+    "noStatisticsForPlayer": "No statistics available for this player",
+    "age": "Age",
+    "nationality": "Nationality",
+    "height": "Height",
+    "weight": "Weight",
+    "player": "Player",
+    "team": "Team",
+    "loadingProfile": "Loading player profile...",
+    "errorLoadingProfile": "Could not load player profile",
+    "noCareerData": "No career data available",
+    "statisticsComingSoon": "Statistics will be added in a future version"
   },
   "settings": {
     "title": "Settings",
     "theme": "Theme",
-    "autoTheme": "Auto theme",
-    "lightTheme": "Light theme",
-    "darkTheme": "Dark theme",
     "language": "Language",
-    "notifications": "Notifications",
     "about": "About",
     "version": "Version",
-    "privacyPolicy": "Privacy Policy",
-    "termsOfService": "Terms of Service"
+    "build": "Build",
+    "autoTheme": "Auto Theme",
+    "lightTheme": "Light Theme",
+    "darkTheme": "Dark Theme",
+    "themeOptions": {
+      "auto": "Auto",
+      "light": "Light",
+      "dark": "Dark"
+    },
+    "languageOptions": {
+      "auto": "Auto",
+      "en": "English",
+      "fr-BE": "Français (Belgique)",
+      "nl-BE": "Nederlands (België)"
+    },
+    "themeDescription": "Choose your preferred theme",
+    "languageDescription": "Choose your preferred language",
+    "aboutDescription": "Learn more about this app",
+    "versionDescription": "Current app version",
+    "buildDescription": "Current build number"
   },
   "search": {
-    "noResults": "No results found for '{{query}}'",
-    "resultsFor": "Results for '{{query}}' ({{count}})",
-    "searchHistory": "Search History",
-    "clearHistory": "Clear History",
+    "placeholder": "Search for countries, leagues, teams...",
+    "noResults": "No results found",
+    "searching": "Searching...",
+    "error": "Error occurred while searching",
+    "retry": "Try again",
     "recentSearches": "Recent Searches",
-    "minCharacters": "{{count}}/3 characters",
-    "searchError": "An error occurred while searching"
-  },
-  "standings": {
-    "position": "Pos",
-    "team": "Team",
-    "played": "Played",
-    "won": "Won",
-    "drawn": "Drawn",
-    "lost": "Lost",
-    "goalsFor": "For",
-    "goalsAgainst": "Against",
-    "goalDifference": "Goal Difference",
-    "points": "Points",
-    "form": "Form",
-    "championsLeague": "Champions League",
-    "europaLeague": "Europa League"
-  },
-  "leagues": {
-    "noLeaguesFound": "No {{type}} found"
-  },
-  "errors": {
-    "networkError": "Network error. Check your internet connection.",
-    "serverError": "Server error. Please try again later.",
-    "notFound": "Not found",
-    "unauthorized": "Unauthorized",
-    "forbidden": "Access denied",
-    "timeout": "Request timeout",
-    "unknownError": "Unknown error occurred"
-  },
-  "match": {
-    "status": {
-      "live": "Live - {{elapsed}}'",
-      "finished": "FINISHED",
-      "halftime": "HALFTIME",
-      "notStarted": "NEW MATCH"
-    },
-    "competition": {
-      "default": "Competition",
-      "type": {
-        "default": "League"
-      },
-      "season": "Season"
-    },
-    "duration": {
-      "full": "90'"
-    },
-    "score": {
-      "halfTime": "HT: {{home}}-{{away}}"
-    },
-    "goal": {
-      "minute": "{{minute}}'"
-    },
-    "referee": {
-      "default": "Lawrence Visser"
-    },
-    "penalty": {
-      "label": "Penalties"
-    }
-  },
-  "events": {
-    "title": "Match Events",
-    "count": "{{count}} events",
-    "loading": "Loading events...",
-    "error": {
-      "title": "Error loading events"
-    },
-    "empty": {
-      "title": "No events available",
-      "message": "There are no events recorded for this match yet."
-    },
-    "time": {
-      "normal": "{{elapsed}}'",
-      "extra": "{{elapsed}}+{{extra}}'"
-    },
-    "types": {
-      "goal": "Goal",
-      "card": "Card",
-      "subst": "Substitution",
-      "var": "VAR",
-      "foul": "Foul",
-      "corner": "Corner",
-      "free kick": "Free Kick",
-      "throw in": "Throw In",
-      "offside": "Offside",
-      "injury": "Injury",
-      "break": "Break",
-      "missed penalty": "Missed Penalty",
-      "saved penalty": "Saved Penalty",
-      "post": "Hit Post",
-      "crossbar": "Hit Crossbar"
-    },
-    "noPlayer": "No player",
-    "assist": "Assist"
+    "clearRecent": "Clear Recent",
+    "noRecentSearches": "No recent searches"
   },
   "tabs": {
     "info": "Info",
     "events": "Events",
     "lineups": "Lineups"
+  },
+  "match": {
+    "status": {
+      "live": "{{elapsed}}'",
+      "finished": "Full Time",
+      "halftime": "Half Time",
+      "notStarted": "Not Started"
+    },
+    "goal": {
+      "minute": "{{minute}}'"
+    },
+    "competition": {
+      "default": "Competition"
+    },
+    "referee": {
+      "default": "Referee"
+    }
+  },
+  "events": {
+    "loading": "Loading events...",
+    "error": {
+      "title": "Error loading events"
+    },
+    "empty": {
+      "title": "No events",
+      "message": "No events available for this match"
+    },
+    "types": {
+      "goal": "Goal",
+      "card": "Card",
+      "subst": "Substitution"
+    },
+    "assist": "Assist"
+  },
+  "lineups": {
+    "loadingLineups": "Loading lineups...",
+    "errorLoadingLineups": "Error loading lineups",
+    "noLineupsAvailable": "No lineups available",
+    "teamLineupsNotAvailable": "Team lineups are not available for this match",
+    "coach": "Coach",
+    "formation": "Formation",
+    "substitutes": "Substitutes"
+  },
+  "debug": {
+    "title": "Debug Menu",
+    "subtitle": "Developer tools and performance monitoring",
+    "performance": "Performance"
   }
 }

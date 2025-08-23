@@ -45,7 +45,12 @@ export const useCountries = (): UseCountriesReturn => {
     clearSearch,
   } = useSearch();
 
-  const { favorites, isFavorite, toggleFavorite } = useFavorites();
+  const {
+    favoriteCountries,
+    isItemFavorite,
+    addFavoriteItem,
+    removeFavoriteItem,
+  } = useFavorites();
 
   const handleSearch = useCallback(
     (query: string) => {
@@ -59,12 +64,34 @@ export const useCountries = (): UseCountriesReturn => {
     [setSearchTerm, performSearch, clearSearch]
   );
 
+  const toggleFavorite = useCallback(
+    async (country: Country) => {
+      try {
+        if (isItemFavorite(country, "country")) {
+          await removeFavoriteItem(`country_${country.code}`, "country");
+        } else {
+          await addFavoriteItem(country, "country");
+        }
+      } catch (error) {
+        console.error("Error toggling favorite:", error);
+      }
+    },
+    [isItemFavorite, addFavoriteItem, removeFavoriteItem]
+  );
+
+  const isFavorite = useCallback(
+    (countryCode: string) => {
+      return favoriteCountries.some((country) => country.code === countryCode);
+    },
+    [favoriteCountries]
+  );
+
   // Computed values for conditional rendering
   const shouldShowSearchResults =
     hasSearched && !isSearching && searchResults.length > 0;
   const shouldShowNoResults =
     hasSearched && !isSearching && searchResults.length === 0;
-  const shouldShowFavorites = !hasSearched && favorites.length > 0;
+  const shouldShowFavorites = !hasSearched && favoriteCountries.length > 0;
   const shouldShowSuggested = !hasSearched;
 
   return {
@@ -76,7 +103,7 @@ export const useCountries = (): UseCountriesReturn => {
     searchError,
 
     // Favorites related
-    favorites,
+    favorites: favoriteCountries,
 
     // Suggested countries
     suggestedCountries: SUGGESTED_COUNTRIES,

@@ -4,11 +4,9 @@ export interface CountryCardProps {
   name: string;
   code: string;
   flag: string;
-  isFavorite: boolean;
   onPress: () => void;
-  onHeartPress: () => void;
+  onRemove?: () => void; // Alleen voor favorites list
   size?: "small" | "medium" | "large";
-  showHeart?: boolean;
   disabled?: boolean;
 }
 

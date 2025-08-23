@@ -6,6 +6,7 @@ import CountryDetailScreen from "@/screens/scores/country-detail";
 import LeagueDetailScreen from "@/screens/scores/league-detail";
 import CupDetailScreen from "@/screens/scores/cup-detail";
 import MatchDetailScreen from "@/screens/scores/match-detail";
+import PlayerDetailScreen from "@/screens/scores/player-detail/index";
 import { ScoresStackParamList } from "@/types/navigation";
 
 const Stack = createStackNavigator<ScoresStackParamList>();
@@ -19,11 +20,13 @@ const ScoresStackNavigator: React.FC = () => {
         headerStyle: {
           backgroundColor: theme.colors.background,
         },
-        headerTintColor: theme.colors.text,
+        headerTintColor: theme.colors.primary,
         headerTitleStyle: {
-          fontSize: 20, // theme.typography.h2
+          fontSize: 20,
           fontWeight: "bold",
+          color: theme.colors.text,
         },
+        headerBackTitle: "",
       }}
     >
       <Stack.Screen
@@ -37,28 +40,35 @@ const ScoresStackNavigator: React.FC = () => {
         name="CountryDetail"
         component={CountryDetailScreen}
         options={{
-          headerShown: false, // We use our custom CountryHeader component
+          title: "",
         }}
       />
       <Stack.Screen
         name="LeagueDetail"
         component={LeagueDetailScreen}
         options={{
-          headerShown: false, // We use our custom header component
+          title: "",
         }}
       />
       <Stack.Screen
         name="CupDetail"
         component={CupDetailScreen}
         options={{
-          headerShown: false, // We use our custom CupHeader component
+          title: "",
         }}
       />
       <Stack.Screen
         name="MatchDetail"
         component={MatchDetailScreen}
         options={{
-          headerShown: false, // We use our custom header component
+          title: "",
+        }}
+      />
+      <Stack.Screen
+        name="PlayerDetail"
+        component={PlayerDetailScreen}
+        options={{
+          title: "",
         }}
       />
     </Stack.Navigator>

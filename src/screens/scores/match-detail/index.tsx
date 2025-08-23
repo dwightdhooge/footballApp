@@ -1,14 +1,10 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  SafeAreaView,
-  TouchableOpacity,
-} from "react-native";
+import { View, StyleSheet, SafeAreaView } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import { Fixture, Event } from "../../../types/api";
-import { useMatchData } from "../../../hooks/useMatchData";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { Fixture, Event, Player } from "../../../types/api";
+import { ScoresStackParamList } from "../../../types/navigation";
+import { useMatchData } from "@/hooks/useMatchData";
 import {
   TabNavigation,
   MatchInfo,
@@ -16,11 +12,17 @@ import {
   LineupsGrid,
 } from "../../../components";
 import { useTranslation } from "react-i18next";
+import { useTheme } from "@/context/ThemeContext";
+import { PlayerProfile } from "../../../types/api";
 
 type TabType = "info" | "events" | "lineups";
+type MatchDetailNavigationProp = StackNavigationProp<
+  ScoresStackParamList,
+  "MatchDetail"
+>;
 
 const MatchDetailScreen: React.FC = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<MatchDetailNavigationProp>();
   const route = useRoute();
   const { item: fixture, leagueId, season } = route.params as {
     item: Fixture;
@@ -30,6 +32,7 @@ const MatchDetailScreen: React.FC = () => {
 
   const [activeTab, setActiveTab] = useState<TabType>("info");
   const { t } = useTranslation();
+  const { theme } = useTheme();
 
   // Use our new custom hook for data fetching
   const {
@@ -55,6 +58,32 @@ const MatchDetailScreen: React.FC = () => {
   const handlePlayerPress = (player: any) => {
     // Optional: Navigate to player detail in future
     console.log("Player pressed:", player);
+  };
+
+  const navigateToPlayer = (player: Player) => {
+    // Create minimal PlayerProfile object - PlayerDetailScreen will fetch the full profile from API
+    const minimalPlayerProfile: PlayerProfile = {
+      player: {
+        id: player.id,
+        name: player.name,
+        firstname: player.name.split(" ")[0] || "",
+        lastname: player.name.split(" ").slice(1).join(" ") || "",
+        age: 0,
+        birth: {
+          date: "",
+          place: "",
+          country: "",
+        },
+        nationality: "",
+        height: "",
+        weight: "",
+        number: player.number || 0,
+        position: player.pos || "",
+        photo: "",
+      },
+    };
+
+    navigation.navigate("PlayerDetail", { item: minimalPlayerProfile });
   };
 
   const renderTabContent = () => {
@@ -89,6 +118,7 @@ const MatchDetailScreen: React.FC = () => {
             onPlayerPress={handlePlayerPress}
             events={events} // Pass events for player status calculation
             onRetry={refetchLineups}
+            navigateToPlayer={navigateToPlayer}
           />
         );
       default:
@@ -101,24 +131,10 @@ const MatchDetailScreen: React.FC = () => {
     (activeTab === "events" && isLoadingEvents) ||
     (activeTab === "lineups" && isLoadingLineups);
 
+  const styles = getStyles(theme);
+
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
-          activeOpacity={0.7}
-        >
-          <Text style={styles.backButtonText}>←</Text>
-        </TouchableOpacity>
-        <View style={styles.headerContent}>
-          <Text style={styles.headerTitle} numberOfLines={2}>
-            {t("navigation.matchDetail")}
-          </Text>
-        </View>
-      </View>
-
       {/* Tab Navigation */}
       <TabNavigation activeTab={activeTab} onTabChange={handleTabChange} />
 
@@ -128,46 +144,15 @@ const MatchDetailScreen: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#f5f5f5",
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    backgroundColor: "#fff",
-    borderBottomWidth: 1,
-    borderBottomColor: "#e0e0e0",
-  },
-  backButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: "#f0f0f0",
-    alignItems: "center",
-    justifyContent: "center",
-    marginRight: 12,
-  },
-  backButtonText: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#333",
-  },
-  headerContent: {
-    flex: 1,
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#333",
-    lineHeight: 22,
-  },
-  content: {
-    flex: 1,
-  },
-});
+const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: theme.colors.background,
+    },
+    content: {
+      flex: 1,
+    },
+  });
 
 export default MatchDetailScreen;
