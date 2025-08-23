@@ -1,6 +1,6 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
-import { Event } from "../../../types/api";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { Event, Team } from "../../../types/api";
 import GoalIcon from "../../utility/GoalIcon";
 import { useTheme } from "@/context/ThemeContext";
 import { useTranslation } from "react-i18next";
@@ -15,95 +15,215 @@ import CachedImage from "../../common/CachedImage";
 interface EventItemProps {
   event: Event;
   onPress?: () => void;
-  size?: "small" | "medium" | "large";
-  homeTeamName?: string;
+  homeTeam?: Team;
+  awayTeam?: Team;
 }
 
 const EventItem: React.FC<EventItemProps> = ({
   event,
   onPress,
-  size = "medium",
-  homeTeamName,
+  homeTeam,
+  awayTeam,
 }) => {
   const { theme } = useTheme();
   const { t } = useTranslation();
   const styles = getStyles(theme);
 
   const penaltyGoal = isPenaltyGoal(event.detail);
-  const isHomeTeam = homeTeamName ? event.team.name === homeTeamName : false;
+  const isHomeTeam = homeTeam ? event.team.name === homeTeam.name : false;
 
   const content = (
-    <View style={[styles.container, styles[size]]}>
-      {/* Minute */}
+    <View style={styles.eventRow}>
+      {/* Home Team Side */}
+      <View style={styles.homeEventContainer}>
+        {isHomeTeam && (
+          <View style={styles.eventContent}>
+            <View style={styles.eventDetails}>
+              {/* Event Type First */}
+              <View style={styles.eventTypeRow}>
+                {event.type === "Goal" ? (
+                  <GoalIcon isPenalty={penaltyGoal} size={12} />
+                ) : (
+                  <Text style={styles.eventIcon}>
+                    {getEventIcon(event.type, event.detail)}
+                  </Text>
+                )}
+                <Text
+                  style={[
+                    styles.eventType,
+                    {
+                      color: getEventColor(
+                        event.type,
+                        event.detail,
+                        theme.colors
+                      ),
+                    },
+                  ]}
+                >
+                  {t(`events.types.${event.type.toLowerCase()}`, event.type)}
+                </Text>
+              </View>
+
+              {/* Goal: Player name with assist below */}
+              {event.type === "Goal" && (
+                <>
+                  <Text style={styles.playerName} numberOfLines={1}>
+                    {event.player ? event.player.name : event.team.name}
+                  </Text>
+                  {event.assist && event.assist.name && (
+                    <Text style={styles.assistText}>
+                      {t("events.assist")}: {event.assist.name}
+                    </Text>
+                  )}
+                </>
+              )}
+
+              {/* Substitution: Arrow left with player name, arrow right with assist */}
+              {event.type === "subst" && (
+                <>
+                  <View style={styles.substitutionRow}>
+                    <Text style={styles.substitutionText}>
+                      <Text style={styles.arrowOut}>←</Text>{" "}
+                      {event.player ? event.player.name : event.team.name}
+                    </Text>
+                  </View>
+                  {event.assist && event.assist.name && (
+                    <View style={styles.substitutionRow}>
+                      <Text style={styles.substitutionText}>
+                        <Text style={styles.arrowIn}>→</Text>{" "}
+                        {event.assist.name}
+                      </Text>
+                    </View>
+                  )}
+                </>
+              )}
+
+              {/* Other event types: Just player name */}
+              {event.type !== "Goal" && event.type !== "subst" && (
+                <Text style={styles.playerName} numberOfLines={1}>
+                  {event.player ? event.player.name : event.team.name}
+                </Text>
+              )}
+
+              {/* Comments */}
+              {event.comments && (
+                <Text style={styles.commentsText}>{event.comments}</Text>
+              )}
+            </View>
+          </View>
+        )}
+      </View>
+
+      {/* Middle - Time */}
       <View style={styles.timeContainer}>
         <Text style={styles.time}>
           {formatEventTime(event.time.elapsed, event.time.extra)}
         </Text>
       </View>
 
-      {/* Event Icon */}
-      <View style={styles.iconContainer}>
-        {event.type === "Goal" ? (
-          <GoalIcon isPenalty={penaltyGoal} size={16} />
-        ) : (
-          <Text style={styles.eventIcon}>
-            {getEventIcon(event.type, event.detail)}
-          </Text>
-        )}
-      </View>
+      {/* Away Team Side */}
+      <View style={styles.awayEventContainer}>
+        {!isHomeTeam && (
+          <View style={styles.eventContent}>
+            <View style={styles.eventDetails}>
+              {/* Event Type First */}
+              <View style={[styles.eventTypeRow, styles.awayEventTypeRow]}>
+                <Text
+                  style={[
+                    styles.eventType,
+                    {
+                      color: getEventColor(
+                        event.type,
+                        event.detail,
+                        theme.colors
+                      ),
+                    },
+                  ]}
+                >
+                  {t(`events.types.${event.type.toLowerCase()}`, event.type)}
+                </Text>
+                {event.type === "Goal" ? (
+                  <GoalIcon isPenalty={penaltyGoal} size={12} />
+                ) : (
+                  <Text style={styles.eventIcon}>
+                    {getEventIcon(event.type, event.detail)}
+                  </Text>
+                )}
+              </View>
 
-      {/* Event Details */}
-      <View style={styles.eventDetails}>
-        {/* Player Name and Event Type Row */}
-        <View style={styles.playerEventRow}>
-          <Text style={styles.playerName} numberOfLines={1}>
-            {event.player ? event.player.name : event.team.name}
-          </Text>
-          <Text
-            style={[
-              styles.eventType,
-              { color: getEventColor(event.type, event.detail, theme.colors) },
-            ]}
-          >
-            {t(`events.types.${event.type.toLowerCase()}`, event.type)}
-          </Text>
-        </View>
+              {/* Goal: Player name with assist below */}
+              {event.type === "Goal" && (
+                <>
+                  <Text
+                    style={[styles.playerName, styles.awayPlayerName]}
+                    numberOfLines={1}
+                  >
+                    {event.player ? event.player.name : event.team.name}
+                  </Text>
+                  {event.assist && event.assist.name && (
+                    <Text style={[styles.assistText, styles.awayAssistText]}>
+                      {t("events.assist")}: {event.assist.name}
+                    </Text>
+                  )}
+                </>
+              )}
 
-        {/* Substitution Details with Arrows */}
-        {event.type === "subst" && event.assist && event.assist.name && (
-          <View style={styles.substitutionRow}>
-            <Text style={styles.substitutionText}>
-              <Text style={styles.arrowIn}>↑</Text> {event.assist.name}
-            </Text>
+              {/* Substitution: Arrow left with player name, arrow right with assist */}
+              {event.type === "subst" && (
+                <>
+                  <View
+                    style={[styles.substitutionRow, styles.awaySubstitutionRow]}
+                  >
+                    <Text
+                      style={[
+                        styles.substitutionText,
+                        styles.awaySubstitutionText,
+                      ]}
+                    >
+                      <Text style={styles.arrowOut}>←</Text>{" "}
+                      {event.player ? event.player.name : event.team.name}
+                    </Text>
+                  </View>
+                  {event.assist && event.assist.name && (
+                    <View
+                      style={[
+                        styles.substitutionRow,
+                        styles.awaySubstitutionRow,
+                      ]}
+                    >
+                      <Text
+                        style={[
+                          styles.substitutionText,
+                          styles.awaySubstitutionText,
+                        ]}
+                      >
+                        <Text style={styles.arrowIn}>→</Text>{" "}
+                        {event.assist.name}
+                      </Text>
+                    </View>
+                  )}
+                </>
+              )}
+
+              {/* Other event types: Just player name */}
+              {event.type !== "Goal" && event.type !== "subst" && (
+                <Text
+                  style={[styles.playerName, styles.awayPlayerName]}
+                  numberOfLines={1}
+                >
+                  {event.player ? event.player.name : event.team.name}
+                </Text>
+              )}
+
+              {/* Comments */}
+              {event.comments && (
+                <Text style={[styles.commentsText, styles.awayCommentsText]}>
+                  {event.comments}
+                </Text>
+              )}
+            </View>
           </View>
         )}
-
-        {/* Assist Information for Goals */}
-        {event.type === "Goal" && event.assist && event.assist.name && (
-          <Text style={styles.assistText}>
-            {t("events.assist")}: {event.assist.name}
-          </Text>
-        )}
-
-        {/* Comments */}
-        {event.comments && (
-          <Text style={styles.commentsText}>{event.comments}</Text>
-        )}
-      </View>
-
-      {/* Team Logo + Abbreviated Name */}
-      <View style={styles.teamContainer}>
-        <CachedImage
-          url={event.team.logo}
-          size={24}
-          fallbackText="Team"
-          borderRadius={4}
-          resizeMode="contain"
-          ttl={7 * 24 * 60 * 60 * 1000} // 7 days for team logos
-        />
-        <Text style={styles.teamAbbreviation} numberOfLines={1}>
-          {getTeamAbbreviation(event.team.name)}
-        </Text>
       </View>
     </View>
   );
@@ -121,111 +241,113 @@ const EventItem: React.FC<EventItemProps> = ({
 
 const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
   StyleSheet.create({
-    container: {
+    eventRow: {
       flexDirection: "row",
-      alignItems: "flex-start",
+      alignItems: "center",
       paddingVertical: theme.spacing.sm,
+      paddingHorizontal: theme.spacing.md,
       borderBottomWidth: 1,
       borderBottomColor: theme.colors.border,
+      minHeight: 60,
     },
-    small: {
-      paddingHorizontal: theme.spacing.sm,
+    homeEventContainer: {
+      flex: 1,
+      alignItems: "flex-start",
     },
-    medium: {
-      paddingHorizontal: theme.spacing.md,
+    awayEventContainer: {
+      flex: 1,
+      alignItems: "flex-end",
     },
-    large: {
-      paddingHorizontal: theme.spacing.lg,
-    },
-    timeContainer: {
-      width: theme.spacing.xl * 1,
+    eventContent: {
+      flexDirection: "row",
       alignItems: "center",
-      marginRight: theme.spacing.sm,
+      maxWidth: "100%",
     },
-    time: {
+    eventDetails: {
+      flex: 1,
+    },
+    playerName: {
       fontSize: theme.typography.caption.fontSize,
       fontWeight: "600",
-      color: theme.colors.textSecondary,
+      color: theme.colors.text,
+      marginBottom: theme.spacing.xs / 2,
     },
-    iconContainer: {
-      width: theme.spacing.xl * 1,
+    awayPlayerName: {
+      textAlign: "right",
+    },
+    eventTypeRow: {
+      flexDirection: "row",
       alignItems: "center",
-      justifyContent: "center",
-      marginRight: theme.spacing.md,
-      paddingTop: theme.spacing.xs,
+      marginBottom: theme.spacing.xs / 2,
+    },
+    awayEventTypeRow: {
+      flexDirection: "row-reverse",
+      justifyContent: "flex-start",
+    },
+    eventType: {
+      fontSize: theme.typography.small.fontSize,
+      fontWeight: "600",
+      textTransform: "uppercase",
+      marginLeft: theme.spacing.xs / 2,
     },
     eventIcon: {
       fontSize: 12,
       lineHeight: 12,
     },
-    eventDetails: {
-      flex: 1,
-      marginRight: theme.spacing.md,
-    },
-    playerEventRow: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-      marginBottom: theme.spacing.xs / 2,
-    },
-    playerName: {
-      fontSize: theme.typography.body.fontSize,
-      fontWeight: "600",
-      color: theme.colors.text,
-      flex: 1,
-      marginRight: theme.spacing.sm,
-    },
-    eventType: {
-      fontSize: theme.typography.caption.fontSize,
-      fontWeight: "600",
-      textTransform: "uppercase",
-    },
     assistText: {
-      fontSize: theme.typography.caption.fontSize,
+      fontSize: theme.typography.small.fontSize,
       color: theme.colors.textSecondary,
       fontStyle: "italic",
-      marginBottom: theme.spacing.xs / 2,
+    },
+    awayAssistText: {
+      textAlign: "right",
     },
     commentsText: {
-      fontSize: theme.typography.caption.fontSize - 1,
-      color: theme.colors.textSecondary,
-      marginBottom: theme.spacing.xs / 2,
-    },
-    eventDetail: {
-      fontSize: theme.typography.caption.fontSize - 1,
+      fontSize: theme.typography.small.fontSize,
       color: theme.colors.textSecondary,
       fontStyle: "italic",
     },
-    teamContainer: {
-      alignItems: "center",
-      width: theme.spacing.xl * 1,
-    },
-    teamLogo: {
-      width: theme.spacing.lg,
-      height: theme.spacing.xl,
-      marginBottom: theme.spacing.xs / 2,
-    },
-    teamAbbreviation: {
-      fontSize: theme.typography.caption.fontSize - 2,
-      fontWeight: "500",
-      color: theme.colors.textSecondary,
-      textAlign: "center",
+    awayCommentsText: {
+      textAlign: "right",
     },
     substitutionRow: {
+      flexDirection: "row",
+      alignItems: "center",
       marginBottom: theme.spacing.xs / 2,
     },
+    awaySubstitutionRow: {
+      flexDirection: "row",
+      justifyContent: "flex-end",
+    },
     substitutionText: {
-      fontSize: theme.typography.caption.fontSize - 1,
+      fontSize: theme.typography.small.fontSize,
       color: theme.colors.textSecondary,
       fontStyle: "italic",
     },
-    arrowOut: {
-      fontSize: theme.typography.caption.fontSize - 1,
-      color: theme.colors.textSecondary,
+    awaySubstitutionText: {
+      textAlign: "right",
     },
     arrowIn: {
-      fontSize: theme.typography.caption.fontSize - 1,
-      color: theme.colors.textSecondary,
+      color: theme.colors.primary,
+      fontWeight: "bold",
+      fontSize: theme.typography.small.fontSize,
+    },
+    arrowOut: {
+      color: theme.colors.primary,
+      fontWeight: "bold",
+      fontSize: theme.typography.small.fontSize,
+    },
+    timeContainer: {
+      width: 60,
+      alignItems: "center",
+      justifyContent: "center",
+      paddingVertical: theme.spacing.sm,
+    },
+    time: {
+      fontSize: theme.typography.caption.fontSize,
+      fontWeight: "700",
+      color: theme.colors.primary,
+      textAlign: "center",
     },
   });
 

@@ -49,15 +49,23 @@ const SeasonDropdown: React.FC<SeasonDropdownProps> = ({
   const getFilteredSeasons = (): Season[] => {
     if (!coverageType) return seasons;
 
-    return seasons.filter((season) => {
+    const filtered = seasons.filter((season) => {
+      // Always include the currently selected season, regardless of coverage
+      if (selectedSeason && season.year === selectedSeason.year) {
+        return true;
+      }
+
       if (coverageType === "standings") {
         return season.coverage?.standings === true;
       }
       if (coverageType === "fixtures") {
-        return season.coverage?.fixtures?.events === true;
+        const hasFixtures = season.coverage?.fixtures?.events === true;
+        return hasFixtures;
       }
       return true;
     });
+
+    return filtered;
   };
 
   const filteredSeasons = getFilteredSeasons();
@@ -181,7 +189,6 @@ const getStyles = (
       borderRadius: 8,
       paddingHorizontal: 12,
       borderWidth: 1,
-      backgroundColor: theme.colors.surface,
       borderColor: theme.colors.border,
       height: size === "small" ? 32 : size === "large" ? 48 : 40,
     },

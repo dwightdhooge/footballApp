@@ -49,12 +49,15 @@ export const useCupData = (
   const [roundsError, setRoundsError] = useState<string | null>(null);
   const [fixturesError, setFixturesError] = useState<string | null>(null);
 
-  // 🎯 Alle seasons beschikbaar maken, SeasonDropdown filtert op basis van coverageType
-  const availableSeasons = seasons ? [...seasons].reverse() : [];
-
-  // Initialize season
+  // Initialize season - only run once when component mounts
   useEffect(() => {
-    if (availableSeasons.length > 0) {
+    console.log("useCupData: Initializing season", {
+      seasonsLength: seasons?.length,
+      selectedSeason: selectedSeason?.year,
+      initialSeason: initialSeason?.year,
+    });
+
+    if (seasons && seasons.length > 0 && !selectedSeason) {
       // 🎯 Omdraaien van seasons volgorde: nieuwste wordt eerste
       const reversedSeasons = [...seasons].reverse();
 
@@ -63,9 +66,11 @@ export const useCupData = (
         initialSeason ||
         reversedSeasons.find((s) => s.current) ||
         reversedSeasons[0];
+
+      console.log("useCupData: Setting initial season to", initial?.year);
       setSelectedSeason(initial);
     }
-  }, [seasons, initialSeason, availableSeasons]);
+  }, [seasons, initialSeason]); // Include seasons and initialSeason as dependencies
 
   const fetchRoundsForSeason = useCallback(async () => {
     if (!selectedSeason) return;
@@ -79,14 +84,23 @@ export const useCupData = (
       const current = await getCurrentRound(cupId, selectedSeason.year);
       setCurrentRound(current || null);
 
-      // Select round: prefer current round, fallback to first round from API order
-      let roundToSelect: string | null = null;
-      if (current && roundsData.includes(current)) {
-        roundToSelect = current;
-      } else if (roundsData.length > 0) {
-        roundToSelect = roundsData[0];
+      // Only auto-select round if user hasn't manually selected one
+      // This prevents overriding user selections when season changes
+      if (!selectedRound) {
+        let roundToSelect: string | null = null;
+        if (current && roundsData.includes(current)) {
+          roundToSelect = current;
+        } else if (roundsData.length > 0) {
+          roundToSelect = roundsData[0];
+        }
+        setSelectedRound(roundToSelect);
+      } else {
+        // If user has selected a round, check if it's still valid for the new season
+        // If not, reset to null so they can select a new one
+        if (!roundsData.includes(selectedRound)) {
+          setSelectedRound(null);
+        }
       }
-      setSelectedRound(roundToSelect);
     } catch (error) {
       setRoundsError(error instanceof Error ? error.message : "Unknown error");
       setRounds([]);
@@ -95,7 +109,7 @@ export const useCupData = (
     } finally {
       setIsLoadingRounds(false);
     }
-  }, [cupId, selectedSeason]);
+  }, [cupId, selectedSeason, selectedRound]);
 
   const fetchFixturesForRound = useCallback(async () => {
     if (!selectedSeason || !selectedRound) return;
@@ -133,6 +147,16 @@ export const useCupData = (
     }
   }, [selectedSeason, selectedRound, fetchFixturesForRound]);
 
+  // Debug: Monitor season changes
+  useEffect(() => {
+    console.log("useCupData: selectedSeason changed to", selectedSeason?.year);
+  }, [selectedSeason]);
+
+  // Debug: Monitor round changes
+  useEffect(() => {
+    console.log("useCupData: selectedRound changed to", selectedRound);
+  }, [selectedRound]);
+
   const refetchRounds = useCallback(async () => {
     await fetchRoundsForSeason();
   }, [fetchRoundsForSeason]);
@@ -145,7 +169,7 @@ export const useCupData = (
     // Season
     selectedSeason,
     setSelectedSeason,
-    availableSeasons, // 🎯 Nu beschikbaar voor de screen
+    availableSeasons: seasons ? [...seasons].reverse() : [], // 🎯 Nu beschikbaar voor de screen
 
     // Rounds
     rounds,

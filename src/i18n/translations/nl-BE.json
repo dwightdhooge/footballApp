@@ -249,9 +249,9 @@
     "noRecentSearches": "Geen recente zoekopdrachten"
   },
   "tabs": {
-    "info": "Info",
     "events": "Gebeurtenissen",
-    "lineups": "Opstellingen"
+    "lineups": "Opstellingen",
+    "stats": "Statistieken"
   },
   "match": {
     "status": {
@@ -268,6 +268,11 @@
     },
     "referee": {
       "default": "Scheidsrechter"
+    },
+    "stats": {
+      "title": "Wedstrijd Statistieken",
+      "note": "Statistieken worden opgehaald uit live wedstrijdgegevens.",
+      "noData": "Geen statistieken beschikbaar voor deze wedstrijd"
     }
   },
   "events": {

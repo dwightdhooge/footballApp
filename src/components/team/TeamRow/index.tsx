@@ -176,7 +176,6 @@ const getStyles = (
       alignItems: "center",
       paddingHorizontal: 12,
       borderBottomWidth: 1,
-      backgroundColor: theme.colors.surface,
       borderBottomColor: theme.colors.border,
       paddingVertical: size === "compact" ? 8 : size === "detailed" ? 12 : 10,
     },

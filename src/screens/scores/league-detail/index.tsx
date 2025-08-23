@@ -421,13 +421,11 @@ const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
     roundContainer: {
       padding: theme.spacing.md,
       borderTopWidth: 1,
-      backgroundColor: theme.colors.surface,
       borderTopColor: theme.colors.border,
     },
     tabContainer: {
       flexDirection: "row",
       borderBottomWidth: 1,
-      backgroundColor: theme.colors.surface,
       borderBottomColor: theme.colors.border,
     },
     tab: {

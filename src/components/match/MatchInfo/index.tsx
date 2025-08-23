@@ -152,10 +152,8 @@ const MatchInfo: React.FC<MatchInfoProps> = ({
             {fixture.league?.name || t("match.competition.default")}
           </Text>
           <Text style={styles.leagueRound}>
-            {fixture.league?.round || fixture.league?.type === "Cup"
-              ? "Final"
-              : fixture.league?.type || "Competition"}{" "}
-            • {new Date(fixture.fixture.date).getFullYear()}
+            {fixture.league?.round || fixture.league?.type || "Competition"} •{" "}
+            {new Date(fixture.fixture.date).getFullYear()}
           </Text>
         </View>
       </View>
@@ -255,10 +253,8 @@ const MatchInfo: React.FC<MatchInfoProps> = ({
 const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
   StyleSheet.create({
     container: {
-      backgroundColor: theme.colors.surface,
       borderRadius: theme.borderRadius.md,
       padding: theme.spacing.md,
-      marginBottom: theme.spacing.md,
       shadowColor: theme.colors.text,
       shadowOffset: {
         width: 0,
@@ -282,15 +278,15 @@ const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
       flex: 1,
     },
     leagueName: {
-      fontSize: theme.typography.body.fontSize,
-      fontWeight: "600",
+      fontSize: theme.typography.caption.fontSize,
+      fontWeight: "500",
       color: theme.colors.text,
     },
     leagueRound: {
-      fontSize: theme.typography.body.fontSize, // Changed from caption to body for better visibility
+      fontSize: theme.typography.caption.fontSize,
       marginTop: theme.spacing.xs / 2,
-      color: theme.colors.text, // Changed from textSecondary to text for better contrast
-      fontWeight: "500", // Added font weight for better visibility
+      color: theme.colors.text,
+      fontWeight: "500",
     },
     statusContainer: {
       flexDirection: "row",

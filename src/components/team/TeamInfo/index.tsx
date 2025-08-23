@@ -33,7 +33,6 @@ const TeamInfo: React.FC<TeamInfoProps> = ({
           resizeMode="contain"
           ttl={7 * 24 * 60 * 60 * 1000} // 7 days for team logos
         />
-        {showWinner && team.winner && <Text style={styles.crown}>👑</Text>}
       </View>
       <Text style={styles.name} numberOfLines={2}>
         {team.name}

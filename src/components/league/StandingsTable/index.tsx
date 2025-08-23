@@ -91,7 +91,6 @@ const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
     tableHeader: {
       flexDirection: "row",
       borderBottomWidth: 1,
-      backgroundColor: theme.colors.surface,
       borderBottomColor: theme.colors.border,
       paddingVertical: theme.spacing.sm,
       paddingHorizontal: theme.spacing.md,

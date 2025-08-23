@@ -249,9 +249,9 @@
     "noRecentSearches": "Aucune recherche récente"
   },
   "tabs": {
-    "info": "Info",
     "events": "Événements",
-    "lineups": "Compositions"
+    "lineups": "Compositions",
+    "stats": "Statistiques"
   },
   "match": {
     "status": {
@@ -268,6 +268,11 @@
     },
     "referee": {
       "default": "Arbitre"
+    },
+    "stats": {
+      "title": "Statistiques du Match",
+      "note": "Les statistiques sont récupérées à partir des données de match en direct.",
+      "noData": "Aucune statistique disponible pour ce match"
     }
   },
   "events": {

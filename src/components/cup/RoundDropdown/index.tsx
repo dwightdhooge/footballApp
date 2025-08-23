@@ -175,7 +175,7 @@ const getStyles = (
       borderRadius: 8,
       paddingHorizontal: 12,
       borderWidth: 1,
-      backgroundColor: theme.colors.surface,
+      // backgroundColor: theme.colors.surface,
       borderColor: theme.colors.border,
       height: size === "small" ? 32 : size === "large" ? 48 : 40,
     },

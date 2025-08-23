@@ -44,10 +44,10 @@ const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
       gap: theme.spacing.xs,
     },
     yellowCard: {
-      fontSize: theme.typography.body.fontSize,
+      fontSize: theme.typography.small.fontSize,
     },
     redCard: {
-      fontSize: theme.typography.body.fontSize,
+      fontSize: theme.typography.small.fontSize,
     },
   });
 

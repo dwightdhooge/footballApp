@@ -45,6 +45,7 @@ export { default as TabNavigation } from "./match/TabNavigation";
 export { default as EventsList } from "./match/EventsList";
 export { default as EventItem } from "./match/EventItem";
 export { default as LineupsGrid } from "./match/LineupsGrid";
+export { default as Stats } from "./match/Stats";
 
 // Match list components
 export { default as MatchCard } from "./match/MatchCard";

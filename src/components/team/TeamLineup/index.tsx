@@ -3,7 +3,6 @@ import { View, Text, StyleSheet } from "react-native";
 import { Lineup, Event, Player } from "../../../types/api";
 import { useTheme } from "@/context/ThemeContext";
 import { useTranslation } from "react-i18next";
-import GoalIcon from "../../utility/GoalIcon";
 import PlayerRow from "../../player/PlayerRow";
 import {
   hasPlayerScored,
@@ -14,7 +13,6 @@ import {
   hasPlayerBeenSubstitutedIn,
   getPlayerSubstitutionMinute,
 } from "../../../utils/eventUtils";
-import CachedImage from "../../common/CachedImage";
 
 interface TeamLineupProps {
   lineup: Lineup;
@@ -57,6 +55,7 @@ const TeamLineup: React.FC<TeamLineupProps> = ({
       hasRedCard,
       hasBeenSubstitutedOut,
       hasBeenSubstitutedIn,
+      substitutionMinute,
     } = playerStatus;
 
     return (
@@ -74,6 +73,9 @@ const TeamLineup: React.FC<TeamLineupProps> = ({
           isPenaltyGoal: hasScoredPenalty,
           showOverlapping: false,
           showMultiple: false,
+          hasBeenSubstitutedOut,
+          hasBeenSubstitutedIn,
+          substitutionMinute,
         }}
         navigateToPlayer={navigateToPlayer}
       />
@@ -82,44 +84,16 @@ const TeamLineup: React.FC<TeamLineupProps> = ({
 
   return (
     <View style={styles.container}>
-      {/* Team Header */}
-      <View style={styles.teamHeader}>
-        {lineup.team.logo && (
-          <CachedImage
-            url={lineup.team.logo}
-            size={24}
-            fallbackText="Team"
-            borderRadius={4}
-            resizeMode="contain"
-            ttl={7 * 24 * 60 * 60 * 1000} // 7 days for team logos
-          />
-        )}
-        <View style={styles.teamInfo}>
-          <Text style={[styles.teamName, { color: theme.colors.text }]}>
-            {lineup.team.name}
+      {/* Formation Info */}
+      {showFormation && lineup.formation && (
+        <View style={styles.formationContainer}>
+          <Text
+            style={[styles.formation, { color: theme.colors.textSecondary }]}
+          >
+            {t("lineups.formation")}: {lineup.formation}
           </Text>
         </View>
-      </View>
-
-      {/* Coach & Formation Info */}
-      {(showCoach && lineup.coach) || (showFormation && lineup.formation) ? (
-        <View style={styles.teamDetails}>
-          {showCoach && lineup.coach && (
-            <Text
-              style={[styles.coachName, { color: theme.colors.textSecondary }]}
-            >
-              {t("lineups.coach")}: {lineup.coach.name}
-            </Text>
-          )}
-          {showFormation && lineup.formation && (
-            <Text
-              style={[styles.formation, { color: theme.colors.textSecondary }]}
-            >
-              {t("lineups.formation")}: {lineup.formation}
-            </Text>
-          )}
-        </View>
-      ) : null}
+      )}
 
       {/* Starting XI */}
       <View style={styles.section}>
@@ -143,6 +117,17 @@ const TeamLineup: React.FC<TeamLineupProps> = ({
           </View>
         </View>
       )}
+
+      {/* Coach - Moved to bottom */}
+      {showCoach && lineup.coach && (
+        <View style={styles.coachContainer}>
+          <Text
+            style={[styles.coachName, { color: theme.colors.textSecondary }]}
+          >
+            {t("lineups.coach")}: {lineup.coach.name}
+          </Text>
+        </View>
+      )}
     </View>
   );
 };
@@ -150,40 +135,28 @@ const TeamLineup: React.FC<TeamLineupProps> = ({
 const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
   StyleSheet.create({
     container: {
-      // backgroundColor: theme.colors.info,
       borderRadius: theme.borderRadius.md,
       padding: theme.spacing.xs,
       marginBottom: theme.spacing.md,
     },
-    teamHeader: {
-      flexDirection: "row",
-      alignItems: "center",
-      marginBottom: theme.spacing.md,
-    },
-    teamLogo: {
-      width: theme.spacing.xl * 1.5,
-      height: theme.spacing.xl * 1.5,
-      marginRight: theme.spacing.md,
-    },
-    teamInfo: {
-      flex: 1,
-    },
-    teamName: {
-      fontSize: theme.typography.h3.fontSize,
-      fontWeight: "600",
-      marginBottom: theme.spacing.xs,
-      marginLeft: theme.spacing.sm,
-    },
-    teamDetails: {
+    formationContainer: {
       marginBottom: theme.spacing.sm,
-      paddingLeft: 0,
-    },
-    coachName: {
-      fontSize: theme.typography.caption.fontSize,
-      marginBottom: theme.spacing.xs / 2,
+      alignItems: "center",
     },
     formation: {
       fontSize: theme.typography.caption.fontSize,
+      fontWeight: "300",
+    },
+    coachContainer: {
+      marginTop: theme.spacing.md,
+      paddingTop: theme.spacing.sm,
+      borderTopWidth: 1,
+      borderTopColor: theme.colors.border,
+      alignItems: "center",
+    },
+    coachName: {
+      fontSize: theme.typography.caption.fontSize,
+      fontStyle: "italic",
     },
     section: {
       marginBottom: theme.spacing.md,
@@ -195,53 +168,6 @@ const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
     },
     playersGrid: {
       flexDirection: "column",
-    },
-    playerItem: {
-      flexDirection: "row",
-      alignItems: "center",
-      marginBottom: theme.spacing.xs,
-      padding: theme.spacing.xs,
-      borderRadius: theme.borderRadius.sm,
-      justifyContent: "space-between",
-    },
-    playerNumber: {
-      fontSize: theme.typography.body.fontSize,
-      marginRight: theme.spacing.sm,
-      minWidth: theme.spacing.xl,
-    },
-    playerName: {
-      fontSize: theme.typography.caption.fontSize,
-      flex: 1,
-      marginRight: theme.spacing.sm,
-    },
-    yellowCardIcon: {
-      fontSize: theme.typography.caption.fontSize,
-      marginRight: theme.spacing.xs / 2,
-    },
-    redCardIcon: {
-      fontSize: theme.typography.caption.fontSize,
-      marginRight: theme.spacing.xs / 2,
-      position: "absolute",
-      top: -theme.spacing.xs / 2,
-      left: 0,
-      zIndex: 1,
-    },
-    cardIcons: {
-      flexDirection: "row",
-      alignItems: "center",
-      position: "relative",
-      marginLeft: theme.spacing.xs / 2,
-    },
-    eventIcons: {
-      flexDirection: "row",
-      alignItems: "center",
-      marginLeft: theme.spacing.xs,
-    },
-    substitutionIcon: {
-      fontSize: theme.typography.caption.fontSize,
-      fontWeight: "bold",
-      marginLeft: theme.spacing.xs,
-      marginRight: theme.spacing.xs / 2,
     },
   });
 

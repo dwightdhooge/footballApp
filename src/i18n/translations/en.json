@@ -249,9 +249,9 @@
     "noRecentSearches": "No recent searches"
   },
   "tabs": {
-    "info": "Info",
     "events": "Events",
-    "lineups": "Lineups"
+    "lineups": "Lineups",
+    "stats": "Stats"
   },
   "match": {
     "status": {
@@ -268,6 +268,11 @@
     },
     "referee": {
       "default": "Referee"
+    },
+    "stats": {
+      "title": "Match Statistics",
+      "note": "Statistics are fetched from live match data.",
+      "noData": "No statistics available for this match"
     }
   },
   "events": {

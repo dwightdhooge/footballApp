@@ -10,12 +10,13 @@ import {
   MatchInfo,
   EventsList,
   LineupsGrid,
+  Stats,
 } from "../../../components";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "@/context/ThemeContext";
 import { PlayerProfile } from "../../../types/api";
 
-type TabType = "info" | "events" | "lineups";
+type TabType = "events" | "lineups" | "stats";
 type MatchDetailNavigationProp = StackNavigationProp<
   ScoresStackParamList,
   "MatchDetail"
@@ -30,7 +31,7 @@ const MatchDetailScreen: React.FC = () => {
     season?: number;
   };
 
-  const [activeTab, setActiveTab] = useState<TabType>("info");
+  const [activeTab, setActiveTab] = useState<TabType>("events");
   const { t } = useTranslation();
   const { theme } = useTheme();
 
@@ -88,16 +89,6 @@ const MatchDetailScreen: React.FC = () => {
 
   const renderTabContent = () => {
     switch (activeTab) {
-      case "info":
-        return (
-          <MatchInfo
-            fixture={fixture}
-            events={events}
-            showHalfTimeScore={true}
-            showGoals={true}
-            showDetails={true}
-          />
-        );
       case "events":
         return (
           <EventsList
@@ -105,7 +96,8 @@ const MatchDetailScreen: React.FC = () => {
             isLoading={isLoadingEvents}
             error={eventsError}
             onEventPress={handleEventPress}
-            homeTeamName={fixture.teams.home.name}
+            homeTeam={fixture.teams.home}
+            awayTeam={fixture.teams.away}
             onRetry={refetchEvents}
           />
         );
@@ -121,6 +113,8 @@ const MatchDetailScreen: React.FC = () => {
             navigateToPlayer={navigateToPlayer}
           />
         );
+      case "stats":
+        return <Stats fixture={fixture} />;
       default:
         return null;
     }
@@ -135,8 +129,19 @@ const MatchDetailScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Tab Navigation */}
-      <TabNavigation activeTab={activeTab} onTabChange={handleTabChange} />
+      {/* Match Info - Always visible at the top */}
+      <View style={styles.headerContainer}>
+        <MatchInfo
+          fixture={fixture}
+          events={events}
+          showHalfTimeScore={true}
+          showGoals={true}
+          showDetails={true}
+        />
+
+        {/* Tab Navigation */}
+        <TabNavigation activeTab={activeTab} onTabChange={handleTabChange} />
+      </View>
 
       {/* Tab Content */}
       <View style={styles.content}>{renderTabContent()}</View>
@@ -148,6 +153,9 @@ const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
   StyleSheet.create({
     container: {
       flex: 1,
+      backgroundColor: theme.colors.background,
+    },
+    headerContainer: {
       backgroundColor: theme.colors.background,
     },
     content: {

@@ -19,6 +19,9 @@ interface PlayerRowProps {
     isPenaltyGoal: boolean;
     showOverlapping: boolean;
     showMultiple: boolean;
+    hasBeenSubstitutedOut?: boolean;
+    hasBeenSubstitutedIn?: boolean;
+    substitutionMinute?: number;
   };
   navigateToPlayer?: (player: Player) => void;
 }
@@ -67,14 +70,28 @@ const PlayerRow: React.FC<PlayerRowProps> = ({
       </View>
 
       {playerStatus && (
-        <PlayerStatus
-          yellowCards={playerStatus.yellowCards}
-          redCards={playerStatus.redCards}
-          goals={playerStatus.goals}
-          isPenaltyGoal={playerStatus.isPenaltyGoal}
-          showOverlapping={playerStatus.showOverlapping}
-          showMultiple={playerStatus.showMultiple}
-        />
+        <View style={styles.statusContainer}>
+          <PlayerStatus
+            yellowCards={playerStatus.yellowCards}
+            redCards={playerStatus.redCards}
+            goals={playerStatus.goals}
+            isPenaltyGoal={playerStatus.isPenaltyGoal}
+            showOverlapping={playerStatus.showOverlapping}
+            showMultiple={playerStatus.showMultiple}
+          />
+
+          {/* Substitution Arrows */}
+          {playerStatus.hasBeenSubstitutedOut && (
+            <Text style={styles.substitutionArrow}>
+              ← {playerStatus.substitutionMinute}'
+            </Text>
+          )}
+          {playerStatus.hasBeenSubstitutedIn && (
+            <Text style={styles.substitutionArrow}>
+              → {playerStatus.substitutionMinute}'
+            </Text>
+          )}
+        </View>
       )}
     </View>
   );
@@ -139,6 +156,20 @@ const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
       fontSize: theme.typography.caption.fontSize,
       fontWeight: "500",
       color: theme.colors.text,
+    },
+    statusContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      marginLeft: theme.spacing.sm,
+    },
+    substitutionArrow: {
+      fontSize: theme.typography.small.fontSize,
+      fontWeight: "200",
+      color: theme.colors.text,
+      marginLeft: theme.spacing.xs,
+      paddingHorizontal: theme.spacing.xs,
+      paddingVertical: theme.spacing.xs / 2,
+      borderRadius: theme.borderRadius.sm,
     },
   });
 

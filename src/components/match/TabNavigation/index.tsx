@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useTheme } from "@/context/ThemeContext";
 import { useTranslation } from "react-i18next";
 
-type TabType = "info" | "events" | "lineups";
+type TabType = "events" | "lineups" | "stats";
 
 interface TabNavigationProps {
   activeTab: TabType;
@@ -19,9 +19,9 @@ const TabNavigation: React.FC<TabNavigationProps> = ({
   const styles = getStyles(theme);
 
   const tabs = [
-    { id: "info" as TabType, label: t("tabs.info") },
     { id: "events" as TabType, label: t("tabs.events") },
     { id: "lineups" as TabType, label: t("tabs.lineups") },
+    { id: "stats" as TabType, label: t("tabs.stats") },
   ];
 
   return (
@@ -51,7 +51,7 @@ const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
   StyleSheet.create({
     container: {
       flexDirection: "row",
-      backgroundColor: theme.colors.background,
+      // backgroundColor: theme.colors.surface,
       borderBottomWidth: 1,
       borderBottomColor: theme.colors.border,
     },
@@ -63,7 +63,7 @@ const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
       position: "relative",
     },
     activeTab: {
-      backgroundColor: theme.colors.surface,
+      // backgroundColor: theme.colors.surface,
       borderBottomWidth: 3,
       borderBottomColor: theme.colors.primary,
     },

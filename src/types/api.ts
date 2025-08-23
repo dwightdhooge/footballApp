@@ -200,6 +200,56 @@ export interface FixturesApiResponse {
   response: Fixture[];
 }
 
+// New types for Fixture Statistics
+export interface Statistic {
+  type: string;
+  value: number | string | null;
+}
+
+export interface TeamStatistics {
+  team: {
+    id: number;
+    name: string;
+    logo: string;
+  };
+  statistics: Statistic[];
+}
+
+export interface FixtureStatisticsApiResponse {
+  get: string;
+  parameters: {
+    team?: string;
+    fixture: string;
+  };
+  errors: string[];
+  results: number;
+  paging: {
+    current: number;
+    total: number;
+  };
+  response: TeamStatistics[];
+}
+
+// Processed stats for display
+export interface ProcessedStats {
+  possession: { home: number; away: number };
+  shots: { home: number; away: number };
+  shotsOnTarget: { home: number; away: number };
+  shotsOffTarget: { home: number; away: number };
+  blockedShots: { home: number; away: number };
+  shotsInsideBox: { home: number; away: number };
+  shotsOutsideBox: { home: number; away: number };
+  corners: { home: number; away: number };
+  fouls: { home: number; away: number };
+  offsides: { home: number; away: number };
+  yellowCards: { home: number; away: number };
+  redCards: { home: number; away: number };
+  goalkeeperSaves: { home: number; away: number };
+  totalPasses: { home: number; away: number };
+  accuratePasses: { home: number; away: number };
+  passAccuracy: { home: number; away: number };
+}
+
 export interface ApiError {
   type: "RATE_LIMIT" | "AUTH_ERROR" | "SERVER_ERROR" | "NETWORK_ERROR";
   message: string;

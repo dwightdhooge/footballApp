@@ -221,7 +221,6 @@ const MatchCard: React.FC<MatchCardProps> = ({
 const getStyles = (theme: ReturnType<typeof useTheme>["theme"], size: string) =>
   StyleSheet.create({
     container: {
-      backgroundColor: theme.colors.surface,
       borderRadius: 8,
       borderWidth: 1,
       borderColor: theme.colors.border,

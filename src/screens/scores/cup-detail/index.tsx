@@ -52,15 +52,34 @@ const CupDetailScreen: React.FC = () => {
     refetchFixtures,
   } = useCupData(cup.league.id, cup.seasons);
 
+  // Debug: Log season data
+  console.log("CupDetail: Debug season data", {
+    allSeasons: cup.seasons?.map((s) => ({
+      year: s.year,
+      current: s.current,
+      coverage: s.coverage,
+    })),
+    availableSeasons: availableSeasons?.map((s) => ({
+      year: s.year,
+      current: s.current,
+      coverage: s.coverage,
+    })),
+    selectedSeason: selectedSeason?.year,
+    cupSeasonsLength: cup.seasons?.length,
+    availableSeasonsLength: availableSeasons?.length,
+  });
+
   // Verwijderd: lokaal berekende availableSeasons
   // const availableSeasons = cup.seasons?.filter(canShowFixtures).reverse() || [];
 
   const handleSeasonChange = (season: any) => {
+    console.log("CupDetail: Season change requested to", season?.year);
     setSelectedSeason(season);
     setSelectedRound(null);
   };
 
   const handleRoundChange = (round: string) => {
+    console.log("CupDetail: Round change requested to", round);
     setSelectedRound(round);
   };
 
@@ -107,6 +126,7 @@ const CupDetailScreen: React.FC = () => {
               disabled={isLoadingRounds}
               placeholder={t("leagueDetail.selectRound")}
               size="medium"
+              showCurrent={true}
             />
           )}
         </View>
