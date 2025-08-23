@@ -1,7 +1,7 @@
-import { Country, LeagueItem, Fixture, PlayerProfile } from "./api";
+import { Country, LeagueItem, Fixture, PlayerProfile, Team } from "./api";
 
 export interface NavigationParams {
-  item: Country | LeagueItem | Fixture | PlayerProfile;
+  item: Country | LeagueItem | Fixture | PlayerProfile | Team;
 }
 
 export interface NavigationState {
@@ -19,6 +19,7 @@ export type ScoresTabFlow = {
   CupDetail: { item: LeagueItem };
   MatchDetail: { item: Fixture };
   PlayerDetail: { item: PlayerProfile };
+  TeamDetail: { item: Team };
 };
 
 export type FavoritesTabFlow = {
@@ -29,6 +30,7 @@ export type FavoritesTabFlow = {
   CupDetail: { item: LeagueItem };
   MatchDetail: { item: Fixture };
   PlayerDetail: { item: PlayerProfile };
+  TeamDetail: { item: Team };
 };
 
 export type SettingsTabFlow = {
@@ -53,6 +55,7 @@ export type ScoresStackParamList = {
   CupDetail: { item: LeagueItem };
   MatchDetail: { item: Fixture };
   PlayerDetail: { item: PlayerProfile };
+  TeamDetail: { item: Team };
 };
 
 export type FavoritesStackParamList = {
@@ -63,6 +66,7 @@ export type FavoritesStackParamList = {
   CupDetail: { item: LeagueItem };
   MatchDetail: { item: Fixture };
   PlayerDetail: { item: PlayerProfile };
+  TeamDetail: { item: Team };
 };
 
 export type SettingsStackParamList = {

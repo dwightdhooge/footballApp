@@ -7,6 +7,7 @@ import LeagueDetailScreen from "@/screens/scores/league-detail";
 import CupDetailScreen from "@/screens/scores/cup-detail";
 import MatchDetailScreen from "@/screens/scores/match-detail";
 import PlayerDetailScreen from "@/screens/scores/player-detail/index";
+import TeamDetailScreen from "@/screens/scores/team-detail";
 import { ScoresStackParamList } from "@/types/navigation";
 
 const Stack = createStackNavigator<ScoresStackParamList>();
@@ -67,6 +68,13 @@ const ScoresStackNavigator: React.FC = () => {
       <Stack.Screen
         name="PlayerDetail"
         component={PlayerDetailScreen}
+        options={{
+          title: "",
+        }}
+      />
+      <Stack.Screen
+        name="TeamDetail"
+        component={TeamDetailScreen}
         options={{
           title: "",
         }}

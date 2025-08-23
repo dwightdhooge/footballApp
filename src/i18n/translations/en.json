@@ -98,9 +98,25 @@
       "Preliminary Round": "Preliminary Round"
     },
     "loadingRounds": "Loading rounds...",
-    "loadingFixtures": "Loading fixtures...",
-    "noRoundsForSeason": "No rounds available for this season",
-    "noFixturesForRound": "No fixtures available for this round"
+    "loadingMatches": "Loading matches...",
+    "retry": "Try again",
+    "current": "(Current)",
+    "noRoundsForSeason": "No rounds available for this season.",
+    "noMatchesForSeason": "No matches available for this season."
+  },
+  "teamDetail": {
+    "loading": "Loading team information...",
+    "errorTitle": "Error Loading Team",
+    "errorMessage": "Could not load team information. Please try again.",
+    "retry": "Retry",
+    "teamInfo": "Team Information",
+    "founded": "Founded",
+    "type": "Type",
+    "national": "National Team",
+    "club": "Club",
+    "venue": "Home Venue",
+    "capacity": "Capacity",
+    "surface": "Surface"
   },
   "matchCard": {
     "fullTime": "Full Time",

@@ -6,3 +6,4 @@ export * from "./useLeagueData";
 export * from "./useMatchData";
 export * from "./useSvgCache";
 export * from "./useFixtureStatistics";
+export * from "./useTeamData";

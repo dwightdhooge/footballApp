@@ -61,6 +61,12 @@ const MatchDetailScreen: React.FC = () => {
     console.log("Player pressed:", player);
   };
 
+  const handleTeamPress = (team: any) => {
+    navigation.navigate("TeamDetail", {
+      item: team,
+    });
+  };
+
   const navigateToPlayer = (player: Player) => {
     // Create minimal PlayerProfile object - PlayerDetailScreen will fetch the full profile from API
     const minimalPlayerProfile: PlayerProfile = {
@@ -137,6 +143,7 @@ const MatchDetailScreen: React.FC = () => {
           showHalfTimeScore={true}
           showGoals={true}
           showDetails={true}
+          onTeamPress={handleTeamPress}
         />
 
         {/* Tab Navigation */}

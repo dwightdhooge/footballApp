@@ -21,6 +21,7 @@ interface MatchInfoProps {
   showHalfTimeScore?: boolean;
   showGoals?: boolean;
   showDetails?: boolean;
+  onTeamPress?: (team: any) => void;
 }
 
 const MatchInfo: React.FC<MatchInfoProps> = ({
@@ -29,6 +30,7 @@ const MatchInfo: React.FC<MatchInfoProps> = ({
   showHalfTimeScore = true,
   showGoals = true,
   showDetails = true,
+  onTeamPress,
 }) => {
   const { theme } = useTheme();
   const { t } = useTranslation();
@@ -187,6 +189,7 @@ const MatchInfo: React.FC<MatchInfoProps> = ({
             nameSize={14}
             showWinner={true}
             style={styles.teamInfo}
+            onPress={onTeamPress ? () => onTeamPress(homeTeam) : undefined}
           />
 
           {/* Home Team Events */}
@@ -222,6 +225,7 @@ const MatchInfo: React.FC<MatchInfoProps> = ({
             nameSize={14}
             showWinner={true}
             style={styles.teamInfo}
+            onPress={onTeamPress ? () => onTeamPress(awayTeam) : undefined}
           />
 
           {/* Away Team Events */}

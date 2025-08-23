@@ -102,6 +102,20 @@
     "noRoundsForSeason": "Geen rondes beschikbaar voor dit seizoen",
     "noFixturesForRound": "Geen wedstrijden beschikbaar voor deze ronde"
   },
+  "teamDetail": {
+    "loading": "Team informatie laden...",
+    "errorTitle": "Fout bij Laden van Team",
+    "errorMessage": "Kon team informatie niet laden. Probeer het opnieuw.",
+    "retry": "Opnieuw proberen",
+    "teamInfo": "Team Informatie",
+    "founded": "Opgericht in",
+    "type": "Type",
+    "national": "Nationaal Team",
+    "club": "Club",
+    "venue": "Thuisstadion",
+    "capacity": "Capaciteit",
+    "surface": "Ondergrond"
+  },
   "matchCard": {
     "fullTime": "Volle Tijd",
     "halfTime": "Rust",

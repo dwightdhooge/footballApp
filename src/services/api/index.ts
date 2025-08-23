@@ -7,3 +7,4 @@ export * from "./rounds";
 export * from "./events";
 export * from "./lineups";
 export * from "./statistics";
+export * from "./teams";

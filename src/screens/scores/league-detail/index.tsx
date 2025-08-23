@@ -129,8 +129,9 @@ const LeagueDetailScreen: React.FC = () => {
   };
 
   const handleTeamPress = (team: any) => {
-    // Navigate to team detail (to be implemented)
-    Alert.alert(t("leagueDetail.teamDetail"), `Navigate to ${team.name}`);
+    navigation.navigate("TeamDetail", {
+      item: team,
+    });
   };
 
   const handleMatchPress = (fixture: Fixture) => {

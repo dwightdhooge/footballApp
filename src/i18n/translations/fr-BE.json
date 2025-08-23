@@ -98,9 +98,23 @@
       "Preliminary Round": "Tour préliminaire"
     },
     "loadingRounds": "Chargement des tours...",
-    "loadingFixtures": "Chargement des matchs...",
-    "noRoundsForSeason": "Aucun tour disponible pour cette saison",
-    "noFixturesForRound": "Aucun match disponible pour ce tour"
+    "loadingMatches": "Chargement des matchs...",
+    "noRoundsForSeason": "Aucun tour disponible pour cette saison.",
+    "noMatchesForSeason": "Aucun match disponible pour cette saison."
+  },
+  "teamDetail": {
+    "loading": "Chargement des informations de l'équipe...",
+    "errorTitle": "Erreur de Chargement de l'Équipe",
+    "errorMessage": "Impossible de charger les informations de l'équipe. Veuillez réessayer.",
+    "retry": "Réessayer",
+    "teamInfo": "Informations de l'Équipe",
+    "founded": "Fondée en",
+    "type": "Type",
+    "national": "Équipe Nationale",
+    "club": "Club",
+    "venue": "Stade Domicile",
+    "capacity": "Capacité",
+    "surface": "Surface"
   },
   "matchCard": {
     "fullTime": "Temps Réglementaire",

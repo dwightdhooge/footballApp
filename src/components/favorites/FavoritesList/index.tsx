@@ -44,8 +44,7 @@ const FavoritesList: React.FC<FavoritesListProps> = ({
             }
             break;
           case "teams":
-            // Navigate to team detail (not implemented yet)
-            console.log("Navigate to team detail:", item);
+            (navigation as any).navigate("TeamDetail", { item });
             break;
           case "players":
             (navigation as any).navigate("PlayerDetail", { item });

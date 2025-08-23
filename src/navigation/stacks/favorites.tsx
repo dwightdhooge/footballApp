@@ -8,6 +8,7 @@ import LeagueDetailScreen from "@/screens/scores/league-detail";
 import CupDetailScreen from "@/screens/scores/cup-detail";
 import MatchDetailScreen from "@/screens/scores/match-detail";
 import PlayerDetailScreen from "@/screens/scores/player-detail";
+import TeamDetailScreen from "@/screens/scores/team-detail";
 
 const Stack = createStackNavigator<FavoritesStackParamList>();
 
@@ -60,6 +61,13 @@ const FavoritesStackNavigator: React.FC = () => {
       <Stack.Screen
         name="PlayerDetail"
         component={PlayerDetailScreen}
+        options={{
+          title: "",
+        }}
+      />
+      <Stack.Screen
+        name="TeamDetail"
+        component={TeamDetailScreen}
         options={{
           title: "",
         }}

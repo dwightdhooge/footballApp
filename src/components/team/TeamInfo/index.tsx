@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Team } from "../../../types/api";
 import { useTheme } from "@/context/ThemeContext";
 import CachedImage from "../../common/CachedImage";
@@ -10,6 +10,8 @@ interface TeamInfoProps {
   nameSize?: number;
   showWinner?: boolean;
   style?: any;
+  onPress?: () => void;
+  disabled?: boolean;
 }
 
 const TeamInfo: React.FC<TeamInfoProps> = ({
@@ -18,11 +20,13 @@ const TeamInfo: React.FC<TeamInfoProps> = ({
   nameSize = 14,
   showWinner = false,
   style,
+  onPress,
+  disabled = false,
 }) => {
   const { theme } = useTheme();
   const styles = getStyles(theme, logoSize, nameSize);
 
-  return (
+  const TeamContent = () => (
     <View style={[styles.container, style]}>
       <View style={styles.logoContainer}>
         <CachedImage
@@ -39,6 +43,20 @@ const TeamInfo: React.FC<TeamInfoProps> = ({
       </Text>
     </View>
   );
+
+  if (onPress && !disabled) {
+    return (
+      <TouchableOpacity
+        onPress={onPress}
+        activeOpacity={0.7}
+        style={styles.touchableContainer}
+      >
+        <TeamContent />
+      </TouchableOpacity>
+    );
+  }
+
+  return <TeamContent />;
 };
 
 const getStyles = (
@@ -48,6 +66,9 @@ const getStyles = (
 ) =>
   StyleSheet.create({
     container: {
+      alignItems: "center",
+    },
+    touchableContainer: {
       alignItems: "center",
     },
     logoContainer: {

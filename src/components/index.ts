@@ -61,6 +61,10 @@ export { default as TeamCard } from "./team/TeamCard";
 export { default as TeamInfo } from "./team/TeamInfo";
 export { default as TeamLineup } from "./team/TeamLineup";
 export { default as TeamRow } from "./team/TeamRow";
+export { default as TeamDetailHeader } from "./team/TeamDetailHeader";
+export { default as TeamInfoSection } from "./team/TeamInfoSection";
+export { default as VenueSection } from "./team/VenueSection";
+export { default as DetailRow } from "./team/DetailRow";
 
 // Utility components
 export { default as EmptyState } from "./utility/EmptyState";
