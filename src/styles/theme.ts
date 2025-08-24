@@ -84,6 +84,14 @@ export interface Theme {
       fontSize: number;
       fontWeight: "normal";
     };
+    xSmall: {
+      fontSize: number;
+      fontWeight: "normal";
+    };
+    xxSmall: {
+      fontSize: number;
+      fontWeight: "normal";
+    };
   };
   cards: {
     small: {
@@ -148,6 +156,14 @@ export const createTheme = (mode: ThemeMode): Theme => ({
     },
     small: {
       fontSize: 12,
+      fontWeight: "normal",
+    },
+    xSmall: {
+      fontSize: 10,
+      fontWeight: "normal",
+    },
+    xxSmall: {
+      fontSize: 8,
       fontWeight: "normal",
     },
   },

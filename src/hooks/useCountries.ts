@@ -94,11 +94,13 @@ export const useCountries = (): UseCountriesReturn => {
   );
 
   // Computed values for conditional rendering
-  const totalResults = searchResults.teams.length + searchResults.leagues.length + searchResults.countries.length;
+  const totalResults =
+    searchResults.teams.length +
+    searchResults.leagues.length +
+    searchResults.countries.length;
   const shouldShowSearchResults =
     hasSearched && !isSearching && totalResults > 0;
-  const shouldShowNoResults =
-    hasSearched && !isSearching && totalResults === 0;
+  const shouldShowNoResults = hasSearched && !isSearching && totalResults === 0;
   const shouldShowFavorites = !hasSearched && favoriteCountries.length > 0;
   const shouldShowSuggested = !hasSearched;
 

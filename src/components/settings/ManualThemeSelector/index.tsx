@@ -126,46 +126,46 @@ const getStyles = (
 ) =>
   StyleSheet.create({
     container: {
-      borderRadius: 8,
-      marginHorizontal: 16,
-      marginVertical: 4,
-      padding: 16,
+      borderRadius: theme.spacing.sm,
+      marginHorizontal: theme.spacing.md,
+      marginVertical: theme.spacing.xs,
+      padding: theme.spacing.md,
       backgroundColor: theme.colors.surface,
     },
     header: {
       flexDirection: "row",
       alignItems: "center",
-      marginBottom: 16,
+      marginBottom: theme.spacing.md,
     },
     iconContainer: {
-      marginRight: 8,
+      marginRight: theme.spacing.sm,
       width: 24,
       alignItems: "center",
     },
     textContainer: {
       flex: 1,
-      marginLeft: 4,
+      marginLeft: theme.spacing.xs,
     },
     title: {
-      fontSize: 16,
+      fontSize: theme.typography.body.fontSize,
       fontWeight: "500",
       color: isDisabled ? theme.colors.textSecondary : theme.colors.text,
     },
     subtitle: {
-      fontSize: 14,
-      marginTop: 4,
+      fontSize: theme.typography.small.fontSize,
+      marginTop: theme.spacing.xs,
       color: theme.colors.textSecondary,
     },
     themeOptions: {
       flexDirection: "row",
       justifyContent: "space-between",
-      gap: 16,
+      gap: theme.spacing.md,
     },
     themeOption: {
       flex: 1,
       alignItems: "center",
-      padding: 16,
-      borderRadius: 8,
+      padding: theme.spacing.md,
+      borderRadius: theme.spacing.sm,
       borderWidth: 2,
       backgroundColor: theme.colors.background,
       borderColor: theme.colors.border,
@@ -182,12 +182,12 @@ const getStyles = (
       opacity: 0.5,
     },
     themePreview: {
-      marginBottom: 8,
+      marginBottom: theme.spacing.sm,
     },
     lightPreview: {
       width: 40,
       height: 24,
-      borderRadius: 4,
+      borderRadius: theme.spacing.xs,
       backgroundColor: "#FFFFFF",
       borderWidth: 1,
       borderColor: theme.colors.border,
@@ -206,7 +206,7 @@ const getStyles = (
     darkPreview: {
       width: 40,
       height: 24,
-      borderRadius: 4,
+      borderRadius: theme.spacing.xs,
       backgroundColor: "#212121",
       borderWidth: 1,
       borderColor: "#424242",
@@ -223,7 +223,7 @@ const getStyles = (
       backgroundColor: "#212121",
     },
     themeLabel: {
-      fontSize: 14,
+      fontSize: theme.typography.small.fontSize,
       fontWeight: "500",
       color: theme.colors.text,
     },
@@ -236,8 +236,8 @@ const getStyles = (
     },
     checkIcon: {
       position: "absolute",
-      top: 4,
-      right: 4,
+      top: theme.spacing.xs,
+      right: theme.spacing.xs,
     },
     disabled: {
       opacity: 0.5,

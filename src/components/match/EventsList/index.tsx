@@ -50,8 +50,7 @@ const EventsList: React.FC<EventsListProps> = ({
   if (events.length === 0) {
     return (
       <EmptyState
-        icon="📝"
-        title={t("events.empty.title")}
+        icon="document-text-outline"
         message={t("events.empty.message")}
       />
     );

@@ -64,8 +64,7 @@ const MatchesList: React.FC<MatchesListProps> = ({
       contentContainerStyle={styles.listContainer}
       ListEmptyComponent={() => (
         <EmptyState
-          icon="⚽"
-          title={t("matchCard.noMatches")}
+          icon="football-outline"
           message={t("matchCard.noMatchesDescription")}
         />
       )}
@@ -77,11 +76,11 @@ const MatchesList: React.FC<MatchesListProps> = ({
 const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
   StyleSheet.create({
     listContainer: {
-      paddingHorizontal: 16,
-      paddingVertical: 8,
+      paddingHorizontal: theme.spacing.md,
+      paddingVertical: theme.spacing.sm,
     },
     matchItem: {
-      marginBottom: 12,
+      marginBottom: theme.spacing.md,
     },
   });
 

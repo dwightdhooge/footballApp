@@ -1,11 +1,7 @@
 // Common components
 export { default as CachedImage } from "./common/CachedImage";
 export { default as CacheManagement } from "./common/CacheManagement";
-export {
-  LoadingState,
-  ErrorState,
-  EmptyState as StateEmptyState,
-} from "./common/StateComponents";
+export { LoadingState, ErrorState, EmptyState } from "./common/StateComponents";
 export { default as SvgImage } from "./common/SvgImage";
 
 // Settings screen components
@@ -67,6 +63,6 @@ export { default as VenueSection } from "./team/VenueSection";
 export { default as DetailRow } from "./team/DetailRow";
 
 // Utility components
-export { default as EmptyState } from "./utility/EmptyState";
+export { default as PlaceholderState } from "./utility/PlaceholderState";
 export { default as GoalIcon } from "./utility/GoalIcon";
 export { default as PenaltyScore } from "./utility/PenaltyScore";

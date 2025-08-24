@@ -119,6 +119,8 @@
   "matchCard": {
     "fullTime": "Volle Tijd",
     "halfTime": "Rust",
+    "firstHalf": "1e Helft",
+    "secondHalf": "2e Helft",
     "extraTime": "Extra Tijd",
     "penalties": "Penalty's",
     "live": "Live",
@@ -253,17 +255,19 @@
     "buildDescription": "Huidige build-nummer"
   },
   "search": {
+    "title": "Zoeken",
+    "enterQuery": "Voer minimaal 3 karakters in om te zoeken",
     "teams": "Teams",
-    "leagues": "Competities",
+    "leagues": "Leagues",
     "countries": "Landen",
     "resultsFor": "Resultaten voor \"{{query}}\" ({{count}} gevonden)",
     "noResults": "Geen resultaten gevonden voor \"{{query}}\"",
     "noPlayersResults": "Geen spelers gevonden voor \"{{query}}\"",
     "noTeamsResults": "Geen teams gevonden voor \"{{query}}\"",
-    "noLeaguesResults": "Geen competities gevonden voor \"{{query}}\"",
+    "noLeaguesResults": "Geen leagues gevonden voor \"{{query}}\"",
     "noCountriesResults": "Geen landen gevonden voor \"{{query}}\"",
     "searchError": "Zoeken mislukt. Probeer het opnieuw.",
-    "minCharacters": "Voer minimaal 3 tekens in"
+    "minCharacters": "Voer minimaal 3 karakters in"
   },
   "tabs": {
     "events": "Gebeurtenissen",
@@ -289,7 +293,7 @@
     "stats": {
       "title": "Wedstrijd Statistieken",
       "note": "Statistieken worden opgehaald uit live wedstrijdgegevens.",
-      "noData": "Geen statistieken beschikbaar voor deze wedstrijd"
+      "noDataMessage": "Statistieken zijn niet beschikbaar voor deze wedstrijd. Ze kunnen verschijnen zodra de wedstrijd begint of tijdens live uitzending."
     }
   },
   "events": {

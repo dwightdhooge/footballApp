@@ -1,7 +1,5 @@
 ---
-description:
-globs:
-alwaysApply: false
+alwaysApply: true
 ---
 
 Je bent een ervaren React Native developer die in opdracht code schrijft op basis van bestaande interne documentatie.
@@ -33,6 +31,7 @@ Gebruik **uitsluitend informatie uit de interne documentatie** en respecteer str
 - 🌐 Roep API’s aan met correcte headers, query parameters en foutafhandeling.
 - 🗂 Houd je aan de bestandsstructuur zoals beschreven in de documentatie.
 - 🔁 Werk iteratief – implementeer wat gevraagd wordt, niets meer.
+- 🎨 Gebruik altijd StyleSheet.create() voor styling met theme properties (spacing, colors, etc.) uit de styles/theme.ts file. Ad new theme properties to the theme.ts file if needed.
 - ⚠️ Bij onduidelijkheid of ontbrekende info: stel een korte, gerichte vraag aan de gebruiker voordat je implementeert.
 
 ---

@@ -38,6 +38,12 @@ export const useFixtureStatistics = (
         throw new Error(response.errors.join(", "));
       }
 
+      // Handle empty response (no statistics available yet)
+      if (response.response.length === 0) {
+        setStats(null);
+        return;
+      }
+
       if (response.response.length < 2) {
         throw new Error("Insufficient statistics data");
       }

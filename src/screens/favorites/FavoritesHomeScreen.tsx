@@ -1,11 +1,10 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, ScrollView, SafeAreaView } from "react-native";
+import { View, Text, StyleSheet, SafeAreaView } from "react-native";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "@/context/ThemeContext";
 import { useFavorites } from "@/context/FavoritesContext";
 import CategoryTabs from "@/components/favorites/CategoryTabs";
 import FavoritesList from "@/components/favorites/FavoritesList";
-import EmptyState from "@/components/utility/EmptyState";
 
 const FavoritesHomeScreen: React.FC = () => {
   const { t } = useTranslation();
@@ -36,23 +35,7 @@ const FavoritesHomeScreen: React.FC = () => {
     }
   };
 
-  const getEmptyStateMessage = () => {
-    switch (selectedCategory) {
-      case "players":
-        return t("favorites.emptyPlayers");
-      case "teams":
-        return t("favorites.emptyTeams");
-      case "leagues":
-        return t("favorites.emptyLeagues");
-      case "countries":
-        return t("favorites.emptyCountries");
-      default:
-        return t("favorites.emptyGeneral");
-    }
-  };
-
   const favorites = getFavoritesForCategory();
-  const hasFavorites = favorites.length > 0;
 
   return (
     <SafeAreaView
@@ -78,11 +61,7 @@ const FavoritesHomeScreen: React.FC = () => {
         }}
       />
 
-      {hasFavorites ? (
-        <FavoritesList category={selectedCategory} favorites={favorites} />
-      ) : (
-        <EmptyState message={getEmptyStateMessage()} icon="heart-outline" />
-      )}
+      <FavoritesList category={selectedCategory} favorites={favorites} />
     </SafeAreaView>
   );
 };

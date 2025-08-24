@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   View,
   Text,
@@ -6,9 +6,9 @@ import {
   StyleSheet,
   StyleProp,
   ViewStyle,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { useTheme } from '@/context/ThemeContext';
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { useTheme } from "@/context/ThemeContext";
 
 interface SettingsItemProps {
   title: string;
@@ -53,26 +53,24 @@ const SettingsItem: React.FC<SettingsItemProps> = ({
             />
           </View>
         )}
-        
+
         <View style={[styles.textContainer, icon && styles.textWithIcon]}>
-          <Text style={styles.title}>
-            {title}
-          </Text>
-          {subtitle && (
-            <Text style={styles.subtitle}>
-              {subtitle}
-            </Text>
-          )}
+          <Text style={styles.title}>{title}</Text>
+          {subtitle && <Text style={styles.subtitle}>{subtitle}</Text>}
         </View>
-        
+
         {children && <View style={styles.children}>{children}</View>}
-        
+
         {showChevron && onPress && (
           <View style={styles.chevronContainer}>
             <Ionicons
               name="chevron-forward"
               size={16}
-              color={disabled ? theme.colors.textSecondary : theme.colors.textSecondary}
+              color={
+                disabled
+                  ? theme.colors.textSecondary
+                  : theme.colors.textSecondary
+              }
             />
           </View>
         )}
@@ -81,49 +79,52 @@ const SettingsItem: React.FC<SettingsItemProps> = ({
   );
 };
 
-const getStyles = (theme: ReturnType<typeof useTheme>["theme"], disabled: boolean) =>
+const getStyles = (
+  theme: ReturnType<typeof useTheme>["theme"],
+  disabled: boolean
+) =>
   StyleSheet.create({
     container: {
-      borderRadius: 8,
-      marginHorizontal: 16,
-      marginVertical: 4,
-      padding: 16,
+      borderRadius: theme.spacing.sm,
+      marginHorizontal: theme.spacing.md,
+      marginVertical: theme.spacing.xs,
+      padding: theme.spacing.md,
       backgroundColor: theme.colors.surface,
     },
     content: {
-      flexDirection: 'row',
-      alignItems: 'center',
+      flexDirection: "row",
+      alignItems: "center",
     },
     iconContainer: {
-      marginRight: 8,
+      marginRight: theme.spacing.sm,
       width: 24,
-      alignItems: 'center',
+      alignItems: "center",
     },
     textContainer: {
       flex: 1,
     },
     textWithIcon: {
-      marginLeft: 4,
+      marginLeft: theme.spacing.xs,
     },
     title: {
-      fontSize: 16,
-      fontWeight: '500',
+      fontSize: theme.typography.body.fontSize,
+      fontWeight: "500",
       color: disabled ? theme.colors.textSecondary : theme.colors.text,
     },
     subtitle: {
-      fontSize: 14,
-      marginTop: 4,
+      fontSize: theme.typography.small.fontSize,
+      marginTop: theme.spacing.xs,
       color: theme.colors.textSecondary,
     },
     children: {
-      marginLeft: 8,
+      marginLeft: theme.spacing.sm,
     },
     chevronContainer: {
-      marginLeft: 8,
+      marginLeft: theme.spacing.sm,
     },
     disabled: {
       opacity: 0.5,
     },
   });
 
-export default SettingsItem; 
+export default SettingsItem;

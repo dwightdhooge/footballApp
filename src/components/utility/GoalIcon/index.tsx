@@ -4,7 +4,16 @@ import { useTheme } from "@/context/ThemeContext";
 
 interface GoalIconProps {
   isPenalty?: boolean;
-  size?: number | "small" | "caption" | "body" | "h3" | "h2" | "h1";
+  size?:
+    | number
+    | "xxSmall"
+    | "xSmall"
+    | "small"
+    | "caption"
+    | "body"
+    | "h3"
+    | "h2"
+    | "h1";
   style?: StyleProp<ViewStyle>;
 }
 
@@ -28,6 +37,10 @@ const GoalIcon: React.FC<GoalIconProps> = ({
 
     // Map string sizes to theme typography sizes
     switch (size) {
+      case "xxSmall":
+        return theme.typography.xxSmall.fontSize;
+      case "xSmall":
+        return theme.typography.xSmall.fontSize;
       case "small":
         return theme.typography.small.fontSize;
       case "caption":

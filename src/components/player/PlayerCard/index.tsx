@@ -25,6 +25,7 @@ const PlayerCard: React.FC<PlayerCardProps> = ({
   disabled = false,
 }) => {
   const { theme } = useTheme();
+  const styles = getStyles(theme, size);
 
   const getSizeStyles = () => {
     switch (size) {
@@ -33,32 +34,32 @@ const PlayerCard: React.FC<PlayerCardProps> = ({
           width: 100,
           height: 100,
           photoSize: 24,
-          fontSize: 12,
-          padding: 8,
+          fontSize: theme.typography.caption.fontSize,
+          padding: theme.spacing.sm,
         };
       case "medium":
         return {
           width: 140,
           height: 120,
           photoSize: 40,
-          fontSize: 14,
-          padding: 12,
+          fontSize: theme.typography.small.fontSize,
+          padding: theme.spacing.md,
         };
       case "large":
         return {
           width: 160,
           height: 140,
           photoSize: 48,
-          fontSize: 16,
-          padding: 16,
+          fontSize: theme.typography.body.fontSize,
+          padding: theme.spacing.md,
         };
       default:
         return {
           width: 140,
           height: 120,
           photoSize: 40,
-          fontSize: 14,
-          padding: 12,
+          fontSize: theme.typography.small.fontSize,
+          padding: theme.spacing.md,
         };
     }
   };
@@ -76,7 +77,8 @@ const PlayerCard: React.FC<PlayerCardProps> = ({
           backgroundColor: theme.colors.surface,
           borderColor: theme.colors.border,
           opacity: disabled ? 0.5 : 1,
-          marginHorizontal: size === "small" ? 4 : 8, // Kleinere margin voor small size
+          marginHorizontal:
+            size === "small" ? theme.spacing.xs : theme.spacing.sm,
         },
       ]}
       onPress={onPress}
@@ -135,38 +137,39 @@ const PlayerCard: React.FC<PlayerCardProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    borderRadius: 12,
-    borderWidth: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    position: "relative",
-  },
-  removeButton: {
-    position: "absolute",
-    top: 4,
-    right: 4,
-    zIndex: 1,
-  },
-  photoContainer: {
-    marginBottom: 8,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  photo: {
-    borderRadius: 20,
-  },
-  name: {
-    fontWeight: "600",
-    textAlign: "center",
-    lineHeight: 18,
-    marginBottom: 4,
-  },
-  position: {
-    textAlign: "center",
-    lineHeight: 16,
-  },
-});
+const getStyles = (theme: ReturnType<typeof useTheme>["theme"], size: string) =>
+  StyleSheet.create({
+    container: {
+      borderRadius: theme.spacing.md,
+      borderWidth: 1,
+      alignItems: "center",
+      justifyContent: "center",
+      position: "relative",
+    },
+    removeButton: {
+      position: "absolute",
+      top: theme.spacing.xs,
+      right: theme.spacing.xs,
+      zIndex: 1,
+    },
+    photoContainer: {
+      marginBottom: theme.spacing.sm,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    photo: {
+      borderRadius: theme.spacing.lg,
+    },
+    name: {
+      fontWeight: "600",
+      textAlign: "center",
+      lineHeight: theme.typography.small.fontSize * 1.3,
+      marginBottom: theme.spacing.xs,
+    },
+    position: {
+      textAlign: "center",
+      lineHeight: theme.typography.caption.fontSize * 1.3,
+    },
+  });
 
 export default PlayerCard;

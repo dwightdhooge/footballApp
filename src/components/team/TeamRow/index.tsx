@@ -174,10 +174,15 @@ const getStyles = (
     container: {
       flexDirection: "row",
       alignItems: "center",
-      paddingHorizontal: 12,
+      paddingHorizontal: theme.spacing.md,
       borderBottomWidth: 1,
       borderBottomColor: theme.colors.border,
-      paddingVertical: size === "compact" ? 8 : size === "detailed" ? 12 : 10,
+      paddingVertical:
+        size === "compact"
+          ? theme.spacing.sm
+          : size === "detailed"
+          ? theme.spacing.md
+          : theme.spacing.sm,
     },
     rankContainer: {
       width: 30,
@@ -185,24 +190,34 @@ const getStyles = (
     },
     rank: {
       fontWeight: "600",
-      fontSize: size === "compact" ? 12 : size === "detailed" ? 16 : 14,
+      fontSize:
+        size === "compact"
+          ? theme.typography.caption.fontSize
+          : size === "detailed"
+          ? theme.typography.body.fontSize
+          : theme.typography.small.fontSize,
       color: theme.colors.text,
     },
     teamContainer: {
       flex: 1,
       flexDirection: "row",
       alignItems: "center",
-      marginRight: 8,
+      marginRight: theme.spacing.sm,
     },
     teamLogo: {
       width: 20,
       height: 20,
-      marginRight: 8,
+      marginRight: theme.spacing.sm,
     },
     teamName: {
       flex: 1,
       fontWeight: "500",
-      fontSize: size === "compact" ? 12 : size === "detailed" ? 16 : 14,
+      fontSize:
+        size === "compact"
+          ? theme.typography.caption.fontSize
+          : size === "detailed"
+          ? theme.typography.body.fontSize
+          : theme.typography.small.fontSize,
       color: theme.colors.text,
       marginLeft: theme.spacing.sm,
     },
@@ -210,40 +225,45 @@ const getStyles = (
       flexDirection: "row",
       width: 120,
       justifyContent: "space-between",
-      marginRight: 8,
+      marginRight: theme.spacing.sm,
     },
     stat: {
       textAlign: "center",
       fontWeight: "500",
-      fontSize: size === "compact" ? 10 : size === "detailed" ? 14 : 12,
+      fontSize:
+        size === "compact"
+          ? theme.typography.caption.fontSize
+          : size === "detailed"
+          ? theme.typography.small.fontSize
+          : theme.typography.caption.fontSize,
       color: theme.colors.textSecondary,
     },
     formContainer: {
       flexDirection: "row",
-      marginRight: 8,
+      marginRight: theme.spacing.sm,
     },
     formItem: {
       width: 16,
       height: 16,
-      borderRadius: 8,
+      borderRadius: theme.spacing.sm,
       alignItems: "center",
       justifyContent: "center",
       marginRight: 2,
     },
     formText: {
       color: theme.colors.onSurface,
-      fontSize: 10,
+      fontSize: theme.typography.caption.fontSize,
       fontWeight: "600",
     },
     statusContainer: {
-      paddingHorizontal: 6,
+      paddingHorizontal: theme.spacing.xs,
       paddingVertical: 2,
-      borderRadius: 4,
-      marginRight: 8,
+      borderRadius: theme.spacing.xs,
+      marginRight: theme.spacing.sm,
     },
     statusText: {
       color: theme.colors.onSurface,
-      fontSize: 10,
+      fontSize: theme.typography.caption.fontSize,
       fontWeight: "600",
     },
     pointsContainer: {
@@ -252,12 +272,22 @@ const getStyles = (
     },
     points: {
       fontWeight: "600",
-      fontSize: size === "compact" ? 12 : size === "detailed" ? 16 : 14,
+      fontSize:
+        size === "compact"
+          ? theme.typography.caption.fontSize
+          : size === "detailed"
+          ? theme.typography.body.fontSize
+          : theme.typography.small.fontSize,
       color: theme.colors.text,
     },
     goalsDiff: {
       fontWeight: "500",
-      fontSize: size === "compact" ? 10 : size === "detailed" ? 14 : 12,
+      fontSize:
+        size === "compact"
+          ? theme.typography.caption.fontSize
+          : size === "detailed"
+          ? theme.typography.small.fontSize
+          : theme.typography.caption.fontSize,
       color:
         goalsDiff > 0
           ? theme.colors.success

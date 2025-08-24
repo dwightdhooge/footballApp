@@ -173,7 +173,17 @@ const MatchInfo: React.FC<MatchInfoProps> = ({
           {getStatusDisplay(fixture.fixture.status)}
         </Text>
         {fixture.fixture.status.elapsed && (
-          <Text style={styles.elapsedText}>
+          <Text
+            style={[
+              styles.elapsedText,
+              {
+                color: getStatusColor(
+                  fixture.fixture.status.short,
+                  theme.colors
+                ),
+              },
+            ]}
+          >
             {fixture.fixture.status.elapsed}'
           </Text>
         )}
@@ -283,14 +293,14 @@ const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
     },
     leagueName: {
       fontSize: theme.typography.caption.fontSize,
-      fontWeight: "500",
+      fontWeight: theme.typography.caption.fontWeight,
       color: theme.colors.text,
     },
     leagueRound: {
       fontSize: theme.typography.caption.fontSize,
       marginTop: theme.spacing.xs / 2,
       color: theme.colors.text,
-      fontWeight: "500",
+      fontWeight: theme.typography.caption.fontWeight,
     },
     statusContainer: {
       flexDirection: "row",
@@ -300,14 +310,14 @@ const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
     },
     statusText: {
       fontSize: theme.typography.small.fontSize,
-      fontWeight: "600",
+      fontWeight: theme.typography.h3.fontWeight,
       textTransform: "uppercase",
       color: theme.colors.text,
     },
     elapsedText: {
       fontSize: theme.typography.small.fontSize,
-      fontWeight: "500",
-      color: theme.colors.textSecondary,
+      fontWeight: theme.typography.h3.fontWeight,
+      color: theme.colors.text,
     },
     matchContainer: {
       flexDirection: "row",
@@ -337,7 +347,7 @@ const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
     },
     eventTime: {
       fontSize: theme.typography.caption.fontSize,
-      fontWeight: "600",
+      fontWeight: theme.typography.caption.fontWeight,
       width: theme.spacing.xl * 1.2,
       textAlign: "center",
       color: theme.colors.textSecondary,
@@ -351,7 +361,7 @@ const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
     },
     eventPlayer: {
       fontSize: theme.typography.small.fontSize * 0.8,
-      fontWeight: "500",
+      fontWeight: theme.typography.small.fontWeight,
       flex: 1,
       color: theme.colors.text,
     },
@@ -363,14 +373,14 @@ const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
     },
     scoreText: {
       fontSize: theme.spacing.lg,
-      fontWeight: "bold",
+      fontWeight: theme.typography.h3.fontWeight,
       marginBottom: theme.spacing.xs / 2,
       color: theme.colors.text,
       textAlign: "center",
     },
     halftimeText: {
       fontSize: theme.typography.caption.fontSize,
-      fontWeight: "500",
+      fontWeight: theme.typography.caption.fontWeight,
       color: theme.colors.textSecondary,
       textAlign: "center",
     },

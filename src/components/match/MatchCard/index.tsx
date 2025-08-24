@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useTheme } from "@/context/ThemeContext";
 import { Fixture } from "../../../types/api";
 import CachedImage from "../../common/CachedImage";
+import { getStatusColor } from "../../../utils/matchUtils";
 
 interface MatchCardProps {
   fixture: Fixture;
@@ -50,23 +51,6 @@ const MatchCard: React.FC<MatchCardProps> = ({
     };
   };
 
-  const getStatusColor = (status: string): string => {
-    const statusMap: Record<string, string> = {
-      TBD: theme.colors.textSecondary,
-      NS: theme.colors.textSecondary,
-      "1H": theme.colors.success,
-      HT: theme.colors.warning,
-      "2H": theme.colors.success,
-      ET: theme.colors.secondary,
-      P: theme.colors.secondary,
-      FT: theme.colors.info,
-      AET: theme.colors.secondary,
-      PEN: theme.colors.secondary,
-      LIVE: theme.colors.success,
-    };
-    return statusMap[status] || theme.colors.textSecondary;
-  };
-
   const formatDate = (dateString: string): string => {
     const date = new Date(dateString);
     return date.toLocaleDateString("nl-NL", {
@@ -85,9 +69,12 @@ const MatchCard: React.FC<MatchCardProps> = ({
   };
 
   const displayScore = getDisplayScore();
-  const statusColor = getStatusColor(fixture.fixture.status.short);
+  const statusColor = getStatusColor(
+    fixture.fixture.status.short,
+    theme.colors
+  );
 
-  const styles = getStyles(theme, size);
+  const styles = getStyles(theme, size, statusColor);
 
   return (
     <TouchableOpacity
@@ -100,10 +87,8 @@ const MatchCard: React.FC<MatchCardProps> = ({
       <View style={styles.header}>
         <View style={styles.headerLeft}>
           {showStatus && (
-            <View
-              style={[styles.statusBadge, { backgroundColor: statusColor }]}
-            >
-              <Text style={styles.statusText}>
+            <View style={styles.statusBadge}>
+              <Text style={[styles.statusText, { color: statusColor }]}>
                 {fixture.fixture.status.short}
               </Text>
             </View>
@@ -120,7 +105,7 @@ const MatchCard: React.FC<MatchCardProps> = ({
         <View style={styles.headerRight}>
           {fixture.fixture.status.elapsed && (
             <View style={styles.elapsedContainer}>
-              <Text style={styles.elapsedText}>
+              <Text style={[styles.elapsedText, { color: statusColor }]}>
                 {fixture.fixture.status.elapsed}'
               </Text>
             </View>
@@ -218,10 +203,14 @@ const MatchCard: React.FC<MatchCardProps> = ({
   );
 };
 
-const getStyles = (theme: ReturnType<typeof useTheme>["theme"], size: string) =>
+const getStyles = (
+  theme: ReturnType<typeof useTheme>["theme"],
+  size: string,
+  statusColor: string
+) =>
   StyleSheet.create({
     container: {
-      borderRadius: 8,
+      borderRadius: theme.spacing.sm,
       borderWidth: 1,
       borderColor: theme.colors.border,
       shadowColor: "#000",
@@ -240,7 +229,7 @@ const getStyles = (theme: ReturnType<typeof useTheme>["theme"], size: string) =>
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
-      paddingBottom: 8,
+      paddingBottom: theme.spacing.sm,
       borderBottomWidth: 1,
       borderBottomColor: theme.colors.border,
     },
@@ -257,34 +246,32 @@ const getStyles = (theme: ReturnType<typeof useTheme>["theme"], size: string) =>
       alignItems: "flex-end",
     },
     statusBadge: {
-      paddingHorizontal: 6,
+      paddingHorizontal: theme.spacing.xs,
       paddingVertical: 2,
-      borderRadius: 4,
     },
     statusText: {
-      color: theme.colors.onSurface,
-      fontSize: 10,
+      fontSize: theme.typography.caption.fontSize,
       fontWeight: "600",
     },
     date: {
-      fontWeight: "500",
+      fontWeight: theme.typography.caption.fontWeight,
     },
     time: {
-      fontWeight: "500",
+      fontWeight: theme.typography.caption.fontWeight,
     },
     dateText: {
-      fontSize: 12,
+      fontSize: theme.typography.caption.fontSize,
       color: theme.colors.textSecondary,
     },
     timeText: {
-      fontSize: 12,
+      fontSize: theme.typography.caption.fontSize,
       color: theme.colors.textSecondary,
     },
     matchContent: {
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "space-between",
-      paddingVertical: 12,
+      paddingVertical: theme.spacing.md,
       minHeight: 40,
     },
     teamContainer: {
@@ -292,15 +279,15 @@ const getStyles = (theme: ReturnType<typeof useTheme>["theme"], size: string) =>
       flexDirection: "row",
       alignItems: "center",
       minHeight: 32,
-      marginHorizontal: 8,
+      marginHorizontal: theme.spacing.sm,
     },
     teamName: {
       flex: 1,
-      fontWeight: "500",
+      fontWeight: theme.typography.h3.fontWeight,
       textAlign: "center",
     },
     teamNameText: {
-      fontSize: 14,
+      fontSize: theme.typography.small.fontSize,
       color: theme.colors.text,
     },
     scoreContainer: {
@@ -312,33 +299,33 @@ const getStyles = (theme: ReturnType<typeof useTheme>["theme"], size: string) =>
       alignItems: "center",
     },
     score: {
-      fontWeight: "600",
+      fontWeight: theme.typography.h3.fontWeight,
     },
     scoreText: {
-      fontSize: 16,
+      fontSize: theme.typography.body.fontSize,
       color: theme.colors.text,
     },
     scoreSeparator: {
-      fontWeight: "500",
-      marginHorizontal: 4,
+      fontWeight: theme.typography.caption.fontWeight,
+      marginHorizontal: theme.spacing.xs,
     },
     scoreSeparatorText: {
-      fontSize: 14,
+      fontSize: theme.typography.small.fontSize,
       color: theme.colors.textSecondary,
     },
     scoreType: {
-      fontWeight: "500",
+      fontWeight: theme.typography.caption.fontWeight,
       marginTop: 2,
     },
     vsText: {
-      fontWeight: "500",
+      fontWeight: theme.typography.caption.fontWeight,
     },
     vsTextStyle: {
-      fontSize: 14,
+      fontSize: theme.typography.small.fontSize,
       color: theme.colors.textSecondary,
     },
     venueContainer: {
-      paddingTop: 8,
+      paddingTop: theme.spacing.sm,
       borderTopWidth: 1,
       borderTopColor: theme.colors.border,
     },
@@ -346,39 +333,36 @@ const getStyles = (theme: ReturnType<typeof useTheme>["theme"], size: string) =>
       color: theme.colors.textSecondary,
       textAlign: "center",
       fontStyle: "italic",
-      fontSize: 12,
+      fontSize: theme.typography.caption.fontSize,
     },
     elapsedContainer: {
-      backgroundColor: theme.colors.success,
-      paddingHorizontal: 4,
+      paddingHorizontal: theme.spacing.xs,
       paddingVertical: 2,
-      borderRadius: 4,
     },
     elapsedText: {
-      color: theme.colors.onSurface,
       fontWeight: "600",
-      fontSize: 12,
+      fontSize: theme.typography.caption.fontSize,
     },
     penaltyContainer: {
-      marginTop: 4,
+      marginTop: theme.spacing.xs,
     },
     penaltyText: {
       color: theme.colors.textSecondary,
-      fontWeight: "500",
+      fontWeight: theme.typography.caption.fontWeight,
       textAlign: "center",
-      fontSize: 12,
+      fontSize: theme.typography.caption.fontSize,
     },
     small: {
-      padding: 8,
-      fontSize: 12,
+      padding: theme.spacing.sm,
+      fontSize: theme.typography.caption.fontSize,
     },
     medium: {
-      padding: 12,
-      fontSize: 14,
+      padding: theme.spacing.md,
+      fontSize: theme.typography.small.fontSize,
     },
     large: {
-      padding: 16,
-      fontSize: 16,
+      padding: theme.spacing.md,
+      fontSize: theme.typography.body.fontSize,
     },
   });
 

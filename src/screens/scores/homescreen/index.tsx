@@ -1,18 +1,22 @@
 import React from "react";
-import { View, ScrollView, StyleSheet, SafeAreaView, Text } from "react-native";
+import {
+  View,
+  ScrollView,
+  StyleSheet,
+  SafeAreaView,
+  Text,
+  TouchableOpacity,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { useTranslation } from "react-i18next";
-import { Country, LeagueItem } from "@/types/api";
-import { TeamSearchResult } from "@/services/api/teams";
+import { Country } from "@/types/api";
 import { ScoresStackParamList } from "@/types/navigation";
 import { useTheme } from "@/context/ThemeContext";
 import { useCountries } from "@/hooks";
-import SearchBar from "@/components/homescreen/SearchBar";
-import SearchResults from "@/components/homescreen/SearchResults";
 import FavoritesSection from "@/components/homescreen/FavoritesSection";
 import SuggestedSection from "@/components/homescreen/SuggestedSection";
-import { Team } from "@/types/api";
+import { Ionicons } from "@expo/vector-icons";
 
 type ScoresNavigationProp = StackNavigationProp<ScoresStackParamList>;
 
@@ -21,41 +25,19 @@ const Homescreen: React.FC = () => {
   const { theme } = useTheme();
   const navigation = useNavigation<ScoresNavigationProp>();
 
-  // 🎯 Eén hook voor alle data logica!
   const {
-    searchTerm,
-    searchResults,
-    isSearching,
-    searchError,
     favorites,
     suggestedCountries,
-    handleSearch,
-    clearSearch,
     toggleFavorite,
     isFavorite,
-    shouldShowSearchResults,
-    shouldShowNoResults,
-    shouldShowFavorites,
-    shouldShowSuggested,
   } = useCountries();
 
   const handleCountryPress = (country: Country) => {
     navigation.navigate("CountryDetail", { item: country });
   };
 
-  const handleTeamPress = (team: TeamSearchResult) => {
-    // Create a Team object that matches what TeamDetail expects
-    const teamItem: Team = {
-      id: team.team.id,
-      name: team.team.name,
-      logo: team.team.logo,
-      winner: false, // Default value
-    };
-    navigation.navigate("TeamDetail", { item: teamItem });
-  };
-
-  const handleLeaguePress = (league: LeagueItem) => {
-    navigation.navigate("LeagueDetail", { item: league });
+  const handleSearchPress = () => {
+    navigation.navigate("SearchScreen");
   };
 
   const styles = getStyles(theme);
@@ -63,103 +45,39 @@ const Homescreen: React.FC = () => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-        {shouldShowSearchResults ? (
-          // When showing search results, don't wrap in ScrollView to avoid VirtualizedList nesting
-          <>
-            <View style={styles.header}>
-              <Text style={styles.title}>{t("homescreen.title")}</Text>
-              <Text style={styles.subtitle}>{t("homescreen.subtitle")}</Text>
-            </View>
-
-            <SearchBar
-              value={searchTerm}
-              onChangeText={handleSearch}
-              onClear={clearSearch}
-              isLoading={isSearching}
-              isValid={searchTerm.length === 0 || searchTerm.length >= 3}
-            />
-
-            {isSearching && (
-              <View style={styles.loadingContainer}>
-                <Text style={styles.loadingText}>{t("common.searching")}</Text>
-              </View>
-            )}
-
-            {searchError && (
-              <View style={styles.errorContainer}>
-                <Text style={styles.errorText}>{searchError}</Text>
-              </View>
-            )}
-
-            <SearchResults
-              results={searchResults}
-              searchTerm={searchTerm}
-              isLoading={isSearching}
-              error={searchError}
-              onCountryPress={handleCountryPress}
-              onTeamPress={handleTeamPress}
-              onLeaguePress={handleLeaguePress}
-              onHeartPress={toggleFavorite}
-              isFavorite={isFavorite}
-            />
-          </>
-        ) : (
-          // When not showing search results, use ScrollView for normal content
-          <ScrollView
-            style={styles.scrollView}
-            contentContainerStyle={styles.scrollContent}
-            showsVerticalScrollIndicator={false}
+        <View style={styles.header}>
+          <View style={styles.headerTextContainer}>
+            <Text style={styles.title}>{t("homescreen.title")}</Text>
+            <Text style={styles.subtitle}>{t("homescreen.subtitle")}</Text>
+          </View>
+          <TouchableOpacity
+            style={styles.searchButton}
+            onPress={handleSearchPress}
+            activeOpacity={0.7}
           >
-            <View style={styles.header}>
-              <Text style={styles.title}>{t("homescreen.title")}</Text>
-              <Text style={styles.subtitle}>{t("homescreen.subtitle")}</Text>
-            </View>
+            <Ionicons name="search" size={24} color={theme.colors.primary} />
+          </TouchableOpacity>
+        </View>
 
-            <SearchBar
-              value={searchTerm}
-              onChangeText={handleSearch}
-              onClear={clearSearch}
-              isLoading={isSearching}
-              isValid={searchTerm.length === 0 || searchTerm.length >= 3}
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
+          {favorites.length > 0 && (
+            <FavoritesSection
+              favorites={favorites}
+              onCountryPress={handleCountryPress}
             />
+          )}
 
-            {isSearching && (
-              <View style={styles.loadingContainer}>
-                <Text style={styles.loadingText}>{t("common.searching")}</Text>
-              </View>
-            )}
-
-            {searchError && (
-              <View style={styles.errorContainer}>
-                <Text style={styles.errorText}>{searchError}</Text>
-              </View>
-            )}
-
-            {shouldShowFavorites && (
-              <FavoritesSection
-                favorites={favorites}
-                onCountryPress={handleCountryPress}
-              />
-            )}
-
-            {shouldShowSuggested && (
-              <SuggestedSection
-                suggestedCountries={suggestedCountries}
-                onCountryPress={handleCountryPress}
-                onHeartPress={toggleFavorite}
-                isFavorite={isFavorite}
-              />
-            )}
-
-            {shouldShowNoResults && (
-              <View style={styles.noResultsContainer}>
-                <Text style={styles.noResultsText}>
-                  {t("search.noResults", { query: searchTerm })}
-                </Text>
-              </View>
-            )}
-          </ScrollView>
-        )}
+          <SuggestedSection
+            suggestedCountries={suggestedCountries}
+            onCountryPress={handleCountryPress}
+            onHeartPress={toggleFavorite}
+            isFavorite={isFavorite}
+          />
+        </ScrollView>
       </View>
     </SafeAreaView>
   );
@@ -183,8 +101,15 @@ const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
       paddingBottom: theme.spacing.xl,
     },
     header: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
       paddingHorizontal: theme.spacing.lg,
       marginBottom: theme.spacing.lg,
+    },
+    headerTextContainer: {
+      flex: 1,
+      marginRight: theme.spacing.md,
     },
     title: {
       fontSize: theme.typography.h1.fontSize,
@@ -197,31 +122,9 @@ const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
       fontWeight: theme.typography.body.fontWeight,
       color: theme.colors.textSecondary,
     },
-    loadingContainer: {
-      padding: theme.spacing.lg,
-      alignItems: "center",
-    },
-    loadingText: {
-      color: theme.colors.textSecondary,
-      fontSize: theme.typography.body.fontSize,
-    },
-    errorContainer: {
-      padding: theme.spacing.lg,
-      alignItems: "center",
-    },
-    errorText: {
-      color: theme.colors.error,
-      fontSize: theme.typography.body.fontSize,
-      textAlign: "center",
-    },
-    noResultsContainer: {
-      padding: theme.spacing.lg,
-      alignItems: "center",
-    },
-    noResultsText: {
-      color: theme.colors.textSecondary,
-      fontSize: theme.typography.body.fontSize,
-      textAlign: "center",
+    searchButton: {
+      padding: theme.spacing.sm,
+      marginLeft: theme.spacing.md,
     },
   });
 

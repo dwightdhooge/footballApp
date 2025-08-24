@@ -2,6 +2,7 @@ import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { useTheme } from "@/context/ThemeContext";
 import Homescreen from "@/screens/scores/homescreen";
+import SearchScreen from "@/screens/scores/search-screen/index";
 import CountryDetailScreen from "@/screens/scores/country-detail";
 import LeagueDetailScreen from "@/screens/scores/league-detail";
 import CupDetailScreen from "@/screens/scores/cup-detail";
@@ -33,6 +34,13 @@ const ScoresStackNavigator: React.FC = () => {
       <Stack.Screen
         name="Homescreen"
         component={Homescreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="SearchScreen"
+        component={SearchScreen}
         options={{
           headerShown: false,
         }}

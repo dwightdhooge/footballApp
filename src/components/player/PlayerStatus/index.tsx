@@ -29,7 +29,7 @@ const PlayerStatus: React.FC<PlayerStatusProps> = ({
 
   return (
     <View style={styles.playerStatusContainer}>
-      {goals > 0 && <GoalIcon isPenalty={isPenaltyGoal} size="small" />}
+      {goals > 0 && <GoalIcon isPenalty={isPenaltyGoal} size="xxSmall" />}
       {yellowCards > 0 && <Text style={styles.yellowCard}>🟨</Text>}
       {redCards > 0 && <Text style={styles.redCard}>🟥</Text>}
     </View>
@@ -44,10 +44,10 @@ const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
       gap: theme.spacing.xs,
     },
     yellowCard: {
-      fontSize: theme.typography.small.fontSize,
+      fontSize: theme.typography.xxSmall.fontSize,
     },
     redCard: {
-      fontSize: theme.typography.small.fontSize,
+      fontSize: theme.typography.xxSmall.fontSize,
     },
   });
 

@@ -121,6 +121,8 @@
   "matchCard": {
     "fullTime": "Full Time",
     "halfTime": "Half Time",
+    "firstHalf": "1st Half",
+    "secondHalf": "2nd Half",
     "extraTime": "Extra Time",
     "penalties": "Penalties",
     "live": "Live",
@@ -255,6 +257,8 @@
     "buildDescription": "Current build number"
   },
   "search": {
+    "title": "Search",
+    "enterQuery": "Enter at least 3 characters to search",
     "teams": "Teams",
     "leagues": "Leagues",
     "countries": "Countries",
@@ -291,7 +295,7 @@
     "stats": {
       "title": "Match Statistics",
       "note": "Statistics are fetched from live match data.",
-      "noData": "No statistics available for this match"
+      "noDataMessage": "Statistics are not available for this match. They may appear once the match starts or during live play."
     }
   },
   "events": {

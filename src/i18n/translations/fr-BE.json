@@ -119,6 +119,8 @@
   "matchCard": {
     "fullTime": "Temps Réglementaire",
     "halfTime": "Mi-temps",
+    "firstHalf": "1re Mi-temps",
+    "secondHalf": "2e Mi-temps",
     "extraTime": "Prolongations",
     "penalties": "Tirs au But",
     "live": "En Direct",
@@ -253,6 +255,8 @@
     "buildDescription": "Numéro de build actuel"
   },
   "search": {
+    "title": "Recherche",
+    "enterQuery": "Saisissez au moins 3 caractères pour rechercher",
     "teams": "Équipes",
     "leagues": "Ligues",
     "countries": "Pays",
@@ -289,7 +293,7 @@
     "stats": {
       "title": "Statistiques du Match",
       "note": "Les statistiques sont récupérées à partir des données de match en direct.",
-      "noData": "Aucune statistique disponible pour ce match"
+      "noDataMessage": "Les statistiques ne sont pas disponibles pour ce match. Elles peuvent apparaître une fois le match commencé ou pendant la diffusion en direct."
     }
   },
   "events": {

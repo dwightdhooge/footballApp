@@ -146,7 +146,7 @@ const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
     },
     number: {
       fontSize: theme.typography.caption.fontSize,
-      fontWeight: "bold",
+      fontWeight: theme.typography.h3.fontWeight,
       color: theme.colors.text,
     },
     playerDetails: {
@@ -154,7 +154,7 @@ const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
     },
     playerName: {
       fontSize: theme.typography.caption.fontSize,
-      fontWeight: "500",
+      fontWeight: theme.typography.caption.fontWeight,
       color: theme.colors.text,
     },
     statusContainer: {
@@ -163,8 +163,8 @@ const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
       marginLeft: theme.spacing.sm,
     },
     substitutionArrow: {
-      fontSize: theme.typography.small.fontSize,
-      fontWeight: "200",
+      fontSize: theme.typography.xxSmall.fontSize,
+      fontWeight: theme.typography.xxSmall.fontWeight,
       color: theme.colors.text,
       marginLeft: theme.spacing.xs,
       paddingHorizontal: theme.spacing.xs,

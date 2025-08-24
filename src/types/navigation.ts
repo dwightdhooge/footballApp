@@ -50,6 +50,7 @@ export type RootTabParamList = {
 
 export type ScoresStackParamList = {
   Homescreen: undefined;
+  SearchScreen: undefined;
   CountryDetail: { item: Country };
   LeagueDetail: { item: LeagueItem };
   CupDetail: { item: LeagueItem };

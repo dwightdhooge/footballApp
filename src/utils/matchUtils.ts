@@ -1,4 +1,5 @@
 import { ThemeColors } from "../styles/theme";
+import i18n from "../i18n";
 
 /**
  * Utility functies voor match components
@@ -18,28 +19,32 @@ export const getStatusColor = (status: string, theme: ThemeColors) => {
     case "scheduled":
     case "not started":
       return theme.textSecondary;
+    case "pst":
+      return theme.error;
     default:
       return theme.textSecondary;
   }
 };
 
 export const getStatusText = (status: string) => {
+  const { t } = i18n;
+
   switch (status.toLowerCase()) {
     case "ft":
     case "finished":
-      return "Beëindigd";
+      return t("matchCard.finished");
     case "1h":
-      return "1e Helft";
+      return t("matchCard.firstHalf");
     case "2h":
-      return "2e Helft";
+      return t("matchCard.secondHalf");
     case "ht":
-      return "Rust";
+      return t("matchCard.halfTime");
     case "live":
-      return "Live";
+      return t("matchCard.live");
     case "ns":
     case "scheduled":
     case "not started":
-      return "Gepland";
+      return t("matchCard.scheduled");
     default:
       return status;
   }

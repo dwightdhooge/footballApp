@@ -59,10 +59,10 @@ const AppVersionSection: React.FC<AppVersionSectionProps> = ({
 const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
   StyleSheet.create({
     container: {
-      borderRadius: 8,
-      marginHorizontal: 16,
-      marginVertical: 4,
-      padding: 16,
+      borderRadius: theme.spacing.sm,
+      marginHorizontal: theme.spacing.md,
+      marginVertical: theme.spacing.xs,
+      padding: theme.spacing.md,
       backgroundColor: theme.colors.surface,
     },
     content: {
@@ -70,29 +70,29 @@ const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
       alignItems: "center",
     },
     iconContainer: {
-      marginRight: 8,
+      marginRight: theme.spacing.sm,
       width: 24,
       alignItems: "center",
     },
     textContainer: {
       flex: 1,
-      marginLeft: 4,
+      marginLeft: theme.spacing.xs,
     },
     title: {
-      fontSize: 16,
+      fontSize: theme.typography.body.fontSize,
       fontWeight: "500",
       color: theme.colors.text,
     },
     subtitle: {
-      fontSize: 14,
-      marginTop: 4,
+      fontSize: theme.typography.small.fontSize,
+      marginTop: theme.spacing.xs,
       color: theme.colors.textSecondary,
     },
     versionContainer: {
-      marginLeft: 8,
+      marginLeft: theme.spacing.sm,
     },
     versionText: {
-      fontSize: 14,
+      fontSize: theme.typography.small.fontSize,
       fontWeight: "500",
       color: theme.colors.textSecondary,
     },

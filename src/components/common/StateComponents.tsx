@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { ActivityIndicator } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "@/context/ThemeContext";
 import { useTranslation } from "react-i18next";
 
@@ -63,24 +64,50 @@ export const ErrorState: React.FC<ErrorStateProps> = ({
 };
 
 interface EmptyStateProps {
-  icon: string;
-  title: string;
   message: string;
+  icon: keyof typeof Ionicons.glyphMap;
+  actionLabel?: string;
+  onAction?: () => void;
 }
 
 export const EmptyState: React.FC<EmptyStateProps> = ({
-  icon,
-  title,
   message,
+  icon,
+  actionLabel,
+  onAction,
 }) => {
   const { theme } = useTheme();
   const styles = getStyles(theme);
 
   return (
     <View style={styles.container}>
-      <Text style={styles.icon}>{icon}</Text>
-      <Text style={styles.title}>{title}</Text>
-      <Text style={styles.message}>{message}</Text>
+      <View
+        style={[
+          styles.iconContainer,
+          { backgroundColor: theme.colors.surface },
+        ]}
+      >
+        <Ionicons name={icon} size={48} color={theme.colors.textSecondary} />
+      </View>
+
+      <Text style={[styles.emptyStateMessage, { color: theme.colors.text }]}>
+        {message}
+      </Text>
+
+      {actionLabel && onAction && (
+        <TouchableOpacity
+          style={[
+            styles.actionButton,
+            { backgroundColor: theme.colors.primary },
+          ]}
+          onPress={onAction}
+          activeOpacity={0.7}
+        >
+          <Text style={[styles.actionText, { color: theme.colors.onPrimary }]}>
+            {actionLabel}
+          </Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
@@ -93,6 +120,14 @@ const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
       alignItems: "center",
       padding: theme.spacing.lg,
     },
+    // Loading state styles
+    message: {
+      fontSize: theme.typography.body.fontSize,
+      color: theme.colors.textSecondary,
+      textAlign: "center",
+      marginTop: theme.spacing.md,
+    },
+    // Error state styles
     icon: {
       fontSize: theme.spacing.xl * 3,
       marginBottom: theme.spacing.md,
@@ -103,13 +138,6 @@ const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
       marginBottom: theme.spacing.sm,
       color: theme.colors.textSecondary,
       textAlign: "center",
-    },
-    message: {
-      fontSize: theme.typography.caption.fontSize,
-      color: theme.colors.textSecondary,
-      textAlign: "center",
-      lineHeight: theme.spacing.xl * 1.25,
-      marginBottom: theme.spacing.md,
     },
     retryButton: {
       paddingHorizontal: theme.spacing.lg,
@@ -130,5 +158,32 @@ const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
       color: theme.colors.onPrimary,
       fontSize: theme.typography.caption.fontSize,
       fontWeight: "500",
+    },
+    // Empty state styles
+    iconContainer: {
+      width: 100,
+      height: 100,
+      borderRadius: 50,
+      justifyContent: "center",
+      alignItems: "center",
+      marginBottom: theme.spacing.xl,
+    },
+    emptyStateMessage: {
+      fontSize: theme.typography.body.fontSize,
+      textAlign: "center",
+      lineHeight: theme.typography.body.fontSize * 1.5,
+      marginBottom: theme.spacing.xl,
+      maxWidth: 280,
+    },
+    actionButton: {
+      paddingHorizontal: theme.spacing.lg,
+      paddingVertical: theme.spacing.md,
+      borderRadius: theme.spacing.xl,
+      minWidth: 120,
+      alignItems: "center",
+    },
+    actionText: {
+      fontSize: theme.typography.body.fontSize,
+      fontWeight: "600",
     },
   });

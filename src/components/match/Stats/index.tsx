@@ -4,6 +4,7 @@ import { useTheme } from "@/context/ThemeContext";
 import { useTranslation } from "react-i18next";
 import { useFixtureStatistics } from "@/hooks/useFixtureStatistics";
 import { Fixture } from "@/types/api";
+import { EmptyState } from "@/components/common/StateComponents";
 
 interface StatsProps {
   fixture: Fixture;
@@ -34,11 +35,14 @@ const Stats: React.FC<StatsProps> = ({ fixture }) => {
     );
   }
 
-  if (!stats) {
+  if (!stats || (Array.isArray(stats) && stats.length === 0)) {
     return (
-      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-        <Text style={styles.noDataText}>{t("match.stats.noData")}</Text>
-      </ScrollView>
+      <View style={[styles.container, styles.emptyStateContainer]}>
+        <EmptyState
+          message={t("match.stats.noDataMessage")}
+          icon="stats-chart"
+        />
+      </View>
     );
   }
 
@@ -135,47 +139,56 @@ const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
   StyleSheet.create({
     container: {
       flex: 1,
-      borderRadius: 12,
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.1,
-      shadowRadius: 4,
-      elevation: 3,
+      backgroundColor: theme.colors.background,
+    },
+    title: {
+      fontSize: theme.typography.h3.fontSize,
+      fontWeight: "600",
+      color: theme.colors.text,
+      marginBottom: theme.spacing.md,
+      paddingHorizontal: theme.spacing.md,
     },
     statsContainer: {
-      padding: theme.spacing.md,
+      paddingHorizontal: theme.spacing.md,
     },
     statRow: {
       flexDirection: "row",
-      justifyContent: "space-between",
       alignItems: "center",
       paddingVertical: theme.spacing.sm,
       borderBottomWidth: 1,
       borderBottomColor: theme.colors.border,
     },
+    statLabel: {
+      flex: 1,
+      fontSize: theme.typography.body.fontSize,
+      color: theme.colors.textSecondary,
+    },
     statValue: {
+      flex: 1,
       fontSize: theme.typography.body.fontSize,
       fontWeight: "600",
       color: theme.colors.text,
+      textAlign: "center",
+    },
+    statValueHome: {
       flex: 1,
-      textAlign: "center",
+      fontSize: theme.typography.body.fontSize,
+      fontWeight: "600",
+      color: theme.colors.text,
+      textAlign: "right",
     },
-    statLabel: {
-      fontSize: theme.typography.caption.fontSize,
-      fontWeight: "500",
-      color: theme.colors.textSecondary,
-      flex: 2,
-      textAlign: "center",
+    statValueAway: {
+      flex: 1,
+      fontSize: theme.typography.body.fontSize,
+      fontWeight: "600",
+      color: theme.colors.text,
+      textAlign: "left",
     },
-    note: {
+    teamName: {
       fontSize: theme.typography.caption.fontSize,
       color: theme.colors.textSecondary,
       textAlign: "center",
-      fontStyle: "italic",
-      paddingHorizontal: theme.spacing.md,
-      paddingBottom: theme.spacing.md,
+      marginTop: theme.spacing.xs,
     },
     loadingText: {
       fontSize: theme.typography.body.fontSize,
@@ -199,12 +212,8 @@ const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
       marginTop: theme.spacing.sm,
       textDecorationLine: "underline",
     },
-    noDataText: {
-      fontSize: theme.typography.body.fontSize,
-      fontWeight: "500",
-      color: theme.colors.textSecondary,
-      textAlign: "center",
-      marginTop: theme.spacing.xl,
+    emptyStateContainer: {
+      justifyContent: "center",
     },
   });
 

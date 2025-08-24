@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet, FlatList, RefreshControl } from "react-native";
+import { View, StyleSheet, FlatList } from "react-native";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import { useTheme } from "@/context/ThemeContext";
 import { useFavorites } from "@/context/FavoritesContext";
@@ -9,6 +9,8 @@ import LeagueCard from "../../league/LeagueCard";
 import TeamCard from "../../team/TeamCard";
 import PlayerCard from "../../player/PlayerCard";
 import { ScoresStackParamList } from "@/types/navigation";
+import { useTranslation } from "react-i18next";
+import { EmptyState } from "@/components/common/StateComponents";
 
 interface FavoritesListProps {
   category: "players" | "teams" | "leagues" | "countries";
@@ -22,6 +24,7 @@ const FavoritesList: React.FC<FavoritesListProps> = ({
   const navigation = useNavigation<NavigationProp<ScoresStackParamList>>();
   const { theme } = useTheme();
   const { removeFavoriteItem } = useFavorites();
+  const { t } = useTranslation();
 
   const renderFavoriteItem = ({
     item,
@@ -166,18 +169,39 @@ const FavoritesList: React.FC<FavoritesListProps> = ({
 
   const styles = getStyles(theme);
 
+  const getEmptyStateMessage = () => {
+    switch (category) {
+      case "players":
+        return t("favorites.emptyPlayers");
+      case "teams":
+        return t("favorites.emptyTeams");
+      case "leagues":
+        return t("favorites.emptyLeagues");
+      case "countries":
+        return t("favorites.emptyCountries");
+      default:
+        return t("favorites.emptyGeneral");
+    }
+  };
+
   return (
     <View style={styles.container}>
-      <FlatList
-        data={favorites}
-        renderItem={renderFavoriteItem}
-        keyExtractor={(item) => getItemId(item, category)}
-        numColumns={3}
-        columnWrapperStyle={styles.row}
-        contentContainerStyle={styles.listContent}
-        showsVerticalScrollIndicator={false}
-        getItemLayout={getItemLayout}
-      />
+      {favorites.length === 0 ? (
+        <View style={styles.emptyContainer}>
+          <EmptyState message={getEmptyStateMessage()} icon="heart-outline" />
+        </View>
+      ) : (
+        <FlatList
+          data={favorites}
+          renderItem={renderFavoriteItem}
+          keyExtractor={(item) => getItemId(item, category)}
+          numColumns={3}
+          columnWrapperStyle={styles.row}
+          contentContainerStyle={styles.listContent}
+          showsVerticalScrollIndicator={false}
+          getItemLayout={getItemLayout}
+        />
+      )}
     </View>
   );
 };
@@ -198,6 +222,12 @@ const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
     cardContainer: {
       width: "32%", // Vaste breedte voor 3 kolommen met kleine spacing
       marginHorizontal: theme.spacing.xs / 2, // 4px tussen cards (2px aan elke kant)
+    },
+    emptyContainer: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      paddingVertical: theme.spacing.xl,
     },
   });
 

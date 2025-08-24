@@ -14,7 +14,7 @@ import CountryCard from "../../country/CountryCard";
 import TeamCard from "../../team/TeamCard";
 import LeagueCard from "../../league/LeagueCard";
 import CategoryTabs from "../../favorites/CategoryTabs";
-import EmptyState from "../../utility/EmptyState";
+import { EmptyState } from "@/components/common/StateComponents";
 import { useTheme } from "@/context/ThemeContext";
 
 // Simple error boundary component
@@ -64,11 +64,13 @@ interface SearchResultsProps {
   searchTerm: string;
   isLoading: boolean;
   error: string | null;
+  selectedCategory: "players" | "teams" | "leagues" | "countries";
   onCountryPress: (country: Country) => void;
   onTeamPress: (team: TeamSearchResult) => void;
   onLeaguePress: (league: LeagueItem) => void;
   onHeartPress: (country: Country) => void;
   isFavorite: (countryCode: string) => boolean;
+  hasSearched: boolean;
 }
 
 const SearchResults: React.FC<SearchResultsProps> = (props) => {
@@ -84,17 +86,16 @@ const SearchResultsContent: React.FC<SearchResultsProps> = ({
   searchTerm,
   isLoading,
   error,
+  selectedCategory,
   onCountryPress,
   onTeamPress,
   onLeaguePress,
   onHeartPress,
   isFavorite,
+  hasSearched,
 }) => {
   const { theme } = useTheme();
   const { t } = useTranslation();
-  const [selectedCategory, setSelectedCategory] = React.useState<
-    "players" | "teams" | "leagues" | "countries"
-  >("players");
 
   const styles = getStyles(theme);
 
@@ -107,26 +108,13 @@ const SearchResultsContent: React.FC<SearchResultsProps> = ({
 
   const { teams, leagues, countries } = safeResults;
 
-  // Determine initial category based on available results
-  React.useEffect(() => {
-    if (teams.length > 0) {
-      setSelectedCategory("teams");
-    } else if (leagues.length > 0) {
-      setSelectedCategory("leagues");
-    } else if (countries.length > 0) {
-      setSelectedCategory("countries");
-    } else {
-      setSelectedCategory("players"); // Default to players if no results
-    }
-  }, [teams.length, leagues.length, countries.length]);
+  const totalResults = teams.length + leagues.length + countries.length;
 
-  const handleCategoryChange = (
-    category: "players" | "teams" | "leagues" | "countries"
-  ) => {
-    setSelectedCategory(category);
-  };
+  // Only show loading if we have no previous results and no current results
+  // This prevents flickering when transitioning from results to no results
+  const shouldShowLoading = isLoading && totalResults === 0 && !hasSearched;
 
-  if (isLoading) {
+  if (shouldShowLoading) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color={theme.colors.primary} />
@@ -147,13 +135,13 @@ const SearchResultsContent: React.FC<SearchResultsProps> = ({
     );
   }
 
-  const totalResults = teams.length + leagues.length + countries.length;
   if (totalResults === 0) {
     return (
       <View style={styles.emptyContainer}>
-        <Text style={styles.emptyText}>
-          {t("search.noResults", { query: searchTerm })}
-        </Text>
+        <EmptyState
+          message={t("search.noResults", { query: searchTerm })}
+          icon="search-outline"
+        />
       </View>
     );
   }
@@ -227,13 +215,6 @@ const SearchResultsContent: React.FC<SearchResultsProps> = ({
     return <View style={styles.cardContainer}>{renderCard()}</View>;
   };
 
-  const categoryCounts = {
-    players: 0,
-    teams: teams.length,
-    leagues: leagues.length,
-    countries: countries.length,
-  };
-
   const getCurrentData = () => {
     switch (selectedCategory) {
       case "players":
@@ -295,22 +276,14 @@ const SearchResultsContent: React.FC<SearchResultsProps> = ({
     return message;
   };
 
-  // Only show categories that have results
-  const availableCategories = Object.entries(categoryCounts)
-    .filter(([_, count]) => count > 0)
-    .reduce((acc, [key, count]) => {
-      acc[key as keyof typeof categoryCounts] = count;
-      return acc;
-    }, {} as typeof categoryCounts);
-
   return (
-    <View style={styles.container}>
-      <CategoryTabs
-        selectedCategory={selectedCategory}
-        onCategoryChange={handleCategoryChange}
-        counts={categoryCounts}
-      />
-
+    <View
+      style={[
+        styles.container,
+        (getCurrentData().length === 0 || totalResults === 0) &&
+          styles.containerWithEmptyState,
+      ]}
+    >
       {getCurrentData().length > 0 ? (
         <FlatList
           data={getCurrentData()}
@@ -393,11 +366,6 @@ const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
       alignItems: "center",
       paddingVertical: theme.spacing.xl,
     },
-    emptyText: {
-      textAlign: "center",
-      ...theme.typography.body,
-      color: theme.colors.textSecondary,
-    },
     row: {
       justifyContent: "flex-start",
       marginBottom: theme.spacing.md, // 16px tussen rijen
@@ -413,6 +381,9 @@ const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
       paddingVertical: theme.spacing.xl,
       paddingHorizontal: theme.spacing.md,
       minHeight: 300, // Ensure minimum height for visibility
+    },
+    containerWithEmptyState: {
+      flex: 1, // Ensure the container takes full height when empty
     },
   });
 

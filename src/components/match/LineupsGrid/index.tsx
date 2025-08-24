@@ -57,8 +57,7 @@ const LineupsGrid: React.FC<LineupsGridProps> = ({
     return (
       <View style={styles.container}>
         <EmptyState
-          icon="👥"
-          title={t("lineups.noLineupsAvailable")}
+          icon="people-outline"
           message={t("lineups.teamLineupsNotAvailable")}
         />
       </View>
