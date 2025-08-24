@@ -87,13 +87,10 @@ const LeagueDetailScreen: React.FC = () => {
 
   const handleToggleFavorite = async () => {
     try {
-      if (isItemFavorite(item, "competition")) {
-        await removeFavoriteItem(
-          `competition_${item.league.id}`,
-          "competition"
-        );
+      if (isItemFavorite(item, "leagues")) {
+        await removeFavoriteItem(`leagues_${item.league.id}`, "leagues");
       } else {
-        await addFavoriteItem(item, "competition");
+        await addFavoriteItem(item, "leagues");
       }
     } catch (error) {
       console.error("Error toggling favorite:", error);
@@ -178,10 +175,10 @@ const LeagueDetailScreen: React.FC = () => {
         hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
       >
         <Ionicons
-          name={isItemFavorite(item, "competition") ? "heart" : "heart-outline"}
+          name={isItemFavorite(item, "leagues") ? "heart" : "heart-outline"}
           size={24}
           color={
-            isItemFavorite(item, "competition")
+            isItemFavorite(item, "leagues")
               ? theme.colors.error
               : theme.colors.textSecondary
           }

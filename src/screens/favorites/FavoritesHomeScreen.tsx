@@ -12,25 +12,25 @@ const FavoritesHomeScreen: React.FC = () => {
   const { theme } = useTheme();
   const {
     favoriteCountries,
-    favoriteCompetitions,
+    favoriteLeagues,
     favoriteTeams,
     favoritePlayers,
   } = useFavorites();
 
   const [selectedCategory, setSelectedCategory] = useState<
-    "countries" | "competitions" | "teams" | "players"
-  >("countries");
+    "players" | "teams" | "leagues" | "countries"
+  >("players");
 
   const getFavoritesForCategory = () => {
     switch (selectedCategory) {
-      case "countries":
-        return favoriteCountries;
-      case "competitions":
-        return favoriteCompetitions;
-      case "teams":
-        return favoriteTeams;
       case "players":
         return favoritePlayers;
+      case "teams":
+        return favoriteTeams;
+      case "leagues":
+        return favoriteLeagues;
+      case "countries":
+        return favoriteCountries;
       default:
         return [];
     }
@@ -38,14 +38,14 @@ const FavoritesHomeScreen: React.FC = () => {
 
   const getEmptyStateMessage = () => {
     switch (selectedCategory) {
-      case "countries":
-        return t("favorites.emptyCountries");
-      case "competitions":
-        return t("favorites.emptyCompetitions");
-      case "teams":
-        return t("favorites.emptyTeams");
       case "players":
         return t("favorites.emptyPlayers");
+      case "teams":
+        return t("favorites.emptyTeams");
+      case "leagues":
+        return t("favorites.emptyLeagues");
+      case "countries":
+        return t("favorites.emptyCountries");
       default:
         return t("favorites.emptyGeneral");
     }
@@ -71,10 +71,10 @@ const FavoritesHomeScreen: React.FC = () => {
         selectedCategory={selectedCategory}
         onCategoryChange={setSelectedCategory}
         counts={{
-          countries: favoriteCountries.length,
-          competitions: favoriteCompetitions.length,
-          teams: favoriteTeams.length,
           players: favoritePlayers.length,
+          teams: favoriteTeams.length,
+          leagues: favoriteLeagues.length,
+          countries: favoriteCountries.length,
         }}
       />
 

@@ -34,12 +34,12 @@
     "subtitle": "Accès rapide à vos éléments sauvegardés",
     "categories": {
       "countries": "Pays",
-      "competitions": "Compétitions",
+      "leagues": "Ligues",
       "teams": "Équipes",
       "players": "Joueurs"
     },
     "emptyCountries": "Aucun pays favori pour le moment. Commencez par ajouter des pays à vos favoris depuis l'onglet Scores.",
-    "emptyCompetitions": "Aucune compétition favorite pour le moment. Commencez par ajouter des ligues et des coupes à vos favoris depuis l'onglet Scores.",
+    "emptyLeagues": "Aucune ligue favorite pour le moment. Commencez par ajouter des ligues et des coupes à vos favoris depuis l'onglet Scores.",
     "emptyTeams": "Aucune équipe favorite pour le moment. Commencez par ajouter des équipes à vos favoris depuis l'onglet Scores.",
     "emptyPlayers": "Aucun joueur favori pour le moment. Commencez par ajouter des joueurs à vos favoris depuis l'onglet Scores.",
     "emptyGeneral": "Aucun favori dans cette catégorie pour le moment."
@@ -47,7 +47,7 @@
   "homescreen": {
     "title": "Scores de Football",
     "subtitle": "Découvrez les données de football par pays",
-    "searchPlaceholder": "Rechercher des pays, des ligues...",
+    "searchPlaceholder": "Rechercher des pays, des ligues, des équipes...",
     "suggestedCountries": "Pays Suggérés",
     "recentMatches": "Matchs Récents",
     "topLeagues": "Ligues Principales",
@@ -253,14 +253,17 @@
     "buildDescription": "Numéro de build actuel"
   },
   "search": {
-    "placeholder": "Rechercher des pays, des ligues, des équipes...",
-    "noResults": "Aucun résultat trouvé",
-    "searching": "Recherche...",
-    "error": "Une erreur s'est produite lors de la recherche",
-    "retry": "Réessayer",
-    "recentSearches": "Recherches Récentes",
-    "clearRecent": "Effacer les Récentes",
-    "noRecentSearches": "Aucune recherche récente"
+    "teams": "Équipes",
+    "leagues": "Ligues",
+    "countries": "Pays",
+    "resultsFor": "Résultats pour \"{{query}}\" ({{count}} trouvé)",
+    "noResults": "Aucun résultat trouvé pour \"{{query}}\"",
+    "noPlayersResults": "Aucun joueur trouvé pour \"{{query}}\"",
+    "noTeamsResults": "Aucune équipe trouvée pour \"{{query}}\"",
+    "noLeaguesResults": "Aucune ligue trouvée pour \"{{query}}\"",
+    "noCountriesResults": "Aucun pays trouvé pour \"{{query}}\"",
+    "searchError": "La recherche a échoué. Veuillez réessayer.",
+    "minCharacters": "Veuillez saisir au moins 3 caractères"
   },
   "tabs": {
     "events": "Événements",

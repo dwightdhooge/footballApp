@@ -1,6 +1,49 @@
 import { API_CONFIG } from "./config";
 import { LeaguesApiResponse, LeagueItem, ApiError } from "../../types/api";
 
+// New interface for league search results
+export interface LeagueSearchApiResponse {
+  get: string;
+  parameters: {
+    search?: string;
+  };
+  errors: string[];
+  results: number;
+  paging: {
+    current: number;
+    total: number;
+  };
+  response: LeagueItem[];
+}
+
+export const searchLeagues = async (
+  searchTerm: string
+): Promise<LeagueItem[]> => {
+  try {
+    const response = await fetch(
+      `${API_CONFIG.baseURL}/leagues?search=${encodeURIComponent(searchTerm)}`,
+      {
+        headers: API_CONFIG.headers,
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data: LeagueSearchApiResponse = await response.json();
+
+    if (!data.response || !Array.isArray(data.response)) {
+      return [];
+    }
+
+    return data.response;
+  } catch (error) {
+    console.error("Error searching leagues:", error);
+    return [];
+  }
+};
+
 export const fetchLeaguesForCountry = async (
   countryCode: string
 ): Promise<LeagueItem[]> => {

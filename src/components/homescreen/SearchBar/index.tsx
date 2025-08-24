@@ -69,9 +69,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
         )}
       </View>
       {!isValid && value.length > 0 && (
-        <Text style={styles.errorText}>
-          {t("search.minCharacters", { count: value.length })}
-        </Text>
+        <Text style={styles.errorText}>{t("search.minCharacters")}</Text>
       )}
     </View>
   );

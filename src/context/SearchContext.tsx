@@ -7,12 +7,22 @@ import React, {
 } from "react";
 import { useTranslation } from "react-i18next";
 import { Country } from "@/types/api";
+import { LeagueItem } from "@/types/api";
+import { TeamSearchResult } from "@/services/api/teams";
 import { fetchCountries } from "@/services/api/countries";
+import { searchTeams } from "@/services/api/teams";
+import { searchLeagues } from "@/services/api/leagues";
 import { debounce, isValidSearch } from "@/utils/helpers";
+
+interface SearchResults {
+  teams: TeamSearchResult[];
+  leagues: LeagueItem[];
+  countries: Country[];
+}
 
 interface SearchContextType {
   searchTerm: string;
-  searchResults: Country[];
+  searchResults: SearchResults;
   isSearching: boolean;
   hasSearched: boolean;
   error: string | null;
@@ -30,7 +40,11 @@ interface SearchProviderProps {
 export const SearchProvider: React.FC<SearchProviderProps> = ({ children }) => {
   const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState("");
-  const [searchResults, setSearchResults] = useState<Country[]>([]);
+  const [searchResults, setSearchResults] = useState<SearchResults>({
+    teams: [],
+    leagues: [],
+    countries: [],
+  });
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -38,7 +52,7 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({ children }) => {
   const performSearch = useCallback(
     async (term: string) => {
       if (!isValidSearch(term)) {
-        setSearchResults([]);
+        setSearchResults({ teams: [], leagues: [], countries: [] });
         setHasSearched(false);
         setError(null);
         return;
@@ -49,12 +63,32 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({ children }) => {
       setHasSearched(true);
 
       try {
-        const results = await fetchCountries(term);
-        setSearchResults(results);
+        // Perform all searches in parallel
+        const [
+          teamsResults,
+          leaguesResults,
+          countriesResults,
+        ] = await Promise.allSettled([
+          searchTeams(term),
+          searchLeagues(term),
+          fetchCountries(term),
+        ]);
+
+        const newResults: SearchResults = {
+          teams: teamsResults.status === "fulfilled" ? teamsResults.value : [],
+          leagues:
+            leaguesResults.status === "fulfilled" ? leaguesResults.value : [],
+          countries:
+            countriesResults.status === "fulfilled"
+              ? countriesResults.value
+              : [],
+        };
+
+        setSearchResults(newResults);
       } catch (err) {
         console.error("Search error:", err);
         setError(t("search.searchError"));
-        setSearchResults([]);
+        setSearchResults({ teams: [], leagues: [], countries: [] });
       } finally {
         setIsSearching(false);
       }
@@ -76,7 +110,7 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({ children }) => {
 
   const clearSearch = () => {
     setSearchTerm("");
-    setSearchResults([]);
+    setSearchResults({ teams: [], leagues: [], countries: [] });
     setHasSearched(false);
     setError(null);
   };

@@ -18,12 +18,12 @@ const CupInfo: React.FC<CupInfoProps> = ({ cup }) => {
     removeFavoriteItem,
   } = useFavorites();
 
-  const handleHeartPress = async () => {
+  const handleToggleFavorite = async () => {
     try {
-      if (isItemFavorite(cup, "competition")) {
-        await removeFavoriteItem(`competition_${cup.league.id}`, "competition");
+      if (isItemFavorite(cup, "leagues")) {
+        await removeFavoriteItem(`leagues_${cup.league.id}`, "leagues");
       } else {
-        await addFavoriteItem(cup, "competition");
+        await addFavoriteItem(cup, "leagues");
       }
     } catch (error) {
       console.error("Error toggling favorite:", error);
@@ -62,15 +62,15 @@ const CupInfo: React.FC<CupInfoProps> = ({ cup }) => {
       </View>
 
       <TouchableOpacity
-        style={styles.heartButton}
-        onPress={handleHeartPress}
-        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+        style={styles.favoriteButton}
+        onPress={handleToggleFavorite}
+        activeOpacity={0.7}
       >
         <Ionicons
-          name={isItemFavorite(cup, "competition") ? "heart" : "heart-outline"}
+          name={isItemFavorite(cup, "leagues") ? "heart" : "heart-outline"}
           size={24}
           color={
-            isItemFavorite(cup, "competition")
+            isItemFavorite(cup, "leagues")
               ? theme.colors.error
               : theme.colors.textSecondary
           }

@@ -1,6 +1,6 @@
 import React from "react";
 import { View, StyleSheet, FlatList, RefreshControl } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, NavigationProp } from "@react-navigation/native";
 import { useTheme } from "@/context/ThemeContext";
 import { useFavorites } from "@/context/FavoritesContext";
 import { FavoriteItem, FavoriteType } from "@/services/storage/favorites";
@@ -8,9 +8,10 @@ import CountryCard from "../../country/CountryCard";
 import LeagueCard from "../../league/LeagueCard";
 import TeamCard from "../../team/TeamCard";
 import PlayerCard from "../../player/PlayerCard";
+import { ScoresStackParamList } from "@/types/navigation";
 
 interface FavoritesListProps {
-  category: "countries" | "competitions" | "teams" | "players";
+  category: "players" | "teams" | "leagues" | "countries";
   favorites: FavoriteItem[];
 }
 
@@ -18,7 +19,7 @@ const FavoritesList: React.FC<FavoritesListProps> = ({
   category,
   favorites,
 }) => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<ScoresStackParamList>>();
   const { theme } = useTheme();
   const { removeFavoriteItem } = useFavorites();
 
@@ -30,32 +31,31 @@ const FavoritesList: React.FC<FavoritesListProps> = ({
     index: number;
   }) => {
     const handlePress = () => {
-      try {
-        switch (category) {
-          case "countries":
-            (navigation as any).navigate("CountryDetail", { item });
-            break;
-          case "competitions":
-            const leagueItem = item as any;
-            if (leagueItem.league.type === "League") {
-              (navigation as any).navigate("LeagueDetail", { item });
-            } else {
-              (navigation as any).navigate("CupDetail", { item });
-            }
-            break;
-          case "teams":
-            (navigation as any).navigate("TeamDetail", { item });
-            break;
-          case "players":
-            (navigation as any).navigate("PlayerDetail", { item });
-            break;
-        }
-      } catch (error) {
-        console.error("Navigation error:", error);
+      switch (category) {
+        case "players":
+          const playerItem = item as any;
+          navigation.navigate("PlayerDetail", { item: playerItem });
+          break;
+        case "teams":
+          const teamItem = item as any;
+          navigation.navigate("TeamDetail", { item: teamItem });
+          break;
+        case "leagues":
+          const leagueItem = item as any;
+          if (leagueItem.league.type === "League") {
+            navigation.navigate("LeagueDetail", { item: leagueItem });
+          } else {
+            navigation.navigate("CupDetail", { item: leagueItem });
+          }
+          break;
+        case "countries":
+          const countryItem = item as any;
+          navigation.navigate("CountryDetail", { item: countryItem });
+          break;
       }
     };
 
-    const handleRemove = async () => {
+    const handleRemove = async (item: FavoriteItem, category: string) => {
       try {
         const itemId = getItemId(item, category);
         const favoriteType = getFavoriteType(category);
@@ -67,14 +67,14 @@ const FavoritesList: React.FC<FavoritesListProps> = ({
 
     const getFavoriteType = (category: string): FavoriteType => {
       switch (category) {
-        case "countries":
-          return "country";
-        case "competitions":
-          return "competition";
-        case "teams":
-          return "team";
         case "players":
           return "player";
+        case "teams":
+          return "team";
+        case "leagues":
+          return "leagues";
+        case "countries":
+          return "country";
         default:
           return "country";
       }
@@ -82,46 +82,6 @@ const FavoritesList: React.FC<FavoritesListProps> = ({
 
     const renderCard = () => {
       switch (category) {
-        case "countries":
-          const country = item as any;
-          return (
-            <CountryCard
-              name={country.name}
-              code={country.code}
-              flag={country.flag}
-              onPress={handlePress}
-              onRemove={handleRemove}
-              size="small"
-            />
-          );
-
-        case "competitions":
-          const leagueItem = item as any;
-          return (
-            <LeagueCard
-              id={leagueItem.league.id}
-              name={leagueItem.league.name}
-              logo={leagueItem.league.logo}
-              type={leagueItem.league.type}
-              onPress={handlePress}
-              onRemove={handleRemove}
-              size="small"
-            />
-          );
-
-        case "teams":
-          const team = item as any;
-          return (
-            <TeamCard
-              id={team.id}
-              name={team.name}
-              logo={team.logo}
-              onPress={handlePress}
-              onRemove={handleRemove}
-              size="small"
-            />
-          );
-
         case "players":
           const player = item as any;
           return (
@@ -131,11 +91,46 @@ const FavoritesList: React.FC<FavoritesListProps> = ({
               photo={player.player.photo}
               position={player.player.position}
               onPress={handlePress}
-              onRemove={handleRemove}
+              onRemove={() => handleRemove(item, category)}
               size="small"
             />
           );
-
+        case "teams":
+          const team = item as any;
+          return (
+            <TeamCard
+              id={team.id}
+              name={team.name}
+              logo={team.logo}
+              onPress={handlePress}
+              onRemove={() => handleRemove(item, category)}
+              size="small"
+            />
+          );
+        case "leagues":
+          const leagueItem = item as any;
+          return (
+            <LeagueCard
+              id={leagueItem.league.id}
+              name={leagueItem.league.name}
+              logo={leagueItem.league.logo}
+              type={leagueItem.league.type}
+              onPress={handlePress}
+              onRemove={() => handleRemove(item, category)}
+              size="small"
+            />
+          );
+        case "countries":
+          return (
+            <CountryCard
+              name={(item as any).name}
+              code={(item as any).code}
+              flag={(item as any).flag}
+              onPress={handlePress}
+              onRemove={() => handleRemove(item, category)}
+              size="small"
+            />
+          );
         default:
           return null;
       }
@@ -146,18 +141,18 @@ const FavoritesList: React.FC<FavoritesListProps> = ({
 
   const getItemId = (item: FavoriteItem, category: string): string => {
     switch (category) {
-      case "countries":
-        const country = item as any;
-        return `country_${country.code}`;
-      case "competitions":
-        const leagueItem = item as any;
-        return `competition_${leagueItem.league.id}`;
-      case "teams":
-        const team = item as any;
-        return `team_${team.id}`;
       case "players":
         const player = item as any;
         return `player_${player.player.id}`;
+      case "teams":
+        const team = item as any;
+        return `team_${team.id}`;
+      case "leagues":
+        const leagueItem = item as any;
+        return `leagues_${leagueItem.league.id}`;
+      case "countries":
+        const country = item as any;
+        return `country_${country.code}`;
       default:
         return `unknown_${Date.now()}`;
     }

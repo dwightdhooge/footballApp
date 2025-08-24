@@ -31,7 +31,7 @@ const EmptyState: React.FC<EmptyStateProps> = ({
         <Ionicons name={icon} size={48} color={theme.colors.textSecondary} />
       </View>
 
-      <Text style={[styles.message, { color: theme.colors.textSecondary }]}>
+      <Text style={[styles.message, { color: theme.colors.text }]}>
         {message}
       </Text>
 
@@ -55,10 +55,10 @@ const EmptyState: React.FC<EmptyStateProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 40,
+    paddingVertical: 20,
   },
   iconContainer: {
     width: 100,

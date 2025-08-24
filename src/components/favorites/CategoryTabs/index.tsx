@@ -10,15 +10,15 @@ import { useTranslation } from "react-i18next";
 import { useTheme } from "@/context/ThemeContext";
 
 interface CategoryTabsProps {
-  selectedCategory: "countries" | "competitions" | "teams" | "players";
+  selectedCategory: "players" | "teams" | "leagues" | "countries";
   onCategoryChange: (
-    category: "countries" | "competitions" | "teams" | "players"
+    category: "players" | "teams" | "leagues" | "countries"
   ) => void;
   counts: {
-    countries: number;
-    competitions: number;
-    teams: number;
     players: number;
+    teams: number;
+    leagues: number;
+    countries: number;
   };
 }
 
@@ -32,14 +32,9 @@ const CategoryTabs: React.FC<CategoryTabsProps> = ({
 
   const categories = [
     {
-      key: "countries",
-      label: t("favorites.categories.countries"),
-      count: counts.countries,
-    },
-    {
-      key: "competitions",
-      label: t("favorites.categories.competitions"),
-      count: counts.competitions,
+      key: "players",
+      label: t("favorites.categories.players"),
+      count: counts.players,
     },
     {
       key: "teams",
@@ -47,11 +42,18 @@ const CategoryTabs: React.FC<CategoryTabsProps> = ({
       count: counts.teams,
     },
     {
-      key: "players",
-      label: t("favorites.categories.players"),
-      count: counts.players,
+      key: "leagues",
+      label: t("favorites.categories.leagues"),
+      count: counts.leagues,
+    },
+    {
+      key: "countries",
+      label: t("favorites.categories.countries"),
+      count: counts.countries,
     },
   ] as const;
+
+  const styles = getStyles(theme);
 
   return (
     <View style={styles.container}>
@@ -67,14 +69,7 @@ const CategoryTabs: React.FC<CategoryTabsProps> = ({
               key={category.key}
               style={[
                 styles.tab,
-                {
-                  backgroundColor: isSelected
-                    ? theme.colors.primary
-                    : theme.colors.surface,
-                  borderColor: isSelected
-                    ? theme.colors.primary
-                    : theme.colors.border,
-                },
+                isSelected ? styles.tabSelected : styles.tabUnselected,
               ]}
               onPress={() => onCategoryChange(category.key)}
               activeOpacity={0.7}
@@ -82,36 +77,13 @@ const CategoryTabs: React.FC<CategoryTabsProps> = ({
               <Text
                 style={[
                   styles.tabLabel,
-                  {
-                    color: isSelected ? theme.colors.text : theme.colors.text,
-                  },
+                  isSelected
+                    ? styles.tabLabelSelected
+                    : styles.tabLabelUnselected,
                 ]}
               >
                 {category.label}
               </Text>
-              <View
-                style={[
-                  styles.countBadge,
-                  {
-                    backgroundColor: isSelected
-                      ? theme.colors.text
-                      : theme.colors.textSecondary,
-                  },
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.countText,
-                    {
-                      color: isSelected
-                        ? theme.colors.primary
-                        : theme.colors.background,
-                    },
-                  ]}
-                >
-                  {category.count}
-                </Text>
-              </View>
             </TouchableOpacity>
           );
         })}
@@ -120,40 +92,67 @@ const CategoryTabs: React.FC<CategoryTabsProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    marginBottom: 20,
-  },
-  scrollContent: {
-    paddingHorizontal: 20,
-  },
-  tab: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    marginRight: 12,
-    borderRadius: 20,
-    borderWidth: 1,
-    minWidth: 100,
-    justifyContent: "center",
-  },
-  tabLabel: {
-    fontSize: 14,
-    fontWeight: "600",
-    marginRight: 8,
-  },
-  countBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
-    minWidth: 20,
-    alignItems: "center",
-  },
-  countText: {
-    fontSize: 12,
-    fontWeight: "bold",
-  },
-});
+const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
+  StyleSheet.create({
+    container: {
+      marginBottom: theme.spacing.lg,
+    },
+    scrollContent: {
+      paddingHorizontal: theme.spacing.lg,
+    },
+    tab: {
+      flexDirection: "row",
+      alignItems: "center",
+      paddingHorizontal: theme.spacing.xs,
+      paddingVertical: theme.spacing.xs,
+      marginRight: theme.spacing.xs,
+      borderRadius: theme.borderRadius.lg,
+      borderWidth: 1,
+      justifyContent: "center",
+    },
+    tabSelected: {
+      backgroundColor: theme.colors.primary,
+      borderColor: theme.colors.primary,
+    },
+    tabUnselected: {
+      backgroundColor: theme.colors.surface,
+      borderColor: theme.colors.border,
+    },
+    tabLabel: {
+      fontSize: theme.typography.caption.fontSize,
+      fontWeight: theme.typography.caption.fontWeight,
+      marginRight: theme.spacing.sm,
+      marginLeft: theme.spacing.sm,
+    },
+    tabLabelSelected: {
+      color: theme.colors.text,
+    },
+    tabLabelUnselected: {
+      color: theme.colors.text,
+    },
+    countBadge: {
+      paddingHorizontal: theme.spacing.xs,
+      paddingVertical: theme.spacing.xs,
+      borderRadius: theme.borderRadius.md,
+      minWidth: 20,
+      alignItems: "center",
+    },
+    countBadgeSelected: {
+      backgroundColor: theme.colors.text,
+    },
+    countBadgeUnselected: {
+      backgroundColor: theme.colors.textSecondary,
+    },
+    countText: {
+      fontSize: theme.typography.caption.fontSize,
+      fontWeight: "bold",
+    },
+    countTextSelected: {
+      color: theme.colors.primary,
+    },
+    countTextUnselected: {
+      color: theme.colors.background,
+    },
+  });
 
 export default CategoryTabs;

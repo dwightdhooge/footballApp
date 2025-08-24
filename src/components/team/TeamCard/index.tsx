@@ -8,7 +8,7 @@ interface TeamCardProps {
   name: string;
   logo: string;
   onPress: () => void;
-  onRemove: () => void; // Alleen voor favorites list
+  onRemove?: () => void; // Made optional
   size?: "small" | "medium" | "large";
   disabled?: boolean;
 }
@@ -24,121 +24,83 @@ const TeamCard: React.FC<TeamCardProps> = ({
 }) => {
   const { theme } = useTheme();
 
-  const getSizeStyles = () => {
-    switch (size) {
-      case "small":
-        return {
-          width: 100,
-          height: 100,
-          logoSize: 24,
-          fontSize: 12,
-          padding: 8,
-        };
-      case "medium":
-        return {
-          width: 140,
-          height: 120,
-          logoSize: 40,
-          fontSize: 14,
-          padding: 12,
-        };
-      case "large":
-        return {
-          width: 160,
-          height: 140,
-          logoSize: 48,
-          fontSize: 16,
-          padding: 16,
-        };
-      default:
-        return {
-          width: 140,
-          height: 120,
-          logoSize: 40,
-          fontSize: 14,
-          padding: 12,
-        };
-    }
-  };
-
-  const sizeStyles = getSizeStyles();
+  const styles = getStyles(theme, size);
 
   return (
     <TouchableOpacity
-      style={[
-        styles.container,
-        {
-          width: sizeStyles.width,
-          height: sizeStyles.height,
-          padding: sizeStyles.padding,
-          backgroundColor: theme.colors.surface,
-          borderColor: theme.colors.border,
-          opacity: disabled ? 0.5 : 1,
-          marginHorizontal: size === "small" ? 4 : 8, // Kleinere margin voor small size
-        },
-      ]}
+      style={[styles.container, disabled && styles.disabled]}
       onPress={onPress}
       disabled={disabled}
       activeOpacity={0.7}
     >
-      <TouchableOpacity
-        style={styles.removeButton}
-        onPress={onRemove}
-        activeOpacity={0.7}
-      >
-        <Ionicons name="close-circle" size={20} color={theme.colors.error} />
-      </TouchableOpacity>
+      {onRemove && (
+        <TouchableOpacity
+          style={styles.removeButton}
+          onPress={onRemove}
+          activeOpacity={0.7}
+        >
+          <Ionicons name="close-circle" size={20} color={theme.colors.error} />
+        </TouchableOpacity>
+      )}
 
       <View style={styles.logoContainer}>
         <Image
           source={{ uri: logo }}
-          style={[
-            styles.logo,
-            {
-              width: sizeStyles.logoSize,
-              height: sizeStyles.logoSize,
-            },
-          ]}
+          style={styles.logo}
           resizeMode="contain"
           onError={() => {
             console.warn(`Failed to load logo for ${name}`);
           }}
         />
       </View>
-      <Text style={[styles.name, { fontSize: sizeStyles.fontSize }]} numberOfLines={2}>
+      <Text style={styles.name} numberOfLines={2}>
         {name}
       </Text>
     </TouchableOpacity>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    borderRadius: 12,
-    borderWidth: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    position: "relative",
-  },
-  removeButton: {
-    position: "absolute",
-    top: 4,
-    right: 4,
-    zIndex: 1,
-  },
-  logoContainer: {
-    marginBottom: 8,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  logo: {
-    borderRadius: 8,
-  },
-  name: {
-    fontWeight: "600",
-    textAlign: "center",
-    lineHeight: 18,
-  },
-});
+const getStyles = (theme: ReturnType<typeof useTheme>["theme"], size: string) =>
+  StyleSheet.create({
+    container: {
+      width: size === "small" ? 100 : size === "large" ? 160 : 140,
+      height: size === "small" ? 100 : size === "large" ? 140 : 120,
+      padding: size === "small" ? 8 : size === "large" ? 16 : 12,
+      borderRadius: 12,
+      borderWidth: 1,
+      alignItems: "center",
+      justifyContent: "center",
+      position: "relative",
+      backgroundColor: theme.colors.surface,
+      borderColor: theme.colors.border,
+      marginHorizontal: size === "small" ? 4 : 8,
+    },
+    disabled: {
+      opacity: 0.5,
+    },
+    removeButton: {
+      position: "absolute",
+      top: 4,
+      right: 4,
+      zIndex: 1,
+    },
+    logoContainer: {
+      marginBottom: 8,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    logo: {
+      width: size === "small" ? 24 : size === "large" ? 48 : 40,
+      height: size === "small" ? 24 : size === "large" ? 48 : 40,
+      borderRadius: 8,
+    },
+    name: {
+      fontWeight: "600",
+      textAlign: "center",
+      lineHeight: 18,
+      fontSize: size === "small" ? 12 : size === "large" ? 16 : 14,
+      color: theme.colors.text,
+    },
+  });
 
 export default TeamCard;

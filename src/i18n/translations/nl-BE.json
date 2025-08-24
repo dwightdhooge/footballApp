@@ -34,12 +34,12 @@
     "subtitle": "Snelle toegang tot je opgeslagen items",
     "categories": {
       "countries": "Landen",
-      "competitions": "Competities",
+      "leagues": "Leagues",
       "teams": "Teams",
       "players": "Spelers"
     },
     "emptyCountries": "Nog geen favoriete landen. Begin met het toevoegen van landen aan je favorieten vanuit het Scores tabblad.",
-    "emptyCompetitions": "Nog geen favoriete competities. Begin met het toevoegen van leagues en bekers aan je favorieten vanuit het Scores tabblad.",
+    "emptyLeagues": "Nog geen favoriete leagues. Begin met het toevoegen van leagues en bekers aan je favorieten vanuit het Scores tabblad.",
     "emptyTeams": "Nog geen favoriete teams. Begin met het toevoegen van teams aan je favorieten vanuit het Scores tabblad.",
     "emptyPlayers": "Nog geen favoriete spelers. Begin met het toevoegen van spelers aan je favorieten vanuit het Scores tabblad.",
     "emptyGeneral": "Nog geen favorieten in deze categorie."
@@ -47,7 +47,7 @@
   "homescreen": {
     "title": "Voetbal Scores",
     "subtitle": "Ontdek voetbaldata per land",
-    "searchPlaceholder": "Zoek naar landen, leagues...",
+    "searchPlaceholder": "Zoek naar landen, leagues, teams...",
     "suggestedCountries": "Voorgestelde Landen",
     "recentMatches": "Recente Wedstrijden",
     "topLeagues": "Top Leagues",
@@ -253,14 +253,17 @@
     "buildDescription": "Huidige build-nummer"
   },
   "search": {
-    "placeholder": "Zoek naar landen, leagues, teams...",
-    "noResults": "Geen resultaten gevonden",
-    "searching": "Zoeken...",
-    "error": "Er is een fout opgetreden tijdens het zoeken",
-    "retry": "Opnieuw proberen",
-    "recentSearches": "Recente Zoekopdrachten",
-    "clearRecent": "Recente Wissen",
-    "noRecentSearches": "Geen recente zoekopdrachten"
+    "teams": "Teams",
+    "leagues": "Competities",
+    "countries": "Landen",
+    "resultsFor": "Resultaten voor \"{{query}}\" ({{count}} gevonden)",
+    "noResults": "Geen resultaten gevonden voor \"{{query}}\"",
+    "noPlayersResults": "Geen spelers gevonden voor \"{{query}}\"",
+    "noTeamsResults": "Geen teams gevonden voor \"{{query}}\"",
+    "noLeaguesResults": "Geen competities gevonden voor \"{{query}}\"",
+    "noCountriesResults": "Geen landen gevonden voor \"{{query}}\"",
+    "searchError": "Zoeken mislukt. Probeer het opnieuw.",
+    "minCharacters": "Voer minimaal 3 tekens in"
   },
   "tabs": {
     "events": "Gebeurtenissen",

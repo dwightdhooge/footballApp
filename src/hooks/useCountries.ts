@@ -1,14 +1,21 @@
 import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
-import { Country } from "@/types/api";
+import { Country, LeagueItem } from "@/types/api";
+import { TeamSearchResult } from "@/services/api/teams";
 import { useSearch } from "@/context/SearchContext";
 import { useFavorites } from "@/context/FavoritesContext";
 import { SUGGESTED_COUNTRIES } from "@/utils/constants";
 
+interface SearchResults {
+  teams: TeamSearchResult[];
+  leagues: LeagueItem[];
+  countries: Country[];
+}
+
 interface UseCountriesReturn {
   // Search related
   searchTerm: string;
-  searchResults: Country[];
+  searchResults: SearchResults;
   isSearching: boolean;
   hasSearched: boolean;
   searchError: string | null;
@@ -87,10 +94,11 @@ export const useCountries = (): UseCountriesReturn => {
   );
 
   // Computed values for conditional rendering
+  const totalResults = searchResults.teams.length + searchResults.leagues.length + searchResults.countries.length;
   const shouldShowSearchResults =
-    hasSearched && !isSearching && searchResults.length > 0;
+    hasSearched && !isSearching && totalResults > 0;
   const shouldShowNoResults =
-    hasSearched && !isSearching && searchResults.length === 0;
+    hasSearched && !isSearching && totalResults === 0;
   const shouldShowFavorites = !hasSearched && favoriteCountries.length > 0;
   const shouldShowSuggested = !hasSearched;
 

@@ -107,10 +107,28 @@ const PlayerCard: React.FC<PlayerCardProps> = ({
           }}
         />
       </View>
-      <Text style={[styles.name, { fontSize: sizeStyles.fontSize }]} numberOfLines={2}>
+      <Text
+        style={[
+          styles.name,
+          {
+            fontSize: sizeStyles.fontSize,
+            color: theme.colors.text,
+          },
+        ]}
+        numberOfLines={2}
+      >
         {name}
       </Text>
-      <Text style={[styles.position, { fontSize: sizeStyles.fontSize * 0.8 }]} numberOfLines={1}>
+      <Text
+        style={[
+          styles.position,
+          {
+            fontSize: sizeStyles.fontSize * 0.8,
+            color: theme.colors.textSecondary,
+          },
+        ]}
+        numberOfLines={1}
+      >
         {position}
       </Text>
     </TouchableOpacity>

@@ -27,7 +27,7 @@ interface FavoritesContextType {
 
   // New generic favorites support
   favoriteCountries: Country[];
-  favoriteCompetitions: LeagueItem[];
+  favoriteLeagues: LeagueItem[];
   favoriteTeams: Team[];
   favoritePlayers: PlayerProfile[];
 
@@ -53,9 +53,7 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({
 
   // New state for generic favorites
   const [favoriteCountries, setFavoriteCountries] = useState<Country[]>([]);
-  const [favoriteCompetitions, setFavoriteCompetitions] = useState<
-    LeagueItem[]
-  >([]);
+  const [favoriteLeagues, setFavoriteLeagues] = useState<LeagueItem[]>([]);
   const [favoriteTeams, setFavoriteTeams] = useState<Team[]>([]);
   const [favoritePlayers, setFavoritePlayers] = useState<PlayerProfile[]>([]);
 
@@ -83,15 +81,15 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({
 
   const loadGenericFavoritesFromStorage = async () => {
     try {
-      const [countries, competitions, teams, players] = await Promise.all([
+      const [countries, leagues, teams, players] = await Promise.all([
         getFavoritesByType("country"),
-        getFavoritesByType("competition"),
+        getFavoritesByType("leagues"),
         getFavoritesByType("team"),
         getFavoritesByType("player"),
       ]);
 
       setFavoriteCountries(countries as Country[]);
-      setFavoriteCompetitions(competitions as LeagueItem[]);
+      setFavoriteLeagues(leagues as LeagueItem[]);
       setFavoriteTeams(teams as Team[]);
       setFavoritePlayers(players as PlayerProfile[]);
     } catch (error) {
@@ -153,8 +151,8 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({
         return favoriteCountries.some(
           (fav) => fav.code === (item as Country).code
         );
-      case "competition":
-        return favoriteCompetitions.some(
+      case "leagues":
+        return favoriteLeagues.some(
           (fav) => fav.league.id === (item as LeagueItem).league.id
         );
       case "team":
@@ -182,7 +180,7 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({
     toggleFavorite,
     loadFavoritesFromStorage,
     favoriteCountries,
-    favoriteCompetitions,
+    favoriteLeagues,
     favoriteTeams,
     favoritePlayers,
     addFavoriteItem,

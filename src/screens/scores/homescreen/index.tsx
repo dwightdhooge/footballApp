@@ -3,7 +3,8 @@ import { View, ScrollView, StyleSheet, SafeAreaView, Text } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { useTranslation } from "react-i18next";
-import { Country } from "@/types/api";
+import { Country, LeagueItem } from "@/types/api";
+import { TeamSearchResult } from "@/services/api/teams";
 import { ScoresStackParamList } from "@/types/navigation";
 import { useTheme } from "@/context/ThemeContext";
 import { useCountries } from "@/hooks";
@@ -11,6 +12,7 @@ import SearchBar from "@/components/homescreen/SearchBar";
 import SearchResults from "@/components/homescreen/SearchResults";
 import FavoritesSection from "@/components/homescreen/FavoritesSection";
 import SuggestedSection from "@/components/homescreen/SuggestedSection";
+import { Team } from "@/types/api";
 
 type ScoresNavigationProp = StackNavigationProp<ScoresStackParamList>;
 
@@ -41,77 +43,123 @@ const Homescreen: React.FC = () => {
     navigation.navigate("CountryDetail", { item: country });
   };
 
+  const handleTeamPress = (team: TeamSearchResult) => {
+    // Create a Team object that matches what TeamDetail expects
+    const teamItem: Team = {
+      id: team.team.id,
+      name: team.team.name,
+      logo: team.team.logo,
+      winner: false, // Default value
+    };
+    navigation.navigate("TeamDetail", { item: teamItem });
+  };
+
+  const handleLeaguePress = (league: LeagueItem) => {
+    navigation.navigate("LeagueDetail", { item: league });
+  };
+
   const styles = getStyles(theme);
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-        <ScrollView
-          style={styles.scrollView}
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={false}
-        >
-          <View style={styles.header}>
-            <Text style={styles.title}>{t("homescreen.title")}</Text>
-            <Text style={styles.subtitle}>{t("homescreen.subtitle")}</Text>
-          </View>
-
-          <SearchBar
-            value={searchTerm}
-            onChangeText={handleSearch}
-            onClear={clearSearch}
-            isLoading={isSearching}
-            isValid={searchTerm.length === 0 || searchTerm.length >= 3}
-          />
-
-          {isSearching && (
-            <View style={styles.loadingContainer}>
-              <Text style={styles.loadingText}>{t("common.searching")}</Text>
+        {shouldShowSearchResults ? (
+          // When showing search results, don't wrap in ScrollView to avoid VirtualizedList nesting
+          <>
+            <View style={styles.header}>
+              <Text style={styles.title}>{t("homescreen.title")}</Text>
+              <Text style={styles.subtitle}>{t("homescreen.subtitle")}</Text>
             </View>
-          )}
 
-          {searchError && (
-            <View style={styles.errorContainer}>
-              <Text style={styles.errorText}>{searchError}</Text>
-            </View>
-          )}
+            <SearchBar
+              value={searchTerm}
+              onChangeText={handleSearch}
+              onClear={clearSearch}
+              isLoading={isSearching}
+              isValid={searchTerm.length === 0 || searchTerm.length >= 3}
+            />
 
-          {shouldShowSearchResults && (
+            {isSearching && (
+              <View style={styles.loadingContainer}>
+                <Text style={styles.loadingText}>{t("common.searching")}</Text>
+              </View>
+            )}
+
+            {searchError && (
+              <View style={styles.errorContainer}>
+                <Text style={styles.errorText}>{searchError}</Text>
+              </View>
+            )}
+
             <SearchResults
               results={searchResults}
               searchTerm={searchTerm}
               isLoading={isSearching}
               error={searchError}
               onCountryPress={handleCountryPress}
+              onTeamPress={handleTeamPress}
+              onLeaguePress={handleLeaguePress}
               onHeartPress={toggleFavorite}
               isFavorite={isFavorite}
             />
-          )}
-
-          {shouldShowNoResults && (
-            <View style={styles.noResultsContainer}>
-              <Text style={styles.noResultsText}>
-                {t("search.noResults", { query: searchTerm })}
-              </Text>
+          </>
+        ) : (
+          // When not showing search results, use ScrollView for normal content
+          <ScrollView
+            style={styles.scrollView}
+            contentContainerStyle={styles.scrollContent}
+            showsVerticalScrollIndicator={false}
+          >
+            <View style={styles.header}>
+              <Text style={styles.title}>{t("homescreen.title")}</Text>
+              <Text style={styles.subtitle}>{t("homescreen.subtitle")}</Text>
             </View>
-          )}
 
-          {shouldShowFavorites && (
-            <FavoritesSection
-              favorites={favorites}
-              onCountryPress={handleCountryPress}
+            <SearchBar
+              value={searchTerm}
+              onChangeText={handleSearch}
+              onClear={clearSearch}
+              isLoading={isSearching}
+              isValid={searchTerm.length === 0 || searchTerm.length >= 3}
             />
-          )}
 
-          {shouldShowSuggested && (
-            <SuggestedSection
-              suggestedCountries={suggestedCountries}
-              onCountryPress={handleCountryPress}
-              onHeartPress={toggleFavorite}
-              isFavorite={isFavorite}
-            />
-          )}
-        </ScrollView>
+            {isSearching && (
+              <View style={styles.loadingContainer}>
+                <Text style={styles.loadingText}>{t("common.searching")}</Text>
+              </View>
+            )}
+
+            {searchError && (
+              <View style={styles.errorContainer}>
+                <Text style={styles.errorText}>{searchError}</Text>
+              </View>
+            )}
+
+            {shouldShowFavorites && (
+              <FavoritesSection
+                favorites={favorites}
+                onCountryPress={handleCountryPress}
+              />
+            )}
+
+            {shouldShowSuggested && (
+              <SuggestedSection
+                suggestedCountries={suggestedCountries}
+                onCountryPress={handleCountryPress}
+                onHeartPress={toggleFavorite}
+                isFavorite={isFavorite}
+              />
+            )}
+
+            {shouldShowNoResults && (
+              <View style={styles.noResultsContainer}>
+                <Text style={styles.noResultsText}>
+                  {t("search.noResults", { query: searchTerm })}
+                </Text>
+              </View>
+            )}
+          </ScrollView>
+        )}
       </View>
     </SafeAreaView>
   );
