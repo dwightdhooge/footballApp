@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { svgCache } from "@/services/storage/svgCache";
+import { fetchSvg } from "@/services/api";
 
 interface UseSvgCacheResult {
   svgData: string | null;
@@ -26,7 +27,7 @@ export const useSvgCache = (
 
   const { ttl, skip = false } = options;
 
-  const fetchSvg = useCallback(
+  const fetchAndCacheSvg = useCallback(
     async (svgUrl: string) => {
       try {
         setIsLoading(true);
@@ -40,14 +41,12 @@ export const useSvgCache = (
         }
 
         // If not in cache, fetch from network
-        const response = await fetch(svgUrl);
-        if (!response.ok) {
-          throw new Error(
-            `Failed to fetch SVG: ${response.status} ${response.statusText}`
-          );
+        const result = await fetchSvg(svgUrl);
+        if (!result.success || !result.data) {
+          throw new Error(result.error || "Failed to fetch SVG");
         }
 
-        const svgText = await response.text();
+        const svgText = result.data;
 
         // Store in cache
         await svgCache.set(svgUrl, svgText, ttl);
@@ -67,15 +66,15 @@ export const useSvgCache = (
 
   const refetch = useCallback(async () => {
     if (url && !skip) {
-      await fetchSvg(url);
+      await fetchAndCacheSvg(url);
     }
-  }, [url, skip, fetchSvg]);
+  }, [url, skip, fetchAndCacheSvg]);
 
   useEffect(() => {
     if (url && !skip) {
-      fetchSvg(url);
+      fetchAndCacheSvg(url);
     }
-  }, [url, skip, fetchSvg]);
+  }, [url, skip, fetchAndCacheSvg]);
 
   return {
     svgData,

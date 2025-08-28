@@ -3,6 +3,12 @@ import { Fixture, Season } from "@/types/api";
 import { fetchRounds } from "@/services/api/rounds";
 import { fetchCupFixtures } from "@/services/api/fixtures";
 import { checkCurrentRound as getCurrentRound } from "@/services/api";
+import {
+  fetchWithDeduplication,
+  generateCacheKey,
+  getRoundCacheInfo,
+} from "@/services/cache";
+import { cacheStorage } from "@/services/cache";
 
 interface UseCupDataReturn {
   // Season management
@@ -74,18 +80,60 @@ export const useCupData = (
 
   const fetchRoundsForSeason = useCallback(async () => {
     if (!selectedSeason) return;
-    try {
-      setIsLoadingRounds(true);
-      setRoundsError(null);
 
-      const roundsData = await fetchRounds(cupId, selectedSeason.year);
-      setRounds(roundsData);
+    const cacheKey = generateCacheKey.rounds(
+      cupId.toString(),
+      selectedSeason.year.toString()
+    );
 
+    // Check cache first
+    const cachedRounds = cacheStorage.get<string[]>(cacheKey);
+    if (cachedRounds) {
+      setRounds(cachedRounds);
+      setIsLoadingRounds(false);
+
+      // Fetch current round separately (this doesn't block the dropdown)
       const current = await getCurrentRound(cupId, selectedSeason.year);
       setCurrentRound(current || null);
 
       // Only auto-select round if user hasn't manually selected one
-      // This prevents overriding user selections when season changes
+      if (!selectedRound) {
+        let roundToSelect: string | null = null;
+        if (current && cachedRounds.includes(current)) {
+          roundToSelect = current;
+        } else if (cachedRounds.length > 0) {
+          roundToSelect = cachedRounds[0];
+        }
+        setSelectedRound(roundToSelect);
+      } else {
+        // If user has selected a round, check if it's still valid for the new season
+        if (!cachedRounds.includes(selectedRound)) {
+          setSelectedRound(null);
+        }
+      }
+      return;
+    }
+
+    try {
+      setIsLoadingRounds(true);
+      setRoundsError(null);
+
+      const roundsData = await fetchWithDeduplication(cacheKey, () =>
+        fetchRounds(cupId, selectedSeason.year)
+      );
+
+      // Store in cache
+      cacheStorage.set(cacheKey, roundsData);
+      setRounds(roundsData);
+
+      // Enable the round dropdown as soon as rounds data is available
+      setIsLoadingRounds(false);
+
+      // Fetch current round separately (this doesn't block the dropdown)
+      const current = await getCurrentRound(cupId, selectedSeason.year);
+      setCurrentRound(current || null);
+
+      // Only auto-select round if user hasn't manually selected one
       if (!selectedRound) {
         let roundToSelect: string | null = null;
         if (current && roundsData.includes(current)) {
@@ -96,7 +144,6 @@ export const useCupData = (
         setSelectedRound(roundToSelect);
       } else {
         // If user has selected a round, check if it's still valid for the new season
-        // If not, reset to null so they can select a new one
         if (!roundsData.includes(selectedRound)) {
           setSelectedRound(null);
         }
@@ -106,22 +153,44 @@ export const useCupData = (
       setRounds([]);
       setCurrentRound(null);
       setSelectedRound(null);
-    } finally {
       setIsLoadingRounds(false);
     }
   }, [cupId, selectedSeason, selectedRound]);
 
   const fetchFixturesForRound = useCallback(async () => {
     if (!selectedSeason || !selectedRound) return;
+
+    const baseCacheKey = `CUP_FIXTURES_${cupId}_${selectedSeason.year}_${selectedRound}`;
+
+    // Check cache first
+    const cachedFixtures = cacheStorage.get<Fixture[]>(baseCacheKey);
+    if (cachedFixtures) {
+      setFixtures(cachedFixtures);
+      setIsLoadingFixtures(false);
+      return;
+    }
+
     try {
       setIsLoadingFixtures(true);
       setFixturesError(null);
 
-      const data = await fetchCupFixtures(
-        cupId,
-        selectedSeason.year,
-        selectedRound
+      const data = await fetchWithDeduplication(baseCacheKey, () =>
+        fetchCupFixtures(cupId, selectedSeason.year, selectedRound)
       );
+
+      // Get smart cache info for this round
+      const isCurrentRound = selectedRound === currentRound;
+      const finalCacheInfo = getRoundCacheInfo(
+        data,
+        cupId.toString(),
+        selectedSeason.year.toString(),
+        selectedRound,
+        isCurrentRound
+      );
+
+      // Store in cache with smart TTL
+      cacheStorage.set(finalCacheInfo.key, data, finalCacheInfo.ttl);
+
       setFixtures(data);
     } catch (error) {
       setFixturesError(
@@ -131,7 +200,7 @@ export const useCupData = (
     } finally {
       setIsLoadingFixtures(false);
     }
-  }, [cupId, selectedSeason, selectedRound]);
+  }, [cupId, selectedSeason, selectedRound, currentRound]);
 
   // Fetch rounds when season changes
   useEffect(() => {

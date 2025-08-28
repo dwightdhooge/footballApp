@@ -16,9 +16,6 @@ import SeasonDropdown from "../../../components/league/SeasonDropdown";
 import RoundDropdown from "../../../components/cup/RoundDropdown";
 import MatchesList from "../../../components/match/MatchesList";
 
-// Verwijderd: canShowFixtures import (nu in hook)
-// import { canShowFixtures } from "../../../utils/helpers";
-
 type CupDetailScreenNavigationProp = StackNavigationProp<
   ScoresStackParamList,
   "CupDetail"
@@ -88,12 +85,6 @@ const CupDetailScreen: React.FC = () => {
 
   const handleRoundChange = (round: string) => {
     setSelectedRound(round);
-  };
-
-  const handleRetry = () => {
-    if (selectedSeason) {
-      refetchRounds();
-    }
   };
 
   const handleMatchPress = (fixture: Fixture) => {

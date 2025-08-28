@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { CACHE_TTL } from "../../utils/constants/cache";
 
 interface CachedImage {
   data: string; // base64 encoded data voor PNG/JPG, raw SVG content voor SVG
@@ -21,7 +22,7 @@ class ImageCacheService {
   private readonly maxFileSize: number;
 
   constructor(config: ImageCacheConfig = {}) {
-    this.defaultTtl = config.defaultTtl || 24 * 60 * 60 * 1000; // 24 hours default
+    this.defaultTtl = config.defaultTtl || CACHE_TTL.imageCache; // 24 hours default
     this.maxCacheSize = config.maxCacheSize || 1000; // max 1000 cached items
     this.maxFileSize = config.maxFileSize || 5 * 1024 * 1024; // 5MB default
   }

@@ -6,6 +6,12 @@ import {
   fetchRounds,
   checkCurrentRound,
 } from "../services/api";
+import {
+  fetchWithDeduplication,
+  generateCacheKey,
+  getRoundCacheInfo,
+} from "@/services/cache";
+import { cacheStorage } from "@/services/cache";
 
 interface UseLeagueDataReturn {
   // Data
@@ -87,7 +93,34 @@ export const useLeagueData = (
       setIsLoadingStandings(true);
       setStandingsError(null);
 
-      const standingsData = await fetchStandings(leagueId, selectedSeason.year);
+      // Generate smart cache key for standings
+      const cacheKey = generateCacheKey.standings(
+        leagueId.toString(),
+        selectedSeason.year.toString()
+      );
+
+      // Check cache first
+      const cachedStandings = cacheStorage.get<Standing[]>(cacheKey);
+      if (cachedStandings) {
+        console.log(`[Standings] Cache HIT for season: ${selectedSeason.year}`);
+        setStandings(cachedStandings);
+        setIsLoadingStandings(false);
+        return;
+      }
+
+      console.log(
+        `[Standings] Cache MISS for season: ${selectedSeason.year}, fetching from API...`
+      );
+
+      // Use request deduplication to prevent multiple simultaneous requests
+      const standingsData = await fetchWithDeduplication(cacheKey, () =>
+        fetchStandings(leagueId, selectedSeason.year)
+      );
+
+      // Store in cache
+      cacheStorage.set(cacheKey, standingsData);
+      console.log(`[Standings] Stored in cache with key: ${cacheKey}`);
+
       setStandings(standingsData);
     } catch (error) {
       console.error("Error fetching standings:", error);
@@ -107,19 +140,61 @@ export const useLeagueData = (
       setIsLoadingRounds(true);
       setRoundsError(null);
 
-      const roundsData = await fetchRounds(leagueId, selectedSeason.year);
+      // Generate smart cache key for rounds
+      const cacheKey = generateCacheKey.rounds(
+        leagueId.toString(),
+        selectedSeason.year.toString()
+      );
+
+      // Check cache first
+      const cachedRounds = cacheStorage.get<string[]>(cacheKey);
+      if (cachedRounds) {
+        console.log(`[Rounds] Cache HIT for season: ${selectedSeason.year}`);
+        setRounds(cachedRounds);
+
+        // Check for current round in cache
+        const cachedCurrentRound = cacheStorage.get<string>(
+          `CURRENT_ROUND_${leagueId}_${selectedSeason.year}`
+        );
+        if (cachedCurrentRound) {
+          setCurrentRound(cachedCurrentRound);
+        } else if (cachedRounds.length > 0) {
+          setCurrentRound(cachedRounds[0]);
+        }
+
+        setIsLoadingRounds(false);
+        return;
+      }
+
+      console.log(
+        `[Rounds] Cache MISS for season: ${selectedSeason.year}, fetching from API...`
+      );
+
+      // Use request deduplication to prevent multiple simultaneous requests
+      const roundsData = await fetchWithDeduplication(cacheKey, () =>
+        fetchRounds(leagueId, selectedSeason.year)
+      );
       setRounds(roundsData);
 
       // Check for current round
-      const currentRoundData = await checkCurrentRound(
-        leagueId,
-        selectedSeason.year
+      const currentRoundData = await fetchWithDeduplication(
+        `CURRENT_ROUND_${leagueId}_${selectedSeason.year}`,
+        () => checkCurrentRound(leagueId, selectedSeason.year)
       );
       if (currentRoundData) {
         setCurrentRound(currentRoundData);
+        // Cache the current round
+        cacheStorage.set(
+          `CURRENT_ROUND_${leagueId}_${selectedSeason.year}`,
+          currentRoundData
+        );
       } else if (roundsData.length > 0) {
         setCurrentRound(roundsData[0]);
       }
+
+      // Store rounds in cache
+      cacheStorage.set(cacheKey, roundsData);
+      console.log(`[Rounds] Stored in cache with key: ${cacheKey}`);
     } catch (error) {
       console.error("Error fetching rounds:", error);
       setRoundsError(error instanceof Error ? error.message : "Unknown error");
@@ -137,11 +212,48 @@ export const useLeagueData = (
         setIsLoadingFixtures(true);
         setFixturesError(null);
 
-        const fixturesData = await fetchFixtures(
-          leagueId,
-          selectedSeason.year,
-          selectedRound
+        // Generate smart cache key and TTL based on round and fixture statuses
+        const { key: baseCacheKey, ttl } = getRoundCacheInfo(
+          [], // Empty array initially, we'll update after fetching
+          leagueId.toString(),
+          selectedSeason.year.toString(),
+          selectedRound,
+          selectedRound === currentRound
         );
+
+        // Check cache first
+        const cachedFixtures = cacheStorage.get<Fixture[]>(baseCacheKey);
+        if (cachedFixtures) {
+          console.log(`[Fixtures] Cache HIT for round: ${selectedRound}`);
+          setFixtures(cachedFixtures);
+          setIsLoadingFixtures(false);
+          return;
+        }
+
+        console.log(
+          `[Fixtures] Cache MISS for round: ${selectedRound}, fetching from API...`
+        );
+
+        // Use request deduplication to prevent multiple simultaneous requests
+        const fixturesData = await fetchWithDeduplication(baseCacheKey, () =>
+          fetchFixtures(leagueId, selectedSeason.year, selectedRound)
+        );
+
+        // Now get the final cache info with actual fixture data
+        const finalCacheInfo = getRoundCacheInfo(
+          fixturesData,
+          leagueId.toString(),
+          selectedSeason.year.toString(),
+          selectedRound,
+          selectedRound === currentRound
+        );
+
+        // Store in cache with smart round-based key and custom TTL
+        cacheStorage.set(finalCacheInfo.key, fixturesData, finalCacheInfo.ttl);
+        console.log(
+          `[Fixtures] Stored in cache with key: ${finalCacheInfo.key} (TTL: ${finalCacheInfo.ttl}ms)`
+        );
+
         setFixtures(fixturesData);
       } catch (error) {
         console.error("Error fetching fixtures:", error);
@@ -153,7 +265,7 @@ export const useLeagueData = (
         setIsLoadingFixtures(false);
       }
     },
-    [leagueId, selectedSeason]
+    [leagueId, selectedSeason, currentRound]
   );
 
   const refetchStandings = useCallback(async () => {

@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { CACHE_TTL } from "../../utils/constants/cache";
 
 interface CachedSvg {
   data: string;
@@ -17,7 +18,7 @@ class SvgCacheService {
   private readonly maxCacheSize: number;
 
   constructor(config: SvgCacheConfig = {}) {
-    this.defaultTtl = config.defaultTtl || 24 * 60 * 60 * 1000; // 24 hours default
+    this.defaultTtl = config.defaultTtl || CACHE_TTL.svgCache; // 24 hours default
     this.maxCacheSize = config.maxCacheSize || 1000; // max 1000 cached items
   }
 

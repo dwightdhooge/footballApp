@@ -9,3 +9,4 @@ export * from "./lineups";
 export * from "./players";
 export * from "./statistics";
 export * from "./teams";
+export * from "./svg";

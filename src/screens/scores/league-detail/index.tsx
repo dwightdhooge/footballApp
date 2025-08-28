@@ -24,12 +24,10 @@ import {
   RoundDropdown,
   StandingsTable,
   MatchCard,
-  FlagSvg,
 } from "@/components";
 import CachedImage from "@/components/common/CachedImage";
 import FavoriteButton from "@/components/common/FavoriteButton";
 import { LeagueItem, Fixture } from "@/types/api";
-import { Ionicons } from "@expo/vector-icons";
 
 type LeagueDetailRouteProp = RouteProp<ScoresStackParamList, "LeagueDetail">;
 type LeagueDetailNavigationProp = NavigationProp<
@@ -127,28 +125,7 @@ const LeagueDetailScreen: React.FC = () => {
     refetchStandings,
     refetchFixtures,
     refetchRounds,
-    canShowStandings,
-    canShowFixtures,
   } = useLeagueData(item.league.id, item.seasons, undefined, selectedRound);
-
-  // Remove the custom favorites functionality
-  // const {
-  //   isItemFavorite,
-  //   addFavoriteItem,
-  //   removeFavoriteItem,
-  // } = useFavorites();
-
-  // const handleToggleFavorite = async () => {
-  //   try {
-  //     if (isItemFavorite(item, "leagues")) {
-  //       await removeFavoriteItem(`leagues_${item.league.id}`, "leagues");
-  //     } else {
-  //       await addFavoriteItem(item, "leagues");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error toggling favorite:", error);
-  //   }
-  // };
 
   // Set selected round when current round changes
   useEffect(() => {
@@ -156,14 +133,6 @@ const LeagueDetailScreen: React.FC = () => {
       setSelectedRound(currentRound);
     }
   }, [currentRound, selectedRound]);
-
-  // Load fixtures when round changes
-  useEffect(() => {
-    if (selectedRound && activeTab === "matches") {
-      // Trigger fixtures fetch through the hook
-      // The hook will handle this automatically
-    }
-  }, [selectedRound, activeTab]);
 
   const handleSeasonChange = (season: any) => {
     setSelectedSeason(season);
