@@ -93,6 +93,13 @@ export interface Theme {
       fontWeight: "normal";
     };
   };
+  fontWeight: {
+    light: "300";
+    normal: "400";
+    medium: "500";
+    semibold: "600";
+    bold: "700";
+  };
   cards: {
     small: {
       width: number;
@@ -166,6 +173,13 @@ export const createTheme = (mode: ThemeMode): Theme => ({
       fontSize: 8,
       fontWeight: "normal",
     },
+  },
+  fontWeight: {
+    light: "300",
+    normal: "400",
+    medium: "500",
+    semibold: "600",
+    bold: "700",
   },
   cards: {
     small: {

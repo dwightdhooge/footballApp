@@ -3,6 +3,8 @@ export { default as CachedImage } from "./common/CachedImage";
 export { default as CacheManagement } from "./common/CacheManagement";
 export { LoadingState, ErrorState, EmptyState } from "./common/StateComponents";
 export { default as SvgImage } from "./common/SvgImage";
+export { default as FavoriteButton } from "./common/FavoriteButton";
+export { DetailHeaderTitle, DetailHeaderButton } from "./common/DetailHeader";
 
 // Settings screen components
 export { default as AppVersionSection } from "./settings/AppVersionSection";

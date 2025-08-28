@@ -35,11 +35,13 @@
     "categories": {
       "countries": "Pays",
       "leagues": "Ligues",
+      "cups": "Coupes",
       "teams": "Équipes",
       "players": "Joueurs"
     },
     "emptyCountries": "Aucun pays favori pour le moment. Commencez par ajouter des pays à vos favoris depuis l'onglet Scores.",
-    "emptyLeagues": "Aucune ligue favorite pour le moment. Commencez par ajouter des ligues et des coupes à vos favoris depuis l'onglet Scores.",
+    "emptyLeagues": "Aucune ligue favorite pour le moment. Commencez par ajouter des ligues à vos favoris depuis l'onglet Scores.",
+    "emptyCups": "Aucune coupe favorite pour le moment. Commencez par ajouter des coupes à vos favoris depuis l'onglet Scores.",
     "emptyTeams": "Aucune équipe favorite pour le moment. Commencez par ajouter des équipes à vos favoris depuis l'onglet Scores.",
     "emptyPlayers": "Aucun joueur favori pour le moment. Commencez par ajouter des joueurs à vos favoris depuis l'onglet Scores.",
     "emptyGeneral": "Aucun favori dans cette catégorie pour le moment."
@@ -256,18 +258,20 @@
   },
   "search": {
     "title": "Recherche",
-    "enterQuery": "Saisissez au moins 3 caractères pour rechercher",
+    "enterQuery": "Entrez au moins 3 caractères pour rechercher",
     "teams": "Équipes",
     "leagues": "Ligues",
+    "cups": "Coupes",
     "countries": "Pays",
     "resultsFor": "Résultats pour \"{{query}}\" ({{count}} trouvé)",
     "noResults": "Aucun résultat trouvé pour \"{{query}}\"",
     "noPlayersResults": "Aucun joueur trouvé pour \"{{query}}\"",
     "noTeamsResults": "Aucune équipe trouvée pour \"{{query}}\"",
     "noLeaguesResults": "Aucune ligue trouvée pour \"{{query}}\"",
+    "noCupsResults": "Aucune coupe trouvée pour \"{{query}}\"",
     "noCountriesResults": "Aucun pays trouvé pour \"{{query}}\"",
     "searchError": "La recherche a échoué. Veuillez réessayer.",
-    "minCharacters": "Veuillez saisir au moins 3 caractères"
+    "minCharacters": "Veuillez entrer au moins 3 caractères"
   },
   "tabs": {
     "events": "Événements",

@@ -1,6 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { View, Text, StyleSheet } from "react-native";
 import { useTheme } from "@/context/ThemeContext";
 import CachedImage from "@/components/common/CachedImage";
 import { Team, TeamDetail } from "@/types/api";
@@ -8,15 +7,11 @@ import { Team, TeamDetail } from "@/types/api";
 interface TeamDetailHeaderProps {
   team: TeamDetail;
   basicTeam: Team;
-  isFavorite: boolean;
-  onToggleFavorite: () => void;
 }
 
 const TeamDetailHeader: React.FC<TeamDetailHeaderProps> = ({
   team,
   basicTeam,
-  isFavorite,
-  onToggleFavorite,
 }) => {
   const { theme } = useTheme();
   const styles = getStyles(theme);
@@ -49,18 +44,6 @@ const TeamDetailHeader: React.FC<TeamDetailHeaderProps> = ({
           </Text>
         </View>
       </View>
-
-      <TouchableOpacity
-        style={styles.heartButton}
-        onPress={onToggleFavorite}
-        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-      >
-        <Ionicons
-          name={isFavorite ? "heart" : "heart-outline"}
-          size={28}
-          color={isFavorite ? theme.colors.error : theme.colors.textSecondary}
-        />
-      </TouchableOpacity>
     </View>
   );
 };

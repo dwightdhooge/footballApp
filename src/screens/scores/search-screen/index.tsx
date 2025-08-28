@@ -10,11 +10,11 @@ import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
-import { Country, LeagueItem, Team } from "@/types/api";
+import { Country, LeagueItem, Team, PlayerProfile } from "@/types/api";
 import { TeamSearchResult } from "@/services/api/teams";
 import { ScoresStackParamList } from "@/types/navigation";
 import { useTheme } from "@/context/ThemeContext";
-import { useCountries } from "@/hooks";
+import { useSearch } from "@/context/SearchContext";
 import SearchBar from "@/components/homescreen/SearchBar";
 import SearchResults from "@/components/homescreen/SearchResults";
 import CategoryTabs from "@/components/favorites/CategoryTabs";
@@ -32,13 +32,13 @@ const SearchScreen: React.FC = () => {
     searchResults,
     isSearching,
     hasSearched,
-    searchError,
-    handleSearch,
+    error: searchError,
+    setSearchTerm,
     clearSearch,
-  } = useCountries();
+  } = useSearch();
 
   const [selectedCategory, setSelectedCategory] = React.useState<
-    "players" | "teams" | "leagues" | "countries"
+    "players" | "teams" | "leagues" | "cups" | "countries"
   >("countries");
 
   const handleCountryPress = (country: Country) => {
@@ -57,6 +57,14 @@ const SearchScreen: React.FC = () => {
 
   const handleLeaguePress = (league: LeagueItem) => {
     navigation.navigate("LeagueDetail", { item: league });
+  };
+
+  const handleCupPress = (cup: LeagueItem) => {
+    navigation.navigate("CupDetail", { item: cup });
+  };
+
+  const handlePlayerPress = (player: PlayerProfile) => {
+    navigation.navigate("PlayerDetail", { item: player });
   };
 
   const handleClose = () => {
@@ -82,7 +90,7 @@ const SearchScreen: React.FC = () => {
 
         <SearchBar
           value={searchTerm}
-          onChangeText={handleSearch}
+          onChangeText={setSearchTerm}
           onClear={clearSearch}
           isLoading={isSearching}
           isValid={searchTerm.length === 0 || searchTerm.length >= 3}
@@ -92,9 +100,10 @@ const SearchScreen: React.FC = () => {
           selectedCategory={selectedCategory}
           onCategoryChange={setSelectedCategory}
           counts={{
-            players: 0, // Players not implemented yet
+            players: searchResults.players?.length || 0,
             teams: searchResults.teams?.length || 0,
             leagues: searchResults.leagues?.length || 0,
+            cups: searchResults.cups?.length || 0,
             countries: searchResults.countries?.length || 0,
           }}
         />
@@ -111,6 +120,8 @@ const SearchScreen: React.FC = () => {
             onCountryPress={handleCountryPress}
             onTeamPress={handleTeamPress}
             onLeaguePress={handleLeaguePress}
+            onCupPress={handleCupPress}
+            onPlayerPress={handlePlayerPress}
             onHeartPress={() => {}} // Not needed for search
             isFavorite={() => false} // Not needed for search
             hasSearched={hasSearched}
@@ -135,15 +146,15 @@ const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "space-between",
-      padding: 20,
-      paddingBottom: 10,
+      padding: theme.spacing.lg,
+      paddingBottom: theme.spacing.sm,
     },
     closeButton: {
       padding: theme.spacing.sm,
     },
     title: {
-      fontSize: 28,
-      fontWeight: "bold",
+      fontSize: theme.typography.h1.fontSize,
+      fontWeight: theme.typography.h1.fontWeight,
       color: theme.colors.text,
     },
     placeholder: {

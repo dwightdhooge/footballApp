@@ -10,14 +10,15 @@ import { useTranslation } from "react-i18next";
 import { useTheme } from "@/context/ThemeContext";
 
 interface CategoryTabsProps {
-  selectedCategory: "players" | "teams" | "leagues" | "countries";
+  selectedCategory: "players" | "teams" | "leagues" | "cups" | "countries";
   onCategoryChange: (
-    category: "players" | "teams" | "leagues" | "countries"
+    category: "players" | "teams" | "leagues" | "cups" | "countries"
   ) => void;
   counts: {
     players: number;
     teams: number;
     leagues: number;
+    cups: number;
     countries: number;
   };
 }
@@ -45,6 +46,11 @@ const CategoryTabs: React.FC<CategoryTabsProps> = ({
       key: "leagues",
       label: t("favorites.categories.leagues"),
       count: counts.leagues,
+    },
+    {
+      key: "cups",
+      label: t("favorites.categories.cups"),
+      count: counts.cups,
     },
     {
       key: "countries",

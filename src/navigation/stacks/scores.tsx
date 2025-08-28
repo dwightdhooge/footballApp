@@ -45,48 +45,12 @@ const ScoresStackNavigator: React.FC = () => {
           headerShown: false,
         }}
       />
-      <Stack.Screen
-        name="CountryDetail"
-        component={CountryDetailScreen}
-        options={{
-          title: "",
-        }}
-      />
-      <Stack.Screen
-        name="LeagueDetail"
-        component={LeagueDetailScreen}
-        options={{
-          title: "",
-        }}
-      />
-      <Stack.Screen
-        name="CupDetail"
-        component={CupDetailScreen}
-        options={{
-          title: "",
-        }}
-      />
-      <Stack.Screen
-        name="MatchDetail"
-        component={MatchDetailScreen}
-        options={{
-          title: "",
-        }}
-      />
-      <Stack.Screen
-        name="PlayerDetail"
-        component={PlayerDetailScreen}
-        options={{
-          title: "",
-        }}
-      />
-      <Stack.Screen
-        name="TeamDetail"
-        component={TeamDetailScreen}
-        options={{
-          title: "",
-        }}
-      />
+      <Stack.Screen name="CountryDetail" component={CountryDetailScreen} />
+      <Stack.Screen name="LeagueDetail" component={LeagueDetailScreen} />
+      <Stack.Screen name="CupDetail" component={CupDetailScreen} />
+      <Stack.Screen name="MatchDetail" component={MatchDetailScreen} />
+      <Stack.Screen name="PlayerDetail" component={PlayerDetailScreen} />
+      <Stack.Screen name="TeamDetail" component={TeamDetailScreen} />
     </Stack.Navigator>
   );
 };

@@ -397,6 +397,20 @@ export interface PlayerProfileApiResponse {
   response: PlayerProfile[];
 }
 
+export interface PlayerSearchApiResponse {
+  get: string;
+  parameters: {
+    search: string;
+  };
+  errors: any[];
+  results: number;
+  paging: {
+    current: number;
+    total: number;
+  };
+  response: PlayerProfile[];
+}
+
 export interface PlayerTeam {
   team: {
     id: number;

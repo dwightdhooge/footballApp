@@ -13,7 +13,8 @@ import { useTranslation } from "react-i18next";
 import { Country } from "@/types/api";
 import { ScoresStackParamList } from "@/types/navigation";
 import { useTheme } from "@/context/ThemeContext";
-import { useCountries } from "@/hooks";
+import { useFavorites } from "@/context/FavoritesContext";
+import { SUGGESTED_COUNTRIES } from "@/utils/constants";
 import FavoritesSection from "@/components/homescreen/FavoritesSection";
 import SuggestedSection from "@/components/homescreen/SuggestedSection";
 import { Ionicons } from "@expo/vector-icons";
@@ -25,12 +26,7 @@ const Homescreen: React.FC = () => {
   const { theme } = useTheme();
   const navigation = useNavigation<ScoresNavigationProp>();
 
-  const {
-    favorites,
-    suggestedCountries,
-    toggleFavorite,
-    isFavorite,
-  } = useCountries();
+  const { favoriteCountries, isFavorite, toggleFavorite } = useFavorites();
 
   const handleCountryPress = (country: Country) => {
     navigation.navigate("CountryDetail", { item: country });
@@ -64,15 +60,15 @@ const Homescreen: React.FC = () => {
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
         >
-          {favorites.length > 0 && (
+          {favoriteCountries.length > 0 && (
             <FavoritesSection
-              favorites={favorites}
+              favorites={favoriteCountries}
               onCountryPress={handleCountryPress}
             />
           )}
 
           <SuggestedSection
-            suggestedCountries={suggestedCountries}
+            suggestedCountries={SUGGESTED_COUNTRIES}
             onCountryPress={handleCountryPress}
             onHeartPress={toggleFavorite}
             isFavorite={isFavorite}

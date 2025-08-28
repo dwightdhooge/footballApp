@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useLayoutEffect } from "react";
 import {
   SafeAreaView,
   View,
@@ -27,9 +27,9 @@ import {
   FlagSvg,
 } from "@/components";
 import CachedImage from "@/components/common/CachedImage";
+import FavoriteButton from "@/components/common/FavoriteButton";
 import { LeagueItem, Fixture } from "@/types/api";
 import { Ionicons } from "@expo/vector-icons";
-import { useFavorites } from "@/context/FavoritesContext";
 
 type LeagueDetailRouteProp = RouteProp<ScoresStackParamList, "LeagueDetail">;
 type LeagueDetailNavigationProp = NavigationProp<
@@ -49,6 +49,59 @@ const LeagueDetailScreen: React.FC = () => {
   const { item } = route.params as RouteParams;
 
   const styles = getStyles(theme);
+
+  // Set up header with league info and favorite button
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitle: () => (
+        <View style={styles.headerTitle}>
+          <CachedImage
+            url={item.league.logo}
+            size={24}
+            fallbackText={t("leagueDetail.league")}
+            borderRadius={4}
+            resizeMode="contain"
+            ttl={30 * 24 * 60 * 60 * 1000} // 30 days for league logos
+            style={styles.headerLeagueLogo}
+          />
+          <View style={styles.headerTextContainer}>
+            <Text
+              style={[styles.headerLeagueName, { color: theme.colors.text }]}
+            >
+              {item.league.name}
+            </Text>
+            <Text
+              style={[
+                styles.headerCountryName,
+                { color: theme.colors.textSecondary },
+              ]}
+            >
+              {item.country.name}
+            </Text>
+          </View>
+        </View>
+      ),
+      headerRight: () => (
+        <FavoriteButton
+          item={item}
+          type="leagues"
+          style={styles.headerButton}
+        />
+      ),
+    });
+  }, [
+    navigation,
+    item,
+    styles.headerButton,
+    styles.headerTitle,
+    styles.headerLeagueLogo,
+    styles.headerTextContainer,
+    styles.headerLeagueName,
+    styles.headerCountryName,
+    theme.colors.text,
+    theme.colors.textSecondary,
+    t,
+  ]);
 
   // Local state for UI
   const [activeTab, setActiveTab] = useState<"standings" | "matches">(
@@ -78,24 +131,24 @@ const LeagueDetailScreen: React.FC = () => {
     canShowFixtures,
   } = useLeagueData(item.league.id, item.seasons, undefined, selectedRound);
 
-  // Favorites functionality
-  const {
-    isItemFavorite,
-    addFavoriteItem,
-    removeFavoriteItem,
-  } = useFavorites();
+  // Remove the custom favorites functionality
+  // const {
+  //   isItemFavorite,
+  //   addFavoriteItem,
+  //   removeFavoriteItem,
+  // } = useFavorites();
 
-  const handleToggleFavorite = async () => {
-    try {
-      if (isItemFavorite(item, "leagues")) {
-        await removeFavoriteItem(`leagues_${item.league.id}`, "leagues");
-      } else {
-        await addFavoriteItem(item, "leagues");
-      }
-    } catch (error) {
-      console.error("Error toggling favorite:", error);
-    }
-  };
+  // const handleToggleFavorite = async () => {
+  //   try {
+  //     if (isItemFavorite(item, "leagues")) {
+  //       await removeFavoriteItem(`leagues_${item.league.id}`, "leagues");
+  //     } else {
+  //       await addFavoriteItem(item, "leagues");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error toggling favorite:", error);
+  //   }
+  // };
 
   // Set selected round when current round changes
   useEffect(() => {
@@ -138,54 +191,6 @@ const LeagueDetailScreen: React.FC = () => {
       season: selectedSeason?.year,
     });
   };
-
-  const renderLeagueInfo = () => (
-    <View
-      style={[
-        styles.leagueInfoContainer,
-        {
-          backgroundColor: theme.colors.background,
-          borderBottomColor: theme.colors.border,
-        },
-      ]}
-    >
-      <CachedImage
-        url={item.league.logo}
-        size={48}
-        fallbackText={t("leagueDetail.league")}
-        borderRadius={8}
-        resizeMode="contain"
-        ttl={30 * 24 * 60 * 60 * 1000} // 30 days for league logos
-        style={styles.leagueLogo}
-      />
-      <View style={styles.leagueText}>
-        <Text style={[styles.leagueName, { color: theme.colors.text }]}>
-          {item.league.name}
-        </Text>
-        <Text
-          style={[styles.countryName, { color: theme.colors.textSecondary }]}
-        >
-          {item.country.name}
-        </Text>
-      </View>
-
-      <TouchableOpacity
-        style={styles.heartButton}
-        onPress={handleToggleFavorite}
-        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-      >
-        <Ionicons
-          name={isItemFavorite(item, "leagues") ? "heart" : "heart-outline"}
-          size={24}
-          color={
-            isItemFavorite(item, "leagues")
-              ? theme.colors.error
-              : theme.colors.textSecondary
-          }
-        />
-      </TouchableOpacity>
-    </View>
-  );
 
   const renderSeasonDropdown = () => (
     <View style={styles.seasonContainer}>
@@ -367,59 +372,66 @@ const LeagueDetailScreen: React.FC = () => {
     </View>
   );
 
+  const renderTabContent = () => {
+    return activeTab === "standings"
+      ? renderStandingsTable()
+      : renderMatchesList();
+  };
+
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <View style={styles.container}>
-        {renderLeagueInfo()}
+    <SafeAreaView style={styles.container}>
+      <ScrollView
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
+      >
         {renderSeasonDropdown()}
         {renderTabNavigation()}
-        {activeTab === "standings"
-          ? renderStandingsTable()
-          : renderMatchesList()}
-      </View>
+        {renderTabContent()}
+      </ScrollView>
     </SafeAreaView>
   );
 };
 
 const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
   StyleSheet.create({
-    safeArea: {
-      flex: 1,
-      backgroundColor: theme.colors.background,
-    },
     container: {
       flex: 1,
       backgroundColor: theme.colors.background,
     },
-    leagueInfoContainer: {
-      paddingHorizontal: 16,
-      paddingVertical: 16,
-      flexDirection: "row",
-      alignItems: "center",
-      borderBottomWidth: 1,
-    },
-    leagueLogo: {
-      marginRight: 16,
-    },
-    leagueText: {
+    scrollView: {
       flex: 1,
     },
-    leagueName: {
-      fontSize: 24,
-      fontWeight: "bold",
-      marginBottom: 4,
+    scrollContent: {
+      paddingBottom: theme.spacing.xl,
     },
-    countryName: {
-      fontSize: 16,
+    headerTitle: {
+      flexDirection: "row",
+      alignItems: "center",
+    },
+    headerLeagueLogo: {
+      marginRight: theme.spacing.sm,
+    },
+    headerTextContainer: {
+      flexDirection: "column",
+    },
+    headerLeagueName: {
+      fontSize: theme.typography.h3.fontSize,
+      fontWeight: theme.typography.h3.fontWeight,
+      lineHeight: theme.typography.h3.fontSize,
+    },
+    headerCountryName: {
+      fontSize: theme.typography.small.fontSize,
+      lineHeight: theme.typography.small.fontSize,
+    },
+    headerButton: {
+      marginRight: theme.spacing.md,
     },
     seasonContainer: {
-      padding: theme.spacing.md,
-      backgroundColor: theme.colors.background,
-    },
-    roundContainer: {
-      padding: theme.spacing.md,
-      borderTopWidth: 1,
-      borderTopColor: theme.colors.border,
+      paddingHorizontal: theme.spacing.md,
+      paddingVertical: theme.spacing.sm,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.colors.border,
     },
     tabContainer: {
       flexDirection: "row",
@@ -428,45 +440,50 @@ const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
     },
     tab: {
       flex: 1,
+      paddingVertical: theme.spacing.md,
       alignItems: "center",
-      paddingVertical: theme.spacing.sm,
+      borderBottomWidth: 2,
+      borderBottomColor: "transparent",
     },
     activeTab: {
-      borderBottomWidth: 2,
       borderBottomColor: theme.colors.primary,
     },
     tabText: {
+      fontSize: theme.typography.body.fontSize,
+      fontWeight: theme.typography.body.fontWeight,
       color: theme.colors.textSecondary,
-      ...theme.typography.caption,
     },
     activeTabText: {
-      fontWeight: "600",
       color: theme.colors.primary,
+    },
+    roundContainer: {
+      paddingHorizontal: theme.spacing.xs,
+      paddingVertical: theme.spacing.md,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.colors.border,
     },
     contentContainer: {
       flex: 1,
+      padding: theme.spacing.md,
     },
     loadingContainer: {
-      flex: 1,
-      justifyContent: "center",
       alignItems: "center",
+      paddingVertical: theme.spacing.xl,
     },
     loadingText: {
       marginTop: theme.spacing.md,
+      fontSize: theme.typography.body.fontSize,
       color: theme.colors.textSecondary,
-      ...theme.typography.body,
     },
     errorContainer: {
-      flex: 1,
-      justifyContent: "center",
       alignItems: "center",
-      padding: theme.spacing.md,
+      paddingVertical: theme.spacing.xl,
     },
     errorText: {
-      textAlign: "center",
+      fontSize: theme.typography.body.fontSize,
       marginBottom: theme.spacing.md,
+      textAlign: "center",
       color: theme.colors.error,
-      ...theme.typography.body,
     },
     retryButton: {
       paddingHorizontal: theme.spacing.lg,
@@ -475,8 +492,9 @@ const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
       backgroundColor: theme.colors.primary,
     },
     retryButtonText: {
+      fontSize: theme.typography.body.fontSize,
+      fontWeight: theme.typography.body.fontWeight,
       color: theme.colors.onPrimary,
-      ...theme.typography.caption,
     },
     emptyContainer: {
       flex: 1,
@@ -487,13 +505,14 @@ const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
     emptyText: {
       textAlign: "center",
       color: theme.colors.textSecondary,
-      ...theme.typography.body,
+      fontSize: theme.typography.body.fontSize,
+      fontWeight: theme.typography.body.fontWeight,
     },
     matchesContainer: {
       flex: 1,
     },
     matchesContent: {
-      padding: theme.spacing.md,
+      padding: theme.spacing.xs,
     },
     matchCardWrapper: {
       // Container for individual match cards
@@ -502,7 +521,7 @@ const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
       marginBottom: theme.spacing.sm,
     },
     heartButton: {
-      padding: 8,
+      padding: theme.spacing.sm,
     },
   });
 

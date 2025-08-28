@@ -13,7 +13,7 @@ import { useTranslation } from "react-i18next";
 import { EmptyState } from "@/components/common/StateComponents";
 
 interface FavoritesListProps {
-  category: "players" | "teams" | "leagues" | "countries";
+  category: "players" | "teams" | "leagues" | "cups" | "countries";
   favorites: FavoriteItem[];
 }
 
@@ -45,11 +45,11 @@ const FavoritesList: React.FC<FavoritesListProps> = ({
           break;
         case "leagues":
           const leagueItem = item as any;
-          if (leagueItem.league.type === "League") {
-            navigation.navigate("LeagueDetail", { item: leagueItem });
-          } else {
-            navigation.navigate("CupDetail", { item: leagueItem });
-          }
+          navigation.navigate("LeagueDetail", { item: leagueItem });
+          break;
+        case "cups":
+          const cupItem = item as any;
+          navigation.navigate("CupDetail", { item: cupItem });
           break;
         case "countries":
           const countryItem = item as any;
@@ -76,6 +76,8 @@ const FavoritesList: React.FC<FavoritesListProps> = ({
           return "team";
         case "leagues":
           return "leagues";
+        case "cups":
+          return "cup";
         case "countries":
           return "country";
         default:
@@ -91,11 +93,12 @@ const FavoritesList: React.FC<FavoritesListProps> = ({
             <PlayerCard
               id={player.player.id}
               name={player.player.name}
+              firstname={player.player.firstname}
+              lastname={player.player.lastname}
               photo={player.player.photo}
               position={player.player.position}
               onPress={handlePress}
               onRemove={() => handleRemove(item, category)}
-              size="small"
             />
           );
         case "teams":
@@ -111,24 +114,38 @@ const FavoritesList: React.FC<FavoritesListProps> = ({
             />
           );
         case "leagues":
-          const leagueItem = item as any;
+          const league = item as any;
           return (
             <LeagueCard
-              id={leagueItem.league.id}
-              name={leagueItem.league.name}
-              logo={leagueItem.league.logo}
-              type={leagueItem.league.type}
+              id={league.league.id}
+              name={league.league.name}
+              logo={league.league.logo}
+              type={league.league.type}
+              onPress={handlePress}
+              onRemove={() => handleRemove(item, category)}
+              size="small"
+            />
+          );
+        case "cups":
+          const cup = item as any;
+          return (
+            <LeagueCard
+              id={cup.league.id}
+              name={cup.league.name}
+              logo={cup.league.logo}
+              type={cup.league.type}
               onPress={handlePress}
               onRemove={() => handleRemove(item, category)}
               size="small"
             />
           );
         case "countries":
+          const country = item as any;
           return (
             <CountryCard
-              name={(item as any).name}
-              code={(item as any).code}
-              flag={(item as any).flag}
+              code={country.code}
+              name={country.name}
+              flag={country.flag}
               onPress={handlePress}
               onRemove={() => handleRemove(item, category)}
               size="small"
@@ -153,6 +170,9 @@ const FavoritesList: React.FC<FavoritesListProps> = ({
       case "leagues":
         const leagueItem = item as any;
         return `leagues_${leagueItem.league.id}`;
+      case "cups":
+        const cupItem = item as any;
+        return `cup_${cupItem.league.id}`;
       case "countries":
         const country = item as any;
         return `country_${country.code}`;
@@ -177,6 +197,8 @@ const FavoritesList: React.FC<FavoritesListProps> = ({
         return t("favorites.emptyTeams");
       case "leagues":
         return t("favorites.emptyLeagues");
+      case "cups":
+        return t("favorites.emptyCups");
       case "countries":
         return t("favorites.emptyCountries");
       default:

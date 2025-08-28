@@ -9,15 +9,19 @@ import { useTranslation } from "react-i18next";
 import { Country } from "@/types/api";
 import { LeagueItem } from "@/types/api";
 import { TeamSearchResult } from "@/services/api/teams";
+import { PlayerProfile } from "@/types/api";
 import { fetchCountries } from "@/services/api/countries";
 import { searchTeams } from "@/services/api/teams";
 import { searchLeagues } from "@/services/api/leagues";
+import { searchPlayers } from "@/services/api/players";
 import { debounce, isValidSearch } from "@/utils/helpers";
 
 interface SearchResults {
   teams: TeamSearchResult[];
   leagues: LeagueItem[];
+  cups: LeagueItem[];
   countries: Country[];
+  players: PlayerProfile[];
 }
 
 interface SearchContextType {
@@ -43,7 +47,9 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({ children }) => {
   const [searchResults, setSearchResults] = useState<SearchResults>({
     teams: [],
     leagues: [],
+    cups: [],
     countries: [],
+    players: [],
   });
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
@@ -52,7 +58,13 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({ children }) => {
   const performSearch = useCallback(
     async (term: string) => {
       if (!isValidSearch(term)) {
-        setSearchResults({ teams: [], leagues: [], countries: [] });
+        setSearchResults({
+          teams: [],
+          leagues: [],
+          cups: [],
+          countries: [],
+          players: [],
+        });
         setHasSearched(false);
         setError(null);
         return;
@@ -68,27 +80,47 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({ children }) => {
           teamsResults,
           leaguesResults,
           countriesResults,
+          playersResults,
         ] = await Promise.allSettled([
           searchTeams(term),
           searchLeagues(term),
           fetchCountries(term),
+          searchPlayers(term),
         ]);
+
+        // Separate leagues and cups from the leagues results
+        const allLeagues =
+          leaguesResults.status === "fulfilled" ? leaguesResults.value : [];
+        const leaguesList = allLeagues.filter(
+          (item) => item.league.type === "League"
+        );
+        const cupsList = allLeagues.filter(
+          (item) => item.league.type === "Cup"
+        );
 
         const newResults: SearchResults = {
           teams: teamsResults.status === "fulfilled" ? teamsResults.value : [],
-          leagues:
-            leaguesResults.status === "fulfilled" ? leaguesResults.value : [],
+          leagues: leaguesList,
+          cups: cupsList,
           countries:
             countriesResults.status === "fulfilled"
               ? countriesResults.value
               : [],
+          players:
+            playersResults.status === "fulfilled" ? playersResults.value : [],
         };
 
         setSearchResults(newResults);
       } catch (err) {
         console.error("Search error:", err);
         setError(t("search.searchError"));
-        setSearchResults({ teams: [], leagues: [], countries: [] });
+        setSearchResults({
+          teams: [],
+          leagues: [],
+          cups: [],
+          countries: [],
+          players: [],
+        });
       } finally {
         setIsSearching(false);
       }
@@ -110,7 +142,13 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({ children }) => {
 
   const clearSearch = () => {
     setSearchTerm("");
-    setSearchResults({ teams: [], leagues: [], countries: [] });
+    setSearchResults({
+      teams: [],
+      leagues: [],
+      cups: [],
+      countries: [],
+      players: [],
+    });
     setHasSearched(false);
     setError(null);
   };

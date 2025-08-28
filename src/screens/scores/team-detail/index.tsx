@@ -1,62 +1,71 @@
 import React from "react";
-import { SafeAreaView, ScrollView, StyleSheet } from "react-native";
+import { View, StyleSheet, SafeAreaView, Text } from "react-native";
+import { useRoute, useNavigation } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
+import { Team } from "../../../types/api";
+import { ScoresStackParamList } from "../../../types/navigation";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RouteProp } from "@react-navigation/native";
 import { useTheme } from "@/context/ThemeContext";
-import {
-  useRoute,
-  useNavigation,
-  RouteProp,
-  NavigationProp,
-} from "@react-navigation/native";
-import { ScoresStackParamList } from "@/types/navigation";
 import { useTeamData } from "@/hooks";
-import { useFavorites } from "@/context/FavoritesContext";
-import { LoadingState, ErrorState } from "@/components/common/StateComponents";
-import TeamDetailHeader from "@/components/team/TeamDetailHeader";
-import TeamInfoSection from "@/components/team/TeamInfoSection";
-import VenueSection from "@/components/team/VenueSection";
-import { Team } from "@/types/api";
+import { DetailHeaderTitle, DetailHeaderButton } from "@/components";
+import CachedImage from "@/components/common/CachedImage";
 
-type TeamDetailRouteProp = RouteProp<ScoresStackParamList, "TeamDetail">;
-type TeamDetailNavigationProp = NavigationProp<
+// Components
+import TeamDetailHeader from "../../../components/team/TeamDetailHeader";
+import TeamInfoSection from "../../../components/team/TeamInfoSection";
+import VenueSection from "../../../components/team/VenueSection";
+
+type TeamDetailScreenNavigationProp = StackNavigationProp<
   ScoresStackParamList,
   "TeamDetail"
 >;
 
-interface RouteParams {
-  item: Team;
-}
+type TeamDetailScreenRouteProp = RouteProp<ScoresStackParamList, "TeamDetail">;
 
 const TeamDetailScreen: React.FC = () => {
   const { theme } = useTheme();
   const { t } = useTranslation();
-  const navigation = useNavigation<TeamDetailNavigationProp>();
-  const route = useRoute<TeamDetailRouteProp>();
-  const { item } = route.params;
+  const route = useRoute<TeamDetailScreenRouteProp>();
+  const navigation = useNavigation<TeamDetailScreenNavigationProp>();
+  const { item: team } = route.params;
 
   const styles = getStyles(theme);
 
-  // Fetch team data
-  const { team, isLoading, error, refetch } = useTeamData(item.id);
+  // 🎯 Eén hook voor alle data logica!
+  const { team: teamInfo, isLoading, error, refetch } = useTeamData(team.id);
 
-  // Favorites functionality
-  const {
-    isItemFavorite,
-    addFavoriteItem,
-    removeFavoriteItem,
-  } = useFavorites();
+  // Set up header with team info and favorite button
+  React.useLayoutEffect(() => {
+    const logo = (
+      <CachedImage
+        url={team.logo}
+        size={24}
+        fallbackText="Team"
+        borderRadius={4}
+        resizeMode="contain"
+        ttl={30 * 24 * 60 * 60 * 1000} // 30 days for team logos
+        style={styles.headerTeamLogo}
+      />
+    );
 
-  const handleToggleFavorite = async () => {
-    try {
-      if (isItemFavorite(item, "team")) {
-        await removeFavoriteItem(`team_${item.id}`, "team");
-      } else {
-        await addFavoriteItem(item, "team");
-      }
-    } catch (error) {
-      console.error("Error toggling favorite:", error);
-    }
-  };
+    navigation.setOptions({
+      headerTitle: () => (
+        <DetailHeaderTitle
+          logo={logo}
+          title={team.name}
+          subtitle={teamInfo?.team.country}
+        />
+      ),
+      headerRight: () => (
+        <DetailHeaderButton
+          item={team}
+          type="team"
+          style={styles.headerButton}
+        />
+      ),
+    });
+  }, [navigation, team, teamInfo, styles.headerButton, styles.headerTeamLogo]);
 
   const handleRetry = () => {
     refetch();
@@ -64,47 +73,50 @@ const TeamDetailScreen: React.FC = () => {
 
   if (isLoading) {
     return (
-      <SafeAreaView
-        style={[styles.container, { backgroundColor: theme.colors.background }]}
-      >
-        <LoadingState message={t("teamDetail.loading")} />
+      <SafeAreaView style={styles.container}>
+        <View style={styles.loadingContainer}>
+          <Text
+            style={[styles.loadingText, { color: theme.colors.textSecondary }]}
+          >
+            {t("teamDetail.loading")}
+          </Text>
+        </View>
       </SafeAreaView>
     );
   }
 
-  if (error || !team) {
+  if (error || !teamInfo) {
     return (
-      <SafeAreaView
-        style={[styles.container, { backgroundColor: theme.colors.background }]}
-      >
-        <ErrorState
-          error={error || t("teamDetail.errorMessage")}
-          title={t("teamDetail.errorTitle")}
-          onRetry={handleRetry}
-        />
+      <SafeAreaView style={styles.container}>
+        <View style={styles.errorContainer}>
+          <Text style={[styles.errorTitle, { color: theme.colors.text }]}>
+            {t("teamDetail.errorTitle")}
+          </Text>
+          <Text
+            style={[styles.errorMessage, { color: theme.colors.textSecondary }]}
+          >
+            {error || t("teamDetail.errorMessage")}
+          </Text>
+          <Text
+            style={[styles.retryButton, { color: theme.colors.primary }]}
+            onPress={handleRetry}
+          >
+            {t("teamDetail.retry")}
+          </Text>
+        </View>
       </SafeAreaView>
     );
   }
 
   return (
-    <SafeAreaView
-      style={[styles.container, { backgroundColor: theme.colors.background }]}
-    >
-      <ScrollView
-        style={styles.scrollView}
-        showsVerticalScrollIndicator={false}
-      >
-        <TeamDetailHeader
-          team={team}
-          basicTeam={item}
-          isFavorite={isItemFavorite(item, "team")}
-          onToggleFavorite={handleToggleFavorite}
-        />
+    <SafeAreaView style={styles.container}>
+      <View style={styles.content}>
+        <TeamDetailHeader team={teamInfo} basicTeam={team} />
 
-        <TeamInfoSection team={team} />
+        <TeamInfoSection team={teamInfo} />
 
-        <VenueSection team={team} />
-      </ScrollView>
+        <VenueSection team={teamInfo} />
+      </View>
     </SafeAreaView>
   );
 };
@@ -113,9 +125,46 @@ const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
   StyleSheet.create({
     container: {
       flex: 1,
+      backgroundColor: theme.colors.background,
     },
-    scrollView: {
+    content: {
       flex: 1,
+    },
+    headerTeamLogo: {
+      marginRight: theme.spacing.sm,
+    },
+    headerButton: {
+      paddingHorizontal: theme.spacing.md,
+    },
+    loadingContainer: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    loadingText: {
+      fontSize: theme.typography.h3.fontSize,
+      fontWeight: theme.typography.h3.fontWeight,
+    },
+    errorContainer: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      padding: theme.spacing.md,
+    },
+    errorTitle: {
+      fontSize: theme.typography.h2.fontSize,
+      fontWeight: theme.typography.h2.fontWeight,
+      marginBottom: theme.spacing.sm,
+    },
+    errorMessage: {
+      fontSize: theme.typography.body.fontSize,
+      lineHeight: theme.typography.body.fontSize,
+      marginBottom: theme.spacing.md,
+      textAlign: "center",
+    },
+    retryButton: {
+      fontSize: theme.typography.body.fontSize,
+      fontWeight: theme.typography.body.fontWeight,
     },
   });
 

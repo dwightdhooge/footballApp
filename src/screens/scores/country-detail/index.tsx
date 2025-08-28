@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useLayoutEffect } from "react";
 import {
   View,
   ScrollView,
@@ -6,6 +6,7 @@ import {
   Alert,
   RefreshControl,
   SafeAreaView,
+  Text,
 } from "react-native";
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -14,8 +15,10 @@ import { LeagueItem } from "@/types/api";
 import { ScoresStackParamList } from "@/types/navigation";
 import { useTheme } from "@/context/ThemeContext";
 import { useCountryData } from "@/hooks";
-import CountryInfo from "../../../components/country/CountryInfo";
+import FavoriteButton from "@/components/common/FavoriteButton";
+import FlagSvg from "@/components/country/FlagSvg";
 import LeaguesSection from "../../../components/country/LeaguesSection";
+import { DetailHeaderTitle, DetailHeaderButton } from "@/components";
 
 type CountryDetailRouteProp = RouteProp<ScoresStackParamList, "CountryDetail">;
 type CountryDetailNavigationProp = StackNavigationProp<ScoresStackParamList>;
@@ -26,6 +29,24 @@ const CountryDetailScreen: React.FC = () => {
   const navigation = useNavigation<CountryDetailNavigationProp>();
   const route = useRoute<CountryDetailRouteProp>();
   const { item: country } = route.params;
+
+  const styles = getStyles(theme);
+
+  // Set up header with country info and favorite button
+  useLayoutEffect(() => {
+    const logo = <FlagSvg url={country.flag} size={24} />;
+
+    navigation.setOptions({
+      headerTitle: () => <DetailHeaderTitle logo={logo} title={country.name} />,
+      headerRight: () => (
+        <DetailHeaderButton
+          item={country}
+          type="country"
+          style={styles.headerButton}
+        />
+      ),
+    });
+  }, [navigation, country, styles.headerButton]);
 
   // 🎯 Eén hook voor alle data logica!
   const {
@@ -57,13 +78,9 @@ const CountryDetailScreen: React.FC = () => {
     }
   }, [error, clearError, t]);
 
-  const styles = getStyles(theme);
-
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-        <CountryInfo country={country} />
-
         <ScrollView
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
@@ -112,6 +129,18 @@ const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
     },
     scrollContent: {
       paddingBottom: theme.spacing.xl,
+    },
+    headerTitle: {
+      flexDirection: "row",
+      alignItems: "center",
+    },
+    headerCountryName: {
+      marginLeft: theme.spacing.sm,
+      fontSize: theme.typography.h3.fontSize,
+      fontWeight: theme.typography.h3.fontWeight,
+    },
+    headerButton: {
+      paddingHorizontal: theme.spacing.md,
     },
   });
 

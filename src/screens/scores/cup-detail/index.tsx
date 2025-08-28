@@ -1,5 +1,5 @@
-import React from "react";
-import { View, StyleSheet, SafeAreaView } from "react-native";
+import React, { useLayoutEffect } from "react";
+import { View, StyleSheet, SafeAreaView, Text } from "react-native";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
 import { LeagueItem, Fixture } from "../../../types/api";
@@ -8,9 +8,10 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
 import { useTheme } from "@/context/ThemeContext";
 import { useCupData } from "@/hooks";
+import { DetailHeaderTitle, DetailHeaderButton } from "@/components";
+import CachedImage from "@/components/common/CachedImage";
 
 // Components
-import CupInfo from "../../../components/cup/CupInfo";
 import SeasonDropdown from "../../../components/league/SeasonDropdown";
 import RoundDropdown from "../../../components/cup/RoundDropdown";
 import MatchesList from "../../../components/match/MatchesList";
@@ -34,6 +35,34 @@ const CupDetailScreen: React.FC = () => {
 
   const styles = getStyles(theme);
 
+  // Set up header with cup info and favorite button
+  useLayoutEffect(() => {
+    const logo = (
+      <CachedImage
+        url={cup.league.logo}
+        size={24}
+        fallbackText="Cup"
+        borderRadius={4}
+        resizeMode="contain"
+        ttl={30 * 24 * 60 * 60 * 1000} // 30 days for cup logos
+        style={styles.headerCupLogo}
+      />
+    );
+
+    navigation.setOptions({
+      headerTitle: () => (
+        <DetailHeaderTitle
+          logo={logo}
+          title={cup.league.name}
+          subtitle={cup.country.name}
+        />
+      ),
+      headerRight: () => (
+        <DetailHeaderButton item={cup} type="cup" style={styles.headerButton} />
+      ),
+    });
+  }, [navigation, cup, styles.headerButton, styles.headerCupLogo]);
+
   // 🎯 Eén hook voor alle data logica!
   const {
     selectedSeason,
@@ -52,34 +81,12 @@ const CupDetailScreen: React.FC = () => {
     refetchFixtures,
   } = useCupData(cup.league.id, cup.seasons);
 
-  // Debug: Log season data
-  console.log("CupDetail: Debug season data", {
-    allSeasons: cup.seasons?.map((s) => ({
-      year: s.year,
-      current: s.current,
-      coverage: s.coverage,
-    })),
-    availableSeasons: availableSeasons?.map((s) => ({
-      year: s.year,
-      current: s.current,
-      coverage: s.coverage,
-    })),
-    selectedSeason: selectedSeason?.year,
-    cupSeasonsLength: cup.seasons?.length,
-    availableSeasonsLength: availableSeasons?.length,
-  });
-
-  // Verwijderd: lokaal berekende availableSeasons
-  // const availableSeasons = cup.seasons?.filter(canShowFixtures).reverse() || [];
-
   const handleSeasonChange = (season: any) => {
-    console.log("CupDetail: Season change requested to", season?.year);
     setSelectedSeason(season);
     setSelectedRound(null);
   };
 
   const handleRoundChange = (round: string) => {
-    console.log("CupDetail: Round change requested to", round);
     setSelectedRound(round);
   };
 
@@ -102,20 +109,20 @@ const CupDetailScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <CupInfo cup={cup} />
-
       <View style={styles.content}>
         <View style={styles.dropdownsContainer}>
-          <SeasonDropdown
-            seasons={availableSeasons}
-            selectedSeason={selectedSeason}
-            onSeasonChange={handleSeasonChange}
-            disabled={false}
-            placeholder={t("leagueDetail.selectSeason")}
-            showCurrent={true}
-            size="medium"
-            coverageType="fixtures"
-          />
+          <View style={styles.seasonDropdown}>
+            <SeasonDropdown
+              seasons={availableSeasons}
+              selectedSeason={selectedSeason}
+              onSeasonChange={handleSeasonChange}
+              disabled={false}
+              placeholder={t("leagueDetail.selectSeason")}
+              showCurrent={true}
+              size="medium"
+              coverageType="fixtures"
+            />
+          </View>
 
           {selectedSeason && (
             <RoundDropdown
@@ -152,15 +159,18 @@ const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
     content: {
       flex: 1,
     },
+    headerCupLogo: {
+      marginRight: theme.spacing.sm,
+    },
+    headerButton: {
+      paddingHorizontal: theme.spacing.md,
+    },
     dropdownsContainer: {
-      borderBottomWidth: 1,
-      backgroundColor: theme.colors.surface,
-      borderBottomColor: theme.colors.border,
       paddingHorizontal: theme.spacing.md,
       paddingVertical: theme.spacing.sm,
     },
     seasonDropdown: {
-      marginBottom: theme.spacing.sm,
+      marginBottom: theme.spacing.md,
     },
     roundDropdown: {
       marginBottom: 0,

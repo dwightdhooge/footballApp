@@ -5,7 +5,7 @@ const FAVORITES_KEY = "favorites";
 
 // Generic favorite item type
 export type FavoriteItem = Country | LeagueItem | Team | PlayerProfile;
-export type FavoriteType = "country" | "leagues" | "team" | "player";
+export type FavoriteType = "country" | "leagues" | "cup" | "team" | "player";
 
 // Enhanced storage interface
 interface StoredFavorite {
@@ -177,6 +177,8 @@ const getItemId = (item: FavoriteItem, type: FavoriteType): string => {
       return `country_${(item as Country).code}`;
     case "leagues":
       return `leagues_${(item as LeagueItem).league.id}`;
+    case "cup":
+      return `cup_${(item as LeagueItem).league.id}`;
     case "team":
       return `team_${(item as Team).id}`;
     case "player":

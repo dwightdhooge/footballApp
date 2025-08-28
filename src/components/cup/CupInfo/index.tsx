@@ -1,10 +1,8 @@
 import React from "react";
-import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, Image, StyleSheet } from "react-native";
 import { useTheme } from "@/context/ThemeContext";
-import { useFavorites } from "@/context/FavoritesContext";
 import { LeagueItem } from "../../../types/api";
 import FlagSvg from "../../country/FlagSvg";
-import { Ionicons } from "@expo/vector-icons";
 
 interface CupInfoProps {
   cup: LeagueItem;
@@ -12,23 +10,6 @@ interface CupInfoProps {
 
 const CupInfo: React.FC<CupInfoProps> = ({ cup }) => {
   const { theme } = useTheme();
-  const {
-    isItemFavorite,
-    addFavoriteItem,
-    removeFavoriteItem,
-  } = useFavorites();
-
-  const handleToggleFavorite = async () => {
-    try {
-      if (isItemFavorite(cup, "leagues")) {
-        await removeFavoriteItem(`leagues_${cup.league.id}`, "leagues");
-      } else {
-        await addFavoriteItem(cup, "leagues");
-      }
-    } catch (error) {
-      console.error("Error toggling favorite:", error);
-    }
-  };
 
   return (
     <View
@@ -60,22 +41,6 @@ const CupInfo: React.FC<CupInfoProps> = ({ cup }) => {
           </Text>
         </View>
       </View>
-
-      <TouchableOpacity
-        style={styles.favoriteButton}
-        onPress={handleToggleFavorite}
-        activeOpacity={0.7}
-      >
-        <Ionicons
-          name={isItemFavorite(cup, "leagues") ? "heart" : "heart-outline"}
-          size={24}
-          color={
-            isItemFavorite(cup, "leagues")
-              ? theme.colors.error
-              : theme.colors.textSecondary
-          }
-        />
-      </TouchableOpacity>
     </View>
   );
 };

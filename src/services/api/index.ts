@@ -6,5 +6,6 @@ export * from "./standings";
 export * from "./rounds";
 export * from "./events";
 export * from "./lineups";
+export * from "./players";
 export * from "./statistics";
 export * from "./teams";

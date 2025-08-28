@@ -28,6 +28,7 @@ interface FavoritesContextType {
   // New generic favorites support
   favoriteCountries: Country[];
   favoriteLeagues: LeagueItem[];
+  favoriteCups: LeagueItem[];
   favoriteTeams: Team[];
   favoritePlayers: PlayerProfile[];
 
@@ -36,6 +37,9 @@ interface FavoritesContextType {
   removeFavoriteItem: (itemId: string, type: FavoriteType) => Promise<void>;
   isItemFavorite: (item: FavoriteItem, type: FavoriteType) => boolean;
   loadGenericFavoritesFromStorage: () => Promise<void>;
+
+  // Generic toggle method
+  toggleFavoriteItem: (item: FavoriteItem, type: FavoriteType) => Promise<void>;
 }
 
 const FavoritesContext = createContext<FavoritesContextType | undefined>(
@@ -54,6 +58,7 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({
   // New state for generic favorites
   const [favoriteCountries, setFavoriteCountries] = useState<Country[]>([]);
   const [favoriteLeagues, setFavoriteLeagues] = useState<LeagueItem[]>([]);
+  const [favoriteCups, setFavoriteCups] = useState<LeagueItem[]>([]);
   const [favoriteTeams, setFavoriteTeams] = useState<Team[]>([]);
   const [favoritePlayers, setFavoritePlayers] = useState<PlayerProfile[]>([]);
 
@@ -81,15 +86,17 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({
 
   const loadGenericFavoritesFromStorage = async () => {
     try {
-      const [countries, leagues, teams, players] = await Promise.all([
+      const [countries, leagues, cups, teams, players] = await Promise.all([
         getFavoritesByType("country"),
         getFavoritesByType("leagues"),
+        getFavoritesByType("cup"),
         getFavoritesByType("team"),
         getFavoritesByType("player"),
       ]);
 
       setFavoriteCountries(countries as Country[]);
       setFavoriteLeagues(leagues as LeagueItem[]);
+      setFavoriteCups(cups as LeagueItem[]);
       setFavoriteTeams(teams as Team[]);
       setFavoritePlayers(players as PlayerProfile[]);
     } catch (error) {
@@ -155,6 +162,10 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({
         return favoriteLeagues.some(
           (fav) => fav.league.id === (item as LeagueItem).league.id
         );
+      case "cup":
+        return favoriteCups.some(
+          (fav) => fav.league.id === (item as LeagueItem).league.id
+        );
       case "team":
         return favoriteTeams.some((fav) => fav.id === (item as Team).id);
       case "player":
@@ -163,6 +174,39 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({
         );
       default:
         return false;
+    }
+  };
+
+  // Generic toggle method for any favorite type
+  const toggleFavoriteItem = async (item: FavoriteItem, type: FavoriteType) => {
+    try {
+      if (isItemFavorite(item, type)) {
+        const itemId = getItemId(item, type);
+        await removeFavoriteItem(itemId, type);
+      } else {
+        await addFavoriteItem(item, type);
+      }
+    } catch (error) {
+      console.error("Error toggling favorite item:", error);
+      throw error;
+    }
+  };
+
+  // Helper function to generate unique IDs for different item types
+  const getItemId = (item: FavoriteItem, type: FavoriteType): string => {
+    switch (type) {
+      case "country":
+        return `country_${(item as Country).code}`;
+      case "leagues":
+        return `leagues_${(item as LeagueItem).league.id}`;
+      case "cup":
+        return `cup_${(item as LeagueItem).league.id}`;
+      case "team":
+        return `team_${(item as Team).id}`;
+      case "player":
+        return `player_${(item as PlayerProfile).player.id}`;
+      default:
+        return `unknown_${Date.now()}`;
     }
   };
 
@@ -181,12 +225,14 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({
     loadFavoritesFromStorage,
     favoriteCountries,
     favoriteLeagues,
+    favoriteCups,
     favoriteTeams,
     favoritePlayers,
     addFavoriteItem,
     removeFavoriteItem,
     isItemFavorite,
     loadGenericFavoritesFromStorage,
+    toggleFavoriteItem,
   };
 
   return (

@@ -12,12 +12,13 @@ const FavoritesHomeScreen: React.FC = () => {
   const {
     favoriteCountries,
     favoriteLeagues,
+    favoriteCups,
     favoriteTeams,
     favoritePlayers,
   } = useFavorites();
 
   const [selectedCategory, setSelectedCategory] = useState<
-    "players" | "teams" | "leagues" | "countries"
+    "players" | "teams" | "leagues" | "cups" | "countries"
   >("players");
 
   const getFavoritesForCategory = () => {
@@ -28,6 +29,8 @@ const FavoritesHomeScreen: React.FC = () => {
         return favoriteTeams;
       case "leagues":
         return favoriteLeagues;
+      case "cups":
+        return favoriteCups;
       case "countries":
         return favoriteCountries;
       default:
@@ -36,6 +39,8 @@ const FavoritesHomeScreen: React.FC = () => {
   };
 
   const favorites = getFavoritesForCategory();
+
+  const styles = getStyles(theme);
 
   return (
     <SafeAreaView
@@ -57,6 +62,7 @@ const FavoritesHomeScreen: React.FC = () => {
           players: favoritePlayers.length,
           teams: favoriteTeams.length,
           leagues: favoriteLeagues.length,
+          cups: favoriteCups.length,
           countries: favoriteCountries.length,
         }}
       />
@@ -66,23 +72,24 @@ const FavoritesHomeScreen: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  header: {
-    padding: 20,
-    paddingBottom: 10,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: "bold",
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 16,
-    lineHeight: 22,
-  },
-});
+const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+    },
+    header: {
+      padding: theme.spacing.lg,
+      paddingBottom: theme.spacing.sm,
+    },
+    title: {
+      fontSize: theme.typography.h1.fontSize,
+      fontWeight: theme.typography.h1.fontWeight,
+      marginBottom: theme.spacing.sm,
+    },
+    subtitle: {
+      fontSize: theme.typography.body.fontSize,
+      lineHeight: 22,
+    },
+  });
 
 export default FavoritesHomeScreen;
