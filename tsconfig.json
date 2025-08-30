@@ -10,22 +10,20 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
-      "@/components/*": ["src/components/*"],
-      "@/screens/*": ["src/screens/*"],
-      "@/navigation/*": ["src/navigation/*"],
-      "@/services/*": ["src/services/*"],
-      "@/context/*": ["src/context/*"],
-      "@/types/*": ["src/types/*"],
-      "@/utils/*": ["src/utils/*"],
-      "@/hooks/*": ["src/hooks/*"],
-      "@/styles/*": ["src/styles/*"]
+      "@/core/*": ["src/core/*"],
+      "@/components/*": ["src/platforms/mobile/components/*"],
+      "@/screens/*": ["src/platforms/mobile/screens/*"],
+      "@/navigation/*": ["src/platforms/mobile/navigation/*"],
+      "@/services/*": ["src/core/services/*"],
+      "@/context/*": ["src/core/context/*"],
+      "@/types/*": ["src/core/types/*"],
+      "@/utils/*": ["src/core/utils/*"],
+      "@/hooks/*": ["src/core/hooks/*"],
+      "@/styles/*": ["src/shared/styles/*"],
+      "@/styles": ["src/shared/styles"],
+      "@/i18n": ["src/shared/i18n/i18n"]
     }
   },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
-} 
+  "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules"]
+}
