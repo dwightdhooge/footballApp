@@ -72,9 +72,9 @@ export const useLeagueData = (
   // 🎯 Gefilterde en omgekeerde seasons voor de dropdown
   const availableSeasons = seasons ? [...seasons].reverse() : [];
 
-  // Initialize with first available season
+  // Initialize with first available season (ONLY ONCE)
   useEffect(() => {
-    if (availableSeasons.length > 0) {
+    if (availableSeasons.length > 0 && !selectedSeason) {
       // 🎯 Omdraaien van seasons volgorde: nieuwste wordt eerste
       const reversedSeasons = [...seasons].reverse();
 
@@ -84,7 +84,7 @@ export const useLeagueData = (
         reversedSeasons[0];
       setSelectedSeason(currentSeason);
     }
-  }, [seasons, initialSeason, availableSeasons]);
+  }, [seasons, initialSeason]);
 
   const fetchStandingsData = useCallback(async () => {
     if (!selectedSeason) return;
@@ -283,6 +283,7 @@ export const useLeagueData = (
   // Fetch standings when season changes
   useEffect(() => {
     if (selectedSeason) {
+      console.log("useEffect fetchStandingsData", selectedSeason);
       fetchStandingsData();
     }
   }, [fetchStandingsData]);

@@ -101,7 +101,7 @@ export const LeagueDetailScreen: React.FC = () => {
     currentRound,
     selectedSeason,
     setSelectedSeason,
-    availableSeasons, // 🎯 Nu uit de hook
+    availableSeasons,
     isLoadingStandings,
     isLoadingFixtures,
     isLoadingRounds,
