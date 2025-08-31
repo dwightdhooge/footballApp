@@ -19,10 +19,27 @@ export interface CountriesApiResponse {
 }
 
 export interface League {
-  id: number;
-  name: string;
-  type: "League" | "Cup";
-  logo: string;
+  country: Country;
+  league: {
+    id: number;
+    name: string;
+    type: "League" | "Cup";
+    logo: string;
+  };
+  seasons: Season[];
+}
+export interface LeaguesApiResponse {
+  get: string;
+  parameters: {
+    country: string;
+  };
+  errors: string[];
+  results: number;
+  paging: {
+    current: number;
+    total: number;
+  };
+  response: League[];
 }
 
 export interface Season {
@@ -48,27 +65,6 @@ export interface Season {
   };
 }
 
-export interface LeagueItem {
-  league: League;
-  country: Country;
-  seasons: Season[];
-}
-
-export interface LeaguesApiResponse {
-  get: string;
-  parameters: {
-    country: string;
-  };
-  errors: string[];
-  results: number;
-  paging: {
-    current: number;
-    total: number;
-  };
-  response: LeagueItem[];
-}
-
-// New types for League Detail Screen
 export interface Team {
   id: number;
   name: string;
@@ -283,9 +279,21 @@ export interface Event {
 export interface Player {
   id: number;
   name: string;
+  firstname: string;
+  lastname: string;
+  age: number;
+  birth: {
+    date: string;
+    place: string;
+    country: string;
+  };
+  nationality: string;
+  height: string;
+  weight: string;
   number: number;
-  pos: string;
-  grid: string | null;
+  position: string;
+  photo: string;
+  grid?: string | null; // Optional for lineup usage
 }
 
 export interface Coach {
@@ -361,29 +369,7 @@ export interface PlayerStatus {
   showMultiple: boolean;
 }
 
-// New types for Player Detail Screen
-export interface PlayerProfile {
-  player: {
-    id: number;
-    name: string;
-    firstname: string;
-    lastname: string;
-    age: number;
-    birth: {
-      date: string;
-      place: string;
-      country: string;
-    };
-    nationality: string;
-    height: string;
-    weight: string;
-    number: number;
-    position: string;
-    photo: string;
-  };
-}
-
-export interface PlayerProfileApiResponse {
+export interface PlayerApiResponse {
   get: string;
   parameters: {
     player: string;
@@ -394,7 +380,7 @@ export interface PlayerProfileApiResponse {
     current: number;
     total: number;
   };
-  response: PlayerProfile[];
+  response: { player: Player }[];
 }
 
 export interface PlayerSearchApiResponse {
@@ -402,13 +388,7 @@ export interface PlayerSearchApiResponse {
   parameters: {
     search: string;
   };
-  errors: any[];
-  results: number;
-  paging: {
-    current: number;
-    total: number;
-  };
-  response: PlayerProfile[];
+  response: { player: Player }[];
 }
 
 export interface PlayerTeam {
@@ -434,17 +414,20 @@ export interface PlayerTeamsApiResponse {
   response: PlayerTeam[];
 }
 
+// Base team interface
+export interface Team {
+  id: number;
+  name: string;
+  code: string;
+  country: string;
+  national: boolean;
+  logo: string;
+  founded?: number; // Optional founding year
+}
+
 // New types for Team Detail Screen
 export interface TeamDetail {
-  team: {
-    id: number;
-    name: string;
-    code: string;
-    country: string;
-    founded: number;
-    national: boolean;
-    logo: string;
-  };
+  team: Team;
   venue: {
     id: number;
     name: string;
@@ -454,6 +437,20 @@ export interface TeamDetail {
     surface: string;
     image: string;
   };
+}
+
+export interface TeamSearchApiResponse {
+  get: string;
+  parameters: {
+    search?: string;
+  };
+  errors: string[];
+  results: number;
+  paging: {
+    current: number;
+    total: number;
+  };
+  response: TeamDetail[];
 }
 
 export interface TeamDetailApiResponse {

@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
-import { LeagueItem } from "@/core/types/api";
+import { League } from "@/core/types/api";
 import { fetchLeaguesForCountry } from "@/services/api/leagues";
 
 interface UseCountryDataReturn {
   // Data
-  leagues: LeagueItem[];
-  cups: LeagueItem[];
+  leagues: League[];
+  cups: League[];
 
   // Loading states
   isLoading: boolean;
@@ -17,12 +17,12 @@ interface UseCountryDataReturn {
   // Actions
   loadData: () => Promise<void>;
   refresh: () => Promise<void>;
-  clearError: () => void;
+  clearError: () => Promise<void>;
 }
 
 export const useCountryData = (countryCode: string): UseCountryDataReturn => {
-  const [leagues, setLeagues] = useState<LeagueItem[]>([]);
-  const [cups, setCups] = useState<LeagueItem[]>([]);
+  const [leagues, setLeagues] = useState<League[]>([]);
+  const [cups, setCups] = useState<League[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -57,7 +57,7 @@ export const useCountryData = (countryCode: string): UseCountryDataReturn => {
     setIsRefreshing(false);
   }, [loadData]);
 
-  const clearError = useCallback(() => {
+  const clearError = useCallback(async () => {
     setError(null);
   }, []);
 

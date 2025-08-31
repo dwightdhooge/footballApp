@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback } from "react";
-import { PlayerProfile, PlayerTeam } from "@/core/types/api";
+import { Player, PlayerTeam } from "@/core/types/api";
 import { fetchPlayerProfile, fetchPlayerTeams } from "@/services/api/players";
 
 interface UsePlayerDataReturn {
   // Data
-  playerProfile: PlayerProfile | null;
+  playerProfile: Player | null;
   careerData: PlayerTeam[];
 
   // Loading states
@@ -19,14 +19,14 @@ interface UsePlayerDataReturn {
   refetchProfile: () => Promise<void>;
   refetchCareer: () => Promise<void>;
   clearProfileError: () => void;
-  clearCareerError: () => void;
+  clearCareerError: () => Promise<void>;
 }
 
 export const usePlayerData = (
   playerId: number,
-  initialProfile?: PlayerProfile | null
+  initialProfile?: Player | null
 ): UsePlayerDataReturn => {
-  const [playerProfile, setPlayerProfile] = useState<PlayerProfile | null>(
+  const [playerProfile, setPlayerProfile] = useState<Player | null>(
     initialProfile || null
   );
   const [careerData, setCareerData] = useState<PlayerTeam[]>([]);
@@ -43,6 +43,7 @@ export const usePlayerData = (
       setProfileError(null);
 
       const profile = await fetchPlayerProfile(playerId);
+      console.log("profile", profile);
       setPlayerProfile(profile);
     } catch (err) {
       const errorMessage =
@@ -91,7 +92,7 @@ export const usePlayerData = (
     setProfileError(null);
   }, []);
 
-  const clearCareerError = useCallback(() => {
+  const clearCareerError = useCallback(async () => {
     setCareerError(null);
   }, []);
 

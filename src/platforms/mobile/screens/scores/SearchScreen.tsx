@@ -10,8 +10,8 @@ import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
-import { Country, LeagueItem, Team, PlayerProfile } from "@/core/types/api";
-import { TeamSearchResult } from "@/core/services/api/teams";
+import { Country, League, Team, Player } from "@/core/types/api";
+
 import { ScoresStackParamList } from "@/core/types/navigation";
 import { useTheme } from "@/core/context/ThemeContext";
 import { useSearch } from "@/core/context/SearchContext";
@@ -45,25 +45,20 @@ export const SearchScreen: React.FC = () => {
     navigation.navigate("CountryDetail", { item: country });
   };
 
-  const handleTeamPress = (team: TeamSearchResult) => {
-    const teamItem: Team = {
-      id: team.team.id,
-      name: team.team.name,
-      logo: team.team.logo,
-      winner: false,
-    };
-    navigation.navigate("TeamDetail", { item: teamItem });
+  const handleTeamPress = (team: Team) => {
+    navigation.navigate("TeamDetail", { item: team });
   };
 
-  const handleLeaguePress = (league: LeagueItem) => {
+  const handleLeaguePress = (league: League) => {
     navigation.navigate("LeagueDetail", { item: league });
   };
 
-  const handleCupPress = (cup: LeagueItem) => {
+  const handleCupPress = (cup: League) => {
     navigation.navigate("CupDetail", { item: cup });
   };
 
-  const handlePlayerPress = (player: PlayerProfile) => {
+  const handlePlayerPress = (player: Player) => {
+    console.log("player", player);
     navigation.navigate("PlayerDetail", { item: player });
   };
 

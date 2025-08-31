@@ -6,22 +6,19 @@ import React, {
   ReactNode,
 } from "react";
 import { useTranslation } from "react-i18next";
-import { Country } from "@/core/types/api";
-import { LeagueItem } from "@/core/types/api";
-import { TeamSearchResult } from "@/services/api/teams";
-import { PlayerProfile } from "@/core/types/api";
-import { fetchCountries } from "@/services/api/countries";
+import { Country, League, Team, Player } from "@/core/types/api";
+import { searchCountries } from "@/services/api/countries";
 import { searchTeams } from "@/services/api/teams";
 import { searchLeagues } from "@/services/api/leagues";
 import { searchPlayers } from "@/services/api/players";
 import { debounce, isValidSearch } from "@/core/utils/helpers";
 
 interface SearchResults {
-  teams: TeamSearchResult[];
-  leagues: LeagueItem[];
-  cups: LeagueItem[];
+  teams: Team[];
+  leagues: League[];
+  cups: League[];
   countries: Country[];
-  players: PlayerProfile[];
+  players: Player[];
 }
 
 interface SearchContextType {
@@ -84,7 +81,7 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({ children }) => {
         ] = await Promise.allSettled([
           searchTeams(term),
           searchLeagues(term),
-          fetchCountries(term),
+          searchCountries(term),
           searchPlayers(term),
         ]);
 

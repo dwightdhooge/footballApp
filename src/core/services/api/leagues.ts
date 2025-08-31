@@ -1,5 +1,5 @@
 import { API_CONFIG } from "./config";
-import { LeaguesApiResponse, LeagueItem } from "@/core/types/api";
+import { LeaguesApiResponse, League } from "@/core/types/api";
 
 // New interface for league search results
 export interface LeagueSearchApiResponse {
@@ -13,12 +13,10 @@ export interface LeagueSearchApiResponse {
     current: number;
     total: number;
   };
-  response: LeagueItem[];
+  response: League[];
 }
 
-export const searchLeagues = async (
-  searchTerm: string
-): Promise<LeagueItem[]> => {
+export const searchLeagues = async (searchTerm: string): Promise<League[]> => {
   try {
     const response = await fetch(
       `${API_CONFIG.baseURL}/leagues?search=${encodeURIComponent(searchTerm)}`,
@@ -46,7 +44,7 @@ export const searchLeagues = async (
 
 export const fetchLeaguesForCountry = async (
   countryCode: string
-): Promise<LeagueItem[]> => {
+): Promise<League[]> => {
   try {
     const response = await fetch(
       `${API_CONFIG.baseURL}/leagues?code=${encodeURIComponent(countryCode)}`,
@@ -74,13 +72,13 @@ export const fetchLeaguesForCountry = async (
 };
 
 export const processLeaguesData = (
-  apiResponse: LeagueItem[]
+  apiResponse: League[]
 ): {
-  leagues: LeagueItem[];
-  cups: LeagueItem[];
+  leagues: League[];
+  cups: League[];
 } => {
-  const leagues: LeagueItem[] = [];
-  const cups: LeagueItem[] = [];
+  const leagues: League[] = [];
+  const cups: League[] = [];
 
   apiResponse.forEach((item) => {
     if (item.league.type === "League") {

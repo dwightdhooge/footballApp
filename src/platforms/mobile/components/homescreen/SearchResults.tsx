@@ -8,8 +8,8 @@ import {
   FlatList,
 } from "react-native";
 import { useTranslation } from "react-i18next";
-import { Country, LeagueItem, PlayerProfile } from "@/types/api";
-import { TeamSearchResult } from "@/services/api/teams";
+import { Country, League, Player, Team } from "@/types/api";
+
 import { CountryCard } from "./../country/CountryCard";
 import { TeamCard } from "./../team/TeamCard";
 import { LeagueCard } from "./../league/LeagueCard";
@@ -57,21 +57,21 @@ class SearchResultsErrorBoundary extends React.Component<
 
 interface SearchResultsProps {
   results: {
-    teams: TeamSearchResult[];
-    leagues: LeagueItem[];
-    cups: LeagueItem[];
+    teams: Team[];
+    leagues: League[];
+    cups: League[];
     countries: Country[];
-    players: PlayerProfile[];
+    players: Player[];
   };
   searchTerm: string;
   isLoading: boolean;
   error: string | null;
   selectedCategory: "players" | "teams" | "leagues" | "cups" | "countries";
   onCountryPress: (country: Country) => void;
-  onTeamPress: (team: TeamSearchResult) => void;
-  onLeaguePress: (league: LeagueItem) => void;
-  onCupPress: (cup: LeagueItem) => void;
-  onPlayerPress: (player: PlayerProfile) => void;
+  onTeamPress: (team: Team) => void;
+  onLeaguePress: (league: League) => void;
+  onCupPress: (cup: League) => void;
+  onPlayerPress: (player: Player) => void;
   onHeartPress: (country: Country) => void;
   isFavorite: (countryCode: string) => boolean;
   hasSearched: boolean;
@@ -230,9 +230,9 @@ const SearchResultsContent: React.FC<SearchResultsProps> = ({
         case "teams":
           return (
             <TeamCard
-              id={item.team.id}
-              name={item.team.name}
-              logo={item.team.logo}
+              id={item.id}
+              name={item.name}
+              logo={item.logo}
               onPress={handlePress}
               size="small"
             />
@@ -241,12 +241,12 @@ const SearchResultsContent: React.FC<SearchResultsProps> = ({
         case "players":
           return (
             <PlayerCard
-              id={item.player.id}
-              name={item.player.name}
-              firstname={item.player.firstname}
-              lastname={item.player.lastname}
-              photo={item.player.photo}
-              position={item.player.position || ""}
+              id={item.id}
+              name={item.name}
+              firstname={item.firstname}
+              lastname={item.lastname}
+              photo={item.photo}
+              position={item.position || ""}
               onPress={handlePress}
               onRemove={() => {}} // No-op for search results
             />

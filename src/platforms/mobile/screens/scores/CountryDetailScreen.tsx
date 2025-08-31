@@ -10,7 +10,7 @@ import {
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { useTranslation } from "react-i18next";
-import { LeagueItem } from "@/types/api";
+import { League } from "@/types/api";
 import { ScoresStackParamList } from "@/types/navigation";
 import { useTheme } from "@/context/ThemeContext";
 import { useCountryData } from "@/hooks/useCountryData";
@@ -60,7 +60,7 @@ export const CountryDetailScreen: React.FC = () => {
     clearError,
   } = useCountryData(country.code);
 
-  const handleLeaguePress = (league: LeagueItem) => {
+  const handleLeaguePress = (league: League) => {
     if (league.league.type === "League") {
       navigation.navigate("LeagueDetail", { item: league });
     } else {

@@ -12,7 +12,6 @@ import { LineupsGrid } from "@/components/match/LineupsGrid";
 import { Stats } from "@/components/match/Stats";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "@/core/context/ThemeContext";
-import { PlayerProfile } from "@/core/types/api";
 
 type TabType = "events" | "lineups" | "stats";
 type MatchDetailNavigationProp = StackNavigationProp<
@@ -66,29 +65,27 @@ export const MatchDetailScreen: React.FC = () => {
   };
 
   const navigateToPlayer = (player: Player) => {
-    // Create minimal PlayerProfile object - PlayerDetailScreen will fetch the full profile from API
-    const minimalPlayerProfile: PlayerProfile = {
-      player: {
-        id: player.id,
-        name: player.name,
-        firstname: player.name.split(" ")[0] || "",
-        lastname: player.name.split(" ").slice(1).join(" ") || "",
-        age: 0,
-        birth: {
-          date: "",
-          place: "",
-          country: "",
-        },
-        nationality: "",
-        height: "",
-        weight: "",
-        number: player.number || 0,
-        position: player.pos || "",
-        photo: "",
+    // Create minimal Player object - PlayerDetailScreen will fetch the full profile from API
+    const minimalPlayer: Player = {
+      id: player.id,
+      name: player.name,
+      firstname: player.name.split(" ")[0] || "",
+      lastname: player.name.split(" ").slice(1).join(" ") || "",
+      age: 0,
+      birth: {
+        date: "",
+        place: "",
+        country: "",
       },
+      nationality: "",
+      height: "",
+      weight: "",
+      number: player.number || 0,
+      position: player.position || "",
+      photo: "",
     };
 
-    navigation.navigate("PlayerDetail", { item: minimalPlayerProfile });
+    navigation.navigate("PlayerDetail", { item: minimalPlayer });
   };
 
   const renderTabContent = () => {

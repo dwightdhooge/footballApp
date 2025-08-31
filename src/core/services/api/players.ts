@@ -1,7 +1,7 @@
 import {
-  PlayerProfile,
+  Player,
   PlayerTeam,
-  PlayerProfileApiResponse,
+  PlayerApiResponse,
   PlayerSearchApiResponse,
 } from "@/core/types/api";
 import { API_CONFIG } from "./config";
@@ -9,9 +9,7 @@ import { API_CONFIG } from "./config";
 /**
  * Fetch player profile data
  */
-export const fetchPlayerProfile = async (
-  playerId: number
-): Promise<PlayerProfile> => {
+export const fetchPlayerProfile = async (playerId: number): Promise<Player> => {
   const response = await fetch(
     `${API_CONFIG.baseURL}players/profiles?player=${playerId}`,
     {
@@ -23,7 +21,7 @@ export const fetchPlayerProfile = async (
     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
   }
 
-  const data: PlayerProfileApiResponse = await response.json();
+  const data: PlayerApiResponse = await response.json();
 
   if (data.errors && data.errors.length > 0) {
     throw new Error(`API Error: ${data.errors.join(", ")}`);
@@ -33,7 +31,9 @@ export const fetchPlayerProfile = async (
     throw new Error("No player profile data found");
   }
 
-  return data.response[0];
+  // Map nested response to flat Player interface
+  const playerData = data.response[0];
+  return playerData.player;
 };
 
 /**
@@ -65,9 +65,7 @@ export const fetchPlayerTeams = async (
 /**
  * Search players by name
  */
-export const searchPlayers = async (
-  query: string
-): Promise<PlayerProfile[]> => {
+export const searchPlayers = async (query: string): Promise<Player[]> => {
   const response = await fetch(
     `${API_CONFIG.baseURL}players/profiles?search=${encodeURIComponent(query)}`,
     {
@@ -81,9 +79,6 @@ export const searchPlayers = async (
 
   const data: PlayerSearchApiResponse = await response.json();
 
-  if (data.errors && data.errors.length > 0) {
-    throw new Error(`API Error: ${data.errors.join(", ")}`);
-  }
-
-  return data.response || [];
+  // Map nested response to flat Player interface
+  return data.response.map((item) => item.player) || [];
 };

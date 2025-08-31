@@ -20,7 +20,10 @@ export const TeamInfoSection: React.FC<TeamInfoSectionProps> = ({ team }) => {
         {t("teamDetail.teamInfo")}
       </Text>
 
-      <DetailRow label={t("teamDetail.founded")} value={team.team.founded} />
+      <DetailRow
+        label={t("teamDetail.founded")}
+        value={team.team.founded || "Unknown"}
+      />
 
       <DetailRow
         label={t("teamDetail.type")}

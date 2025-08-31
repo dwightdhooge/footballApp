@@ -1,35 +1,12 @@
 import { API_CONFIG } from "./config";
-import { TeamDetail, TeamDetailApiResponse } from "@/core/types/api";
+import {
+  Team,
+  TeamDetail,
+  TeamDetailApiResponse,
+  TeamSearchApiResponse,
+} from "@/core/types/api";
 
-// New interface for team search results
-export interface TeamSearchResult {
-  team: {
-    id: number;
-    name: string;
-    code: string;
-    country: string;
-    national: boolean;
-    logo: string;
-  };
-}
-
-export interface TeamSearchApiResponse {
-  get: string;
-  parameters: {
-    search?: string;
-  };
-  errors: string[];
-  results: number;
-  paging: {
-    current: number;
-    total: number;
-  };
-  response: TeamSearchResult[];
-}
-
-export const searchTeams = async (
-  searchTerm: string
-): Promise<TeamSearchResult[]> => {
+export const searchTeams = async (searchTerm: string): Promise<Team[]> => {
   try {
     const response = await fetch(
       `${API_CONFIG.baseURL}/teams?search=${encodeURIComponent(searchTerm)}`,
@@ -48,7 +25,8 @@ export const searchTeams = async (
       return [];
     }
 
-    return data.response;
+    // Map nested response to flat Team interface
+    return data.response.map((item) => item.team);
   } catch (error) {
     console.error("Error searching teams:", error);
     return [];

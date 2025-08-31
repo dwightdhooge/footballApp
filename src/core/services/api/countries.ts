@@ -29,7 +29,7 @@ export const handleApiError = (error: any): ApiError => {
   return { type: "NETWORK_ERROR", message: "Netwerk fout" };
 };
 
-export const fetchCountries = async (
+export const searchCountries = async (
   searchQuery: string = ""
 ): Promise<Country[]> => {
   try {

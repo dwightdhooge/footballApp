@@ -1,27 +1,25 @@
 // src/platforms/web/App.tsx
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { FavoritesProvider } from "@/core/context/FavoritesContext";
+import { SearchProvider } from "@/core/context/SearchContext";
+import { SettingsProvider } from "@/core/context/SettingsContext";
+import { ThemeProvider } from "@/core/context/ThemeContext";
+import { DebugProvider } from "@/core/context/DebugContext";
 import { HomePage } from "./pages/HomePage";
+import "@/i18n"; // Initialize i18n
 
 export const WebApp = () => {
-  return <HomePage />;
+  return (
+    <SettingsProvider>
+      <ThemeProvider>
+        <DebugProvider>
+          <FavoritesProvider>
+            <SearchProvider>
+              <HomePage />
+            </SearchProvider>
+          </FavoritesProvider>
+        </DebugProvider>
+      </ThemeProvider>
+    </SettingsProvider>
+  );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#f5f5f5",
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: "bold",
-    marginBottom: 16,
-    color: "#212121",
-  },
-  subtitle: {
-    fontSize: 18,
-    color: "#666",
-  },
-});

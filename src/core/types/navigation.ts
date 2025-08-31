@@ -1,7 +1,7 @@
-import { Country, LeagueItem, Fixture, PlayerProfile, Team } from "./api";
+import { Country, League, Fixture, Player, Team } from "./api";
 
 export interface NavigationParams {
-  item: Country | LeagueItem | Fixture | PlayerProfile | Team;
+  item: Country | League | Fixture | Player | Team;
 }
 
 export interface NavigationState {
@@ -15,10 +15,10 @@ export interface NavigationState {
 export type ScoresTabFlow = {
   Homescreen: undefined;
   CountryDetail: { item: Country };
-  LeagueDetail: { item: LeagueItem };
-  CupDetail: { item: LeagueItem };
+  LeagueDetail: { item: League };
+  CupDetail: { item: League };
   MatchDetail: { item: Fixture };
-  PlayerDetail: { item: PlayerProfile };
+  PlayerDetail: { item: Player };
   TeamDetail: { item: Team };
 };
 
@@ -26,10 +26,10 @@ export type FavoritesTabFlow = {
   FavoritesHome: undefined;
   // Reuse existing detail screens for navigation
   CountryDetail: { item: Country };
-  LeagueDetail: { item: LeagueItem };
-  CupDetail: { item: LeagueItem };
+  LeagueDetail: { item: League };
+  CupDetail: { item: League };
   MatchDetail: { item: Fixture };
-  PlayerDetail: { item: PlayerProfile };
+  PlayerDetail: { item: Player };
   TeamDetail: { item: Team };
 };
 
@@ -52,10 +52,10 @@ export type ScoresStackParamList = {
   Homescreen: undefined;
   SearchScreen: undefined;
   CountryDetail: { item: Country };
-  LeagueDetail: { item: LeagueItem };
-  CupDetail: { item: LeagueItem };
+  LeagueDetail: { item: League };
+  CupDetail: { item: League };
   MatchDetail: { item: Fixture };
-  PlayerDetail: { item: PlayerProfile };
+  PlayerDetail: { item: Player };
   TeamDetail: { item: Team };
 };
 
@@ -63,10 +63,10 @@ export type FavoritesStackParamList = {
   FavoritesHome: undefined;
   // Reuse existing detail screens for navigation
   CountryDetail: { item: Country };
-  LeagueDetail: { item: LeagueItem };
-  CupDetail: { item: LeagueItem };
+  LeagueDetail: { item: League };
+  CupDetail: { item: League };
   MatchDetail: { item: Fixture };
-  PlayerDetail: { item: PlayerProfile };
+  PlayerDetail: { item: Player };
   TeamDetail: { item: Team };
 };
 

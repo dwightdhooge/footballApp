@@ -18,11 +18,11 @@ import { FavoriteButton } from "@/components/common/FavoriteButton";
 import { SeasonDropdown } from "@/components/common/SeasonDropdown";
 import { RoundDropdown } from "@/components/common/RoundDropdown";
 import { StandingsTable } from "@/components/league/StandingsTable";
-import { LeagueItem, Fixture } from "@/core/types/api";
+import { League, Fixture } from "@/core/types/api";
 import { MatchCard } from "@/components/match/MatchCard";
 
 interface RouteParams {
-  item: LeagueItem;
+  item: League;
 }
 
 export const LeagueDetailScreen: React.FC = () => {

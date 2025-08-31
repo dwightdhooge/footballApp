@@ -1,11 +1,11 @@
 import React from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
 import { useTheme } from "@/context/ThemeContext";
-import { LeagueItem } from "@/types/api";
+import { League } from "@/types/api";
 import { FlagSvg } from "./../country/FlagSvg";
 
 interface CupInfoProps {
-  cup: LeagueItem;
+  cup: League;
 }
 
 export const CupInfo: React.FC<CupInfoProps> = ({ cup }) => {

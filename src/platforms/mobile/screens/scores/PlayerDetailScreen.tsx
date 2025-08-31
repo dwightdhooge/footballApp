@@ -37,7 +37,8 @@ export const PlayerDetailScreen: React.FC = () => {
 
   // Set up header with favorite button
   useLayoutEffect(() => {
-    if (initialPlayerProfile?.player?.id) {
+    console.log("initialPlayerProfile", initialPlayerProfile);
+    if (initialPlayerProfile?.id) {
       navigation.setOptions({
         headerRight: () => (
           <FavoriteButton
@@ -51,7 +52,7 @@ export const PlayerDetailScreen: React.FC = () => {
   }, [navigation, initialPlayerProfile, styles.headerButton]);
 
   // Safety check for route params
-  if (!initialPlayerProfile?.player?.id) {
+  if (!initialPlayerProfile?.id) {
     return (
       <View
         style={[styles.container, { backgroundColor: theme.colors.background }]}
@@ -74,7 +75,7 @@ export const PlayerDetailScreen: React.FC = () => {
     careerError,
     refetchProfile,
     refetchCareer,
-  } = usePlayerData(initialPlayerProfile.player.id, initialPlayerProfile);
+  } = usePlayerData(initialPlayerProfile.id, initialPlayerProfile);
 
   // Add a small delay to ensure data is properly loaded
   const [isDataReady, setIsDataReady] = useState(false);
@@ -146,89 +147,98 @@ export const PlayerDetailScreen: React.FC = () => {
     );
   }
 
-  const { player } = playerProfile;
+  const player = playerProfile;
 
   const renderPlayerHeader = () => (
-    <View
-      style={[
-        styles.playerHeader,
-        { backgroundColor: theme.colors.background },
-      ]}
-    >
-      <View style={styles.playerInfoContainer}>
-        <View style={styles.playerTextInfo}>
-          <Text style={[styles.playerName, { color: theme.colors.text }]}>
-            {`${player?.firstname} ${player?.lastname}`}
-          </Text>
+    console.log("player", player),
+    (
+      <View
+        style={[
+          styles.playerHeader,
+          { backgroundColor: theme.colors.background },
+        ]}
+      >
+        <View style={styles.playerInfoContainer}>
+          <View style={styles.playerTextInfo}>
+            <Text style={[styles.playerName, { color: theme.colors.text }]}>
+              {`${player?.firstname} ${player?.lastname}`}
+            </Text>
 
-          <View style={styles.playerDetails}>
-            {player?.age && (
-              <Text
-                style={[
-                  styles.detailText,
-                  { color: theme.colors.textSecondary },
-                ]}
-              >
-                {`${t("playerDetail.age")}: ${player.age}`}
-              </Text>
-            )}
-            {player?.birth?.country && (
-              <Text
-                style={[
-                  styles.detailText,
-                  { color: theme.colors.textSecondary },
-                ]}
-              >
-                {`${t("playerDetail.nationality")}: ${player.birth.country}`}
-              </Text>
-            )}
-            {player?.height && (
-              <Text
-                style={[
-                  styles.detailText,
-                  { color: theme.colors.textSecondary },
-                ]}
-              >
-                {`${t("playerDetail.height")}: ${player.height}`}
-              </Text>
-            )}
-            {player?.weight && (
-              <Text
-                style={[
-                  styles.detailText,
-                  { color: theme.colors.textSecondary },
-                ]}
-              >
-                {`${t("playerDetail.weight")}: ${player.weight}`}
-              </Text>
-            )}
+            <View style={styles.playerDetails}>
+              {player?.age && (
+                <Text
+                  style={[
+                    styles.detailText,
+                    { color: theme.colors.textSecondary },
+                  ]}
+                >
+                  {`${t("playerDetail.age")}: ${player.age}`}
+                </Text>
+              )}
+              {player?.birth?.country && (
+                <Text
+                  style={[
+                    styles.detailText,
+                    { color: theme.colors.textSecondary },
+                  ]}
+                >
+                  {`${t("playerDetail.nationality")}: ${player.birth.country}`}
+                </Text>
+              )}
+              {player?.height && (
+                <Text
+                  style={[
+                    styles.detailText,
+                    { color: theme.colors.textSecondary },
+                  ]}
+                >
+                  {`${t("playerDetail.height")}: ${player.height}`}
+                </Text>
+              )}
+              {player?.weight && (
+                <Text
+                  style={[
+                    styles.detailText,
+                    { color: theme.colors.textSecondary },
+                  ]}
+                >
+                  {`${t("playerDetail.weight")}: ${player.weight}`}
+                </Text>
+              )}
+            </View>
+          </View>
+
+          <View style={styles.playerPhotoContainer}>
+            <CachedImage
+              url={player?.photo}
+              size={120}
+              fallbackText={t("playerDetail.player")}
+            />
           </View>
         </View>
 
-        <View style={styles.playerPhotoContainer}>
-          <CachedImage
-            url={player?.photo}
-            size={120}
-            fallbackText={t("playerDetail.player")}
-          />
+        <View style={styles.playerInfo}>
+          <Text
+            style={[
+              styles.playerPosition,
+              { color: theme.colors.textSecondary },
+            ]}
+          >
+            {player?.position}
+          </Text>
+          {player?.number && (
+            <Text
+              style={[
+                styles.playerNumber,
+                { color: theme.colors.textSecondary },
+              ]}
+            >
+              {`• #${player.number}`}
+            </Text>
+          )}
         </View>
       </View>
-
-      <View style={styles.playerInfo}>
-        <Text
-          style={[styles.playerPosition, { color: theme.colors.textSecondary }]}
-        >
-          {player?.position}
-        </Text>
-        {player?.number && (
-          <Text
-            style={[styles.playerNumber, { color: theme.colors.textSecondary }]}
-          >
-            {`• #${player.number}`}
-          </Text>
-        )}
-      </View>
-    </View>
+    )
   );
 
   const renderTabNavigation = () => (

@@ -118,10 +118,10 @@ export const FavoritesList: React.FC<FavoritesListProps> = ({
           const league = item as any;
           return (
             <LeagueCard
-              id={league.league.id}
-              name={league.league.name}
-              logo={league.league.logo}
-              type={league.league.type}
+              id={league.id}
+              name={league.name}
+              logo={league.logo}
+              type={league.type}
               onPress={handlePress}
               onRemove={() => handleRemove(item, category)}
               size="small"
@@ -131,10 +131,10 @@ export const FavoritesList: React.FC<FavoritesListProps> = ({
           const cup = item as any;
           return (
             <LeagueCard
-              id={cup.league.id}
-              name={cup.league.name}
-              logo={cup.league.logo}
-              type={cup.league.type}
+              id={cup.id}
+              name={cup.name}
+              logo={cup.logo}
+              type={cup.type}
               onPress={handlePress}
               onRemove={() => handleRemove(item, category)}
               size="small"
@@ -170,10 +170,10 @@ export const FavoritesList: React.FC<FavoritesListProps> = ({
         return `team_${team.id}`;
       case "leagues":
         const leagueItem = item as any;
-        return `leagues_${leagueItem.league.id}`;
+        return `leagues_${leagueItem.id}`;
       case "cups":
         const cupItem = item as any;
-        return `cup_${cupItem.league.id}`;
+        return `cup_${cupItem.id}`;
       case "countries":
         const country = item as any;
         return `country_${country.code}`;

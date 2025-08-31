@@ -9,12 +9,12 @@ import {
 import { useTranslation } from "react-i18next";
 import { useTheme } from "@/context/ThemeContext";
 import { LeagueCard } from "./../league/LeagueCard";
-import { LeagueItem } from "@/types/api";
+import { League } from "@/types/api";
 
 interface LeaguesSectionProps {
   title: string;
-  leagues: LeagueItem[];
-  onLeaguePress: (league: LeagueItem) => void;
+  leagues: League[];
+  onLeaguePress: (league: League) => void;
   isLoading?: boolean;
   size?: "small" | "medium" | "large";
 }

@@ -1,10 +1,10 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Country, LeagueItem, Team, PlayerProfile } from "@/core/types/api";
+import { Country, League, Team, Player } from "@/core/types/api";
 
 const FAVORITES_KEY = "favorites";
 
 // Generic favorite item type
-export type FavoriteItem = Country | LeagueItem | Team | PlayerProfile;
+export type FavoriteItem = Country | League | Team | Player;
 export type FavoriteType = "country" | "leagues" | "cup" | "team" | "player";
 
 // Enhanced storage interface
@@ -176,13 +176,13 @@ const getItemId = (item: FavoriteItem, type: FavoriteType): string => {
     case "country":
       return `country_${(item as Country).code}`;
     case "leagues":
-      return `leagues_${(item as LeagueItem).league.id}`;
+      return `leagues_${(item as League).league.id}`;
     case "cup":
-      return `cup_${(item as LeagueItem).league.id}`;
+      return `cup_${(item as League).league.id}`;
     case "team":
       return `team_${(item as Team).id}`;
     case "player":
-      return `player_${(item as PlayerProfile).player.id}`;
+      return `player_${(item as Player).id}`;
     default:
       return `unknown_${Date.now()}`;
   }

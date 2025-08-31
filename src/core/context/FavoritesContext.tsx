@@ -5,7 +5,7 @@ import React, {
   useEffect,
   ReactNode,
 } from "react";
-import { Country, LeagueItem, Team, PlayerProfile } from "@/core/types/api";
+import { Country, League, Team, Player } from "@/core/types/api";
 import {
   loadFavorites,
   addFavorite,
@@ -27,10 +27,10 @@ interface FavoritesContextType {
 
   // New generic favorites support
   favoriteCountries: Country[];
-  favoriteLeagues: LeagueItem[];
-  favoriteCups: LeagueItem[];
+  favoriteLeagues: League[];
+  favoriteCups: League[];
   favoriteTeams: Team[];
-  favoritePlayers: PlayerProfile[];
+  favoritePlayers: Player[];
 
   // Generic methods
   addFavoriteItem: (item: FavoriteItem, type: FavoriteType) => Promise<void>;
@@ -57,10 +57,10 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({
 
   // New state for generic favorites
   const [favoriteCountries, setFavoriteCountries] = useState<Country[]>([]);
-  const [favoriteLeagues, setFavoriteLeagues] = useState<LeagueItem[]>([]);
-  const [favoriteCups, setFavoriteCups] = useState<LeagueItem[]>([]);
+  const [favoriteLeagues, setFavoriteLeagues] = useState<League[]>([]);
+  const [favoriteCups, setFavoriteCups] = useState<League[]>([]);
   const [favoriteTeams, setFavoriteTeams] = useState<Team[]>([]);
-  const [favoritePlayers, setFavoritePlayers] = useState<PlayerProfile[]>([]);
+  const [favoritePlayers, setFavoritePlayers] = useState<Player[]>([]);
 
   const loadFavoritesFromStorage = async () => {
     try {
@@ -95,10 +95,10 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({
       ]);
 
       setFavoriteCountries(countries as Country[]);
-      setFavoriteLeagues(leagues as LeagueItem[]);
-      setFavoriteCups(cups as LeagueItem[]);
+      setFavoriteLeagues(leagues as League[]);
+      setFavoriteCups(cups as League[]);
       setFavoriteTeams(teams as Team[]);
-      setFavoritePlayers(players as PlayerProfile[]);
+      setFavoritePlayers(players as Player[]);
     } catch (error) {
       console.error("Error loading generic favorites:", error);
     }
@@ -160,18 +160,16 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({
         );
       case "leagues":
         return favoriteLeagues.some(
-          (fav) => fav.league.id === (item as LeagueItem).league.id
+          (fav) => fav.league.id === (item as League).league.id
         );
       case "cup":
         return favoriteCups.some(
-          (fav) => fav.league.id === (item as LeagueItem).league.id
+          (fav) => fav.league.id === (item as League).league.id
         );
       case "team":
         return favoriteTeams.some((fav) => fav.id === (item as Team).id);
       case "player":
-        return favoritePlayers.some(
-          (fav) => fav.player.id === (item as PlayerProfile).player.id
-        );
+        return favoritePlayers.some((fav) => fav.id === (item as Player).id);
       default:
         return false;
     }
@@ -198,13 +196,13 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({
       case "country":
         return `country_${(item as Country).code}`;
       case "leagues":
-        return `leagues_${(item as LeagueItem).league.id}`;
+        return `leagues_${(item as League).league.id}`;
       case "cup":
-        return `cup_${(item as LeagueItem).league.id}`;
+        return `cup_${(item as League).league.id}`;
       case "team":
         return `team_${(item as Team).id}`;
       case "player":
-        return `player_${(item as PlayerProfile).player.id}`;
+        return `player_${(item as Player).id}`;
       default:
         return `unknown_${Date.now()}`;
     }
