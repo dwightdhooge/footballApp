@@ -233,7 +233,20 @@
   },
   "settings": {
     "title": "Settings",
-    "theme": "Theme",
+    "theme": {
+      "title": "Theme",
+      "auto": "Auto Theme",
+      "autoDescription": "Automatically switch between light and dark themes based on system preference",
+      "manual": "Manual Theme",
+      "manualDescription": "Choose your preferred theme manually",
+      "light": "Light",
+      "dark": "Dark"
+    },
+    "appInfo": {
+      "title": "App Information",
+      "version": "Version",
+      "build": "Build Number"
+    },
     "language": "Language",
     "about": "About",
     "version": "Version",

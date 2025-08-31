@@ -7,7 +7,7 @@ import {
   ScrollView,
 } from "react-native";
 import { useTranslation } from "react-i18next";
-import { useTheme } from "@/context/ThemeContext";
+import { useWebTheme } from "../context/WebThemeProvider";
 
 interface CategoryTabsProps {
   selectedCategory: "players" | "teams" | "leagues" | "cups" | "countries";
@@ -29,7 +29,7 @@ export const CategoryTabs: React.FC<CategoryTabsProps> = ({
   counts,
 }) => {
   const { t } = useTranslation();
-  const { theme } = useTheme();
+  const { theme } = useWebTheme();
 
   const categories = [
     {
@@ -117,9 +117,10 @@ export const CategoryTabs: React.FC<CategoryTabsProps> = ({
   );
 };
 
-const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
+const getStyles = (theme: ReturnType<typeof useWebTheme>["theme"]) =>
   StyleSheet.create({
     container: {
+      paddingTop: theme.spacing.md,
       marginBottom: theme.spacing.lg,
       borderBottomWidth: 1,
       borderBottomColor: theme.colors.border,

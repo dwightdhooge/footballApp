@@ -1,25 +1,40 @@
 // src/platforms/web/App.tsx
 import React from "react";
-import { FavoritesProvider } from "@/core/context/FavoritesContext";
-import { SearchProvider } from "@/core/context/SearchContext";
-import { SettingsProvider } from "@/core/context/SettingsContext";
-import { ThemeProvider } from "@/core/context/ThemeContext";
-import { DebugProvider } from "@/core/context/DebugContext";
+import { View, StyleSheet } from "react-native";
+import { WebThemeProvider } from "./context/WebThemeProvider";
+import { WebSettingsProvider } from "./context/WebSettingsProvider";
+import { SearchProvider } from "@/context/SearchContext";
+import { FavoritesProvider } from "@/context/FavoritesContext";
 import { HomePage } from "./pages/HomePage";
-import "@/i18n"; // Initialize i18n
 
-export const WebApp = () => {
+// Web-specific theme provider that forces light theme
+const WebAppProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   return (
-    <SettingsProvider>
-      <ThemeProvider>
-        <DebugProvider>
-          <FavoritesProvider>
-            <SearchProvider>
-              <HomePage />
-            </SearchProvider>
-          </FavoritesProvider>
-        </DebugProvider>
-      </ThemeProvider>
-    </SettingsProvider>
+    <WebSettingsProvider>
+      <WebThemeProvider>{children}</WebThemeProvider>
+    </WebSettingsProvider>
   );
 };
+
+export default function App() {
+  return (
+    <WebAppProvider>
+      <SearchProvider>
+        <FavoritesProvider>
+          <View style={styles.container}>
+            <HomePage />
+          </View>
+        </FavoritesProvider>
+      </SearchProvider>
+    </WebAppProvider>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#FFFFFF", // Force white background
+  },
+});

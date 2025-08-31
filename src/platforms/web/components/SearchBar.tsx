@@ -8,7 +8,7 @@ import {
   StyleSheet,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useTheme } from "@/context/ThemeContext";
+import { useWebTheme } from "../context/WebThemeProvider";
 import { useTranslation } from "react-i18next";
 
 interface SearchBarProps {
@@ -28,7 +28,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   isLoading = false,
   isValid = true,
 }) => {
-  const { theme } = useTheme();
+  const { theme } = useWebTheme();
   const { t } = useTranslation();
 
   const styles = getStyles(theme, isValid);
@@ -76,7 +76,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
 };
 
 const getStyles = (
-  theme: ReturnType<typeof useTheme>["theme"],
+  theme: ReturnType<typeof useWebTheme>["theme"],
   isValid: boolean
 ) =>
   StyleSheet.create({

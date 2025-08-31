@@ -8,7 +8,8 @@ import {
 } from "react-native";
 import { useTranslation } from "react-i18next";
 import { Country, League, Player, Team } from "@/core/types/api";
-import { useTheme } from "@/context/ThemeContext";
+import { useWebTheme } from "../context/WebThemeProvider";
+import { CountryCard, LeagueCard, TeamCard, PlayerCard } from "./cards";
 
 interface SearchResultsProps {
   results: {
@@ -33,7 +34,7 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
   selectedCategory,
   hasSearched,
 }) => {
-  const { theme } = useTheme();
+  const { theme } = useWebTheme();
   const { t } = useTranslation();
 
   const styles = getStyles(theme);
@@ -112,36 +113,50 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
       switch (selectedCategory) {
         case "countries":
           return (
-            <View style={styles.countryCard}>
-              <Text style={styles.countryName}>{item.name}</Text>
-              <Text style={styles.countryCode}>{item.code}</Text>
-            </View>
+            <CountryCard
+              name={item.name}
+              code={item.code}
+              flag={item.flag}
+              onPress={() => {}} // TODO: Add navigation
+              size="small"
+            />
           );
 
         case "leagues":
         case "cups":
           return (
-            <View style={styles.leagueCard}>
-              <Text style={styles.leagueName}>{item.league.name}</Text>
-              <Text style={styles.leagueType}>{item.league.type}</Text>
-            </View>
+            <LeagueCard
+              id={item.league.id}
+              name={item.league.name}
+              logo={item.league.logo}
+              type={item.league.type}
+              onPress={() => {}} // TODO: Add navigation
+              size="small"
+            />
           );
 
         case "teams":
           return (
-            <View style={styles.teamCard}>
-              <Text style={styles.teamName}>{item.name}</Text>
-            </View>
+            <TeamCard
+              id={item.id}
+              name={item.name}
+              logo={item.logo}
+              onPress={() => {}} // TODO: Add navigation
+              size="small"
+            />
           );
 
         case "players":
           return (
-            <View style={styles.playerCard}>
-              <Text style={styles.playerName}>
-                {item.firstname} {item.lastname}
-              </Text>
-              <Text style={styles.playerPosition}>{item.position}</Text>
-            </View>
+            <PlayerCard
+              id={item.id}
+              name={item.name}
+              firstname={item.firstname}
+              lastname={item.lastname}
+              photo={item.photo}
+              position={item.position || ""}
+              onPress={() => {}} // TODO: Add navigation
+            />
           );
 
         default:
@@ -149,11 +164,7 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
       }
     };
 
-    return (
-      <View key={`${selectedCategory}_${index}`} style={styles.cardContainer}>
-        {renderContent()}
-      </View>
-    );
+    return <View key={`${selectedCategory}_${index}`}>{renderContent()}</View>;
   };
 
   const currentData = getCurrentData();
@@ -183,10 +194,11 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
   );
 };
 
-const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
+const getStyles = (theme: ReturnType<typeof useWebTheme>["theme"]) =>
   StyleSheet.create({
     container: {
       flex: 1,
+      marginTop: theme.spacing.md,
     },
     scrollView: {
       flex: 1,
@@ -197,70 +209,11 @@ const getStyles = (theme: ReturnType<typeof useTheme>["theme"]) =>
     gridContainer: {
       flexDirection: "row",
       flexWrap: "wrap",
-      justifyContent: "space-between",
+      justifyContent: "flex-start",
       padding: theme.spacing.md,
+      gap: theme.spacing.md,
     },
-    cardContainer: {
-      backgroundColor: theme.colors.surface,
-      borderRadius: theme.borderRadius.md,
-      padding: theme.spacing.md,
-      borderWidth: 1,
-      borderColor: theme.colors.border,
-      minHeight: 100,
-      justifyContent: "center",
-      width: "48%", // Two columns with spacing
-      marginBottom: theme.spacing.md,
-    },
-    countryCard: {
-      alignItems: "center",
-    },
-    countryName: {
-      ...theme.typography.h3,
-      color: theme.colors.text,
-      textAlign: "center",
-      marginBottom: theme.spacing.xs,
-    },
-    countryCode: {
-      ...theme.typography.caption,
-      color: theme.colors.textSecondary,
-      textAlign: "center",
-    },
-    leagueCard: {
-      alignItems: "center",
-    },
-    leagueName: {
-      ...theme.typography.h3,
-      color: theme.colors.text,
-      textAlign: "center",
-      marginBottom: theme.spacing.xs,
-    },
-    leagueType: {
-      ...theme.typography.caption,
-      color: theme.colors.textSecondary,
-      textAlign: "center",
-    },
-    teamCard: {
-      alignItems: "center",
-    },
-    teamName: {
-      ...theme.typography.h3,
-      color: theme.colors.text,
-      textAlign: "center",
-    },
-    playerCard: {
-      alignItems: "center",
-    },
-    playerName: {
-      ...theme.typography.h3,
-      color: theme.colors.text,
-      textAlign: "center",
-      marginBottom: theme.spacing.xs,
-    },
-    playerPosition: {
-      ...theme.typography.caption,
-      color: theme.colors.textSecondary,
-      textAlign: "center",
-    },
+
     loadingContainer: {
       flex: 1,
       justifyContent: "center",
