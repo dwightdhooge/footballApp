@@ -8,15 +8,72 @@
 - **Snelle toegang** tot scores en instellingen
 - **Consistente ervaring** tussen verschillende app secties
 - **Efficiënte navigatie** met minimale taps
+- **Cross-platform navigatie** voor mobile en web
 
 ## 🏗 Technical Implementation
+
+### Platform-Specific Navigation Structure
+
+#### Mobile Platform (`/src/platforms/mobile/navigation/`)
+
+```typescript
+// Mobile navigation structure
+interface MobileNavigationStructure {
+  "Bottom Tabs Navigator": {
+    "Scores Tab": {
+      "Scores Stack Navigator": {
+        Homescreen: undefined;
+        CountryDetailScreen: { item: Country };
+        LeagueDetailScreen: { item: League };
+        CupDetailScreen: { item: Cup };
+        MatchDetailScreen: { item: Fixture };
+        TeamDetailScreen: { item: Team };
+        PlayerDetailScreen: { item: Player };
+      };
+    };
+    "Favorites Tab": {
+      "Favorites Stack Navigator": {
+        FavoritesHomeScreen: undefined;
+      };
+    };
+    "Settings Tab": {
+      "Settings Stack Navigator": {
+        SettingsScreen: undefined;
+      };
+    };
+    "Debug Tab": {
+      "Debug Stack Navigator": {
+        DebugScreen: undefined;
+      };
+    };
+  };
+}
+```
+
+#### Web Platform (`/src/platforms/web/`)
+
+```typescript
+// Web navigation structure
+interface WebNavigationStructure {
+  "Web App Router": {
+    HomePage: undefined;
+    CountryDetailPage: { item: Country };
+    LeagueDetailPage: { item: League };
+    CupDetailPage: { item: Cup };
+    MatchDetailPage: { item: Fixture };
+    TeamDetailPage: { item: Team };
+    PlayerDetailPage: { item: Player };
+    SettingsPage: undefined;
+  };
+}
+```
 
 ### Bottom Tabs Structure
 
 ```typescript
 // Navigation types
 interface NavigationParams {
-  item: Country | League | Cup;
+  item: Country | League | Cup | Fixture | Team | Player;
 }
 
 interface NavigationState {
@@ -33,10 +90,21 @@ type ScoresTabFlow = {
   CountryDetail: { item: Country };
   LeagueDetail: { item: League };
   CupDetail: { item: Cup };
+  MatchDetail: { item: Fixture };
+  TeamDetail: { item: Team };
+  PlayerDetail: { item: Player };
+};
+
+type FavoritesTabFlow = {
+  FavoritesHome: undefined;
 };
 
 type SettingsTabFlow = {
   Settings: undefined;
+};
+
+type DebugTabFlow = {
+  Debug: undefined;
 };
 
 // App structure
@@ -48,11 +116,24 @@ interface AppNavigationStructure {
         CountryDetailScreen: { item: Country };
         LeagueDetailScreen: { item: League };
         CupDetailScreen: { item: Cup };
+        MatchDetailScreen: { item: Fixture };
+        TeamDetailScreen: { item: Team };
+        PlayerDetailScreen: { item: Player };
+      };
+    };
+    "Favorites Tab": {
+      "Favorites Stack Navigator": {
+        FavoritesHomeScreen: undefined;
       };
     };
     "Settings Tab": {
       "Settings Stack Navigator": {
         SettingsScreen: undefined;
+      };
+    };
+    "Debug Tab": {
+      "Debug Stack Navigator": {
+        DebugScreen: undefined;
       };
     };
   };
@@ -79,7 +160,33 @@ interface BottomTabsConfig {
       tabBarInactiveTintColor: string;
     };
   };
+  Favorites: {
+    screen: React.ComponentType<any>;
+    options: {
+      tabBarLabel: string;
+      tabBarIcon: (props: {
+        focused: boolean;
+        color: string;
+        size: number;
+      }) => React.ReactElement;
+      tabBarActiveTintColor: string;
+      tabBarInactiveTintColor: string;
+    };
+  };
   Settings: {
+    screen: React.ComponentType<any>;
+    options: {
+      tabBarLabel: string;
+      tabBarIcon: (props: {
+        focused: boolean;
+        color: string;
+        size: number;
+      }) => React.ReactElement;
+      tabBarActiveTintColor: string;
+      tabBarInactiveTintColor: string;
+    };
+  };
+  Debug: {
     screen: React.ComponentType<any>;
     options: {
       tabBarLabel: string;
@@ -106,12 +213,34 @@ const bottomTabsConfig: BottomTabsConfig = {
       tabBarInactiveTintColor: "#666",
     },
   },
+  Favorites: {
+    screen: FavoritesStackNavigator,
+    options: {
+      tabBarLabel: "Favorieten",
+      tabBarIcon: ({ focused, color, size }) => (
+        <Icon name="heart" size={size} color={color} />
+      ),
+      tabBarActiveTintColor: "#4CAF50",
+      tabBarInactiveTintColor: "#666",
+    },
+  },
   Settings: {
     screen: SettingsStackNavigator,
     options: {
       tabBarLabel: "Instellingen",
       tabBarIcon: ({ focused, color, size }) => (
         <Icon name="settings" size={size} color={color} />
+      ),
+      tabBarActiveTintColor: "#4CAF50",
+      tabBarInactiveTintColor: "#666",
+    },
+  },
+  Debug: {
+    screen: DebugStackNavigator,
+    options: {
+      tabBarLabel: "Debug",
+      tabBarIcon: ({ focused, color, size }) => (
+        <Icon name="bug" size={size} color={color} />
       ),
       tabBarActiveTintColor: "#4CAF50",
       tabBarInactiveTintColor: "#666",
@@ -156,6 +285,30 @@ interface ScoresStackConfig {
       headerBackTitle: string;
     };
   };
+  MatchDetail: {
+    screen: React.ComponentType<any>;
+    options: {
+      headerShown: boolean;
+      title: string;
+      headerBackTitle: string;
+    };
+  };
+  TeamDetail: {
+    screen: React.ComponentType<any>;
+    options: {
+      headerShown: boolean;
+      title: string;
+      headerBackTitle: string;
+    };
+  };
+  PlayerDetail: {
+    screen: React.ComponentType<any>;
+    options: {
+      headerShown: boolean;
+      title: string;
+      headerBackTitle: string;
+    };
+  };
 }
 
 const scoresStackConfig: ScoresStackConfig = {
@@ -190,6 +343,55 @@ const scoresStackConfig: ScoresStackConfig = {
       headerBackTitle: "Terug",
     },
   },
+  MatchDetail: {
+    screen: MatchDetailScreen,
+    options: {
+      headerShown: true,
+      title: "Match Details",
+      headerBackTitle: "Terug",
+    },
+  },
+  TeamDetail: {
+    screen: TeamDetailScreen,
+    options: {
+      headerShown: true,
+      title: "Team Details",
+      headerBackTitle: "Terug",
+    },
+  },
+  PlayerDetail: {
+    screen: PlayerDetailScreen,
+    options: {
+      headerShown: true,
+      title: "Player Details",
+      headerBackTitle: "Terug",
+    },
+  },
+};
+```
+
+#### Favorites Stack Navigator
+
+```typescript
+// Favorites Stack Configuration
+interface FavoritesStackConfig {
+  FavoritesHome: {
+    screen: React.ComponentType<any>;
+    options: {
+      headerShown: boolean;
+      title: string;
+    };
+  };
+}
+
+const favoritesStackConfig: FavoritesStackConfig = {
+  FavoritesHome: {
+    screen: FavoritesHomeScreen,
+    options: {
+      headerShown: false,
+      title: "Favorieten",
+    },
+  },
 };
 ```
 
@@ -213,6 +415,31 @@ const settingsStackConfig: SettingsStackConfig = {
     options: {
       headerShown: false,
       title: "Instellingen",
+    },
+  },
+};
+```
+
+#### Debug Stack Navigator
+
+```typescript
+// Debug Stack Configuration
+interface DebugStackConfig {
+  Debug: {
+    screen: React.ComponentType<any>;
+    options: {
+      headerShown: boolean;
+      title: string;
+    };
+  };
+}
+
+const debugStackConfig: DebugStackConfig = {
+  Debug: {
+    screen: DebugScreen,
+    options: {
+      headerShown: false,
+      title: "Debug",
     },
   },
 };
@@ -248,7 +475,17 @@ const navigationState: NavigationState = {
           { name: "CountryDetail", params: { item: country } },
           { name: "LeagueDetail", params: { item: league } },
           { name: "CupDetail", params: { item: cup } },
+          { name: "MatchDetail", params: { item: fixture } },
+          { name: "TeamDetail", params: { item: team } },
+          { name: "PlayerDetail", params: { item: player } },
         ],
+      },
+    },
+    {
+      name: "Favorites",
+      state: {
+        index: 0,
+        routes: [{ name: "FavoritesHome" }],
       },
     },
     {
@@ -256,6 +493,13 @@ const navigationState: NavigationState = {
       state: {
         index: 0,
         routes: [{ name: "Settings" }],
+      },
+    },
+    {
+      name: "Debug",
+      state: {
+        index: 0,
+        routes: [{ name: "Debug" }],
       },
     },
   ],
@@ -268,7 +512,9 @@ const navigationState: NavigationState = {
 
 ```typescript
 // Switch between tabs
-const navigateToTab = (tabName: "Scores" | "Settings"): void => {
+const navigateToTab = (
+  tabName: "Scores" | "Favorites" | "Settings" | "Debug"
+): void => {
   navigation.navigate(tabName);
 };
 
@@ -282,8 +528,16 @@ const switchToScores = (): void => {
   navigation.navigate("Scores");
 };
 
+const switchToFavorites = (): void => {
+  navigation.navigate("Favorites");
+};
+
 const switchToSettings = (): void => {
   navigation.navigate("Settings");
+};
+
+const switchToDebug = (): void => {
+  navigation.navigate("Debug");
 };
 ```
 
@@ -303,7 +557,17 @@ const navigateToCup = (cup: Cup): void => {
   navigation.navigate("CupDetail", { item: cup });
 };
 
-// Settings screen is standalone, no sub-navigation needed
+const navigateToMatch = (fixture: Fixture): void => {
+  navigation.navigate("MatchDetail", { item: fixture });
+};
+
+const navigateToTeam = (team: Team): void => {
+  navigation.navigate("TeamDetail", { item: team });
+};
+
+const navigateToPlayer = (player: Player): void => {
+  navigation.navigate("PlayerDetail", { item: player });
+};
 
 // Go back
 const goBack = (): void => {
@@ -321,21 +585,36 @@ type DeepLinkURL =
   | `soccerapp://scores/country/${string}`
   | `soccerapp://scores/league/${number}`
   | `soccerapp://scores/cup/${number}`
-  | "soccerapp://settings";
+  | `soccerapp://scores/match/${number}`
+  | `soccerapp://scores/team/${number}`
+  | `soccerapp://scores/player/${number}`
+  | "soccerapp://favorites"
+  | "soccerapp://settings"
+  | "soccerapp://debug";
 
 // Deep link mapping
 interface DeepLinkMapping {
   "soccerapp://scores/country/:countryCode": "CountryDetail";
   "soccerapp://scores/league/:leagueId": "LeagueDetail";
   "soccerapp://scores/cup/:cupId": "CupDetail";
+  "soccerapp://scores/match/:matchId": "MatchDetail";
+  "soccerapp://scores/team/:teamId": "TeamDetail";
+  "soccerapp://scores/player/:playerId": "PlayerDetail";
+  "soccerapp://favorites": "Favorites";
   "soccerapp://settings": "Settings";
+  "soccerapp://debug": "Debug";
 }
 
 const deepLinkMapping: DeepLinkMapping = {
   "soccerapp://scores/country/:countryCode": "CountryDetail",
   "soccerapp://scores/league/:leagueId": "LeagueDetail",
   "soccerapp://scores/cup/:cupId": "CupDetail",
+  "soccerapp://scores/match/:matchId": "MatchDetail",
+  "soccerapp://scores/team/:teamId": "TeamDetail",
+  "soccerapp://scores/player/:playerId": "PlayerDetail",
+  "soccerapp://favorites": "Favorites",
   "soccerapp://settings": "Settings",
+  "soccerapp://debug": "Debug",
 };
 ```
 
@@ -353,11 +632,24 @@ interface DeepLinkConfig {
           CountryDetail: string;
           LeagueDetail: string;
           CupDetail: string;
+          MatchDetail: string;
+          TeamDetail: string;
+          PlayerDetail: string;
+        };
+      };
+      Favorites: {
+        screens: {
+          FavoritesHome: string;
         };
       };
       Settings: {
         screens: {
           Settings: string;
+        };
+      };
+      Debug: {
+        screens: {
+          Debug: string;
         };
       };
     };
@@ -374,11 +666,24 @@ const deepLinkConfig: DeepLinkConfig = {
           CountryDetail: "scores/country/:countryCode",
           LeagueDetail: "scores/league/:leagueId",
           CupDetail: "scores/cup/:cupId",
+          MatchDetail: "scores/match/:matchId",
+          TeamDetail: "scores/team/:teamId",
+          PlayerDetail: "scores/player/:playerId",
+        },
+      },
+      Favorites: {
+        screens: {
+          FavoritesHome: "favorites",
         },
       },
       Settings: {
         screens: {
           Settings: "settings",
+        },
+      },
+      Debug: {
+        screens: {
+          Debug: "debug",
         },
       },
     },
@@ -419,10 +724,36 @@ const parseDeepLink = (url: string): DeepLinkRoute | null => {
           params: { item: { id: parseInt(pathParts[2]) } as Cup },
         };
       }
+      if (pathParts[1] === "match") {
+        return {
+          screen: "MatchDetail",
+          params: { item: { id: parseInt(pathParts[2]) } as Fixture },
+        };
+      }
+      if (pathParts[1] === "team") {
+        return {
+          screen: "TeamDetail",
+          params: { item: { id: parseInt(pathParts[2]) } as Team },
+        };
+      }
+      if (pathParts[1] === "player") {
+        return {
+          screen: "PlayerDetail",
+          params: { item: { id: parseInt(pathParts[2]) } as Player },
+        };
+      }
+    }
+
+    if (pathParts[0] === "favorites") {
+      return { screen: "Favorites" };
     }
 
     if (pathParts[0] === "settings") {
       return { screen: "Settings" };
+    }
+
+    if (pathParts[0] === "debug") {
+      return { screen: "Debug" };
     }
 
     return null;
@@ -462,8 +793,37 @@ const handleDeepLink = (url: string): void => {
       });
       break;
 
+    case "MatchDetail":
+      navigation.navigate("Scores", {
+        screen: "MatchDetail",
+        params: route.params,
+      });
+      break;
+
+    case "TeamDetail":
+      navigation.navigate("Scores", {
+        screen: "TeamDetail",
+        params: route.params,
+      });
+      break;
+
+    case "PlayerDetail":
+      navigation.navigate("Scores", {
+        screen: "PlayerDetail",
+        params: route.params,
+      });
+      break;
+
+    case "Favorites":
+      navigation.navigate("Favorites");
+      break;
+
     case "Settings":
       navigation.navigate("Settings");
+      break;
+
+    case "Debug":
+      navigation.navigate("Debug");
       break;
 
     default:
@@ -496,5 +856,69 @@ const restoreNavigationState = async (): Promise<NavigationState | null> => {
 // Reset navigation state
 const resetNavigationState = (): Promise<void> => {
   return AsyncStorage.removeItem("navigation_state");
+};
+```
+
+### Web Platform Navigation
+
+#### Web Router Configuration
+
+```typescript
+// Web navigation types
+interface WebNavigationState {
+  currentPage: string;
+  params?: Record<string, any>;
+}
+
+type WebPageFlow = {
+  Home: undefined;
+  CountryDetail: { item: Country };
+  LeagueDetail: { item: League };
+  CupDetail: { item: Cup };
+  MatchDetail: { item: Fixture };
+  TeamDetail: { item: Team };
+  PlayerDetail: { item: Player };
+  Settings: undefined;
+};
+
+// Web navigation handling
+const handleWebNavigation = (page: keyof WebPageFlow, params?: any): void => {
+  // Web-specific navigation logic
+  window.history.pushState({ page, params }, "", `/${page.toLowerCase()}`);
+  // Trigger page change
+  window.dispatchEvent(new PopStateEvent("popstate"));
+};
+
+// Web route handling
+const handleWebRoute = (pathname: string): void => {
+  const pathParts = pathname.split("/").filter(Boolean);
+  const page = pathParts[0] || "home";
+
+  switch (page.toLowerCase()) {
+    case "country":
+      // Handle country detail page
+      break;
+    case "league":
+      // Handle league detail page
+      break;
+    case "cup":
+      // Handle cup detail page
+      break;
+    case "match":
+      // Handle match detail page
+      break;
+    case "team":
+      // Handle team detail page
+      break;
+    case "player":
+      // Handle player detail page
+      break;
+    case "settings":
+      // Handle settings page
+      break;
+    default:
+      // Handle home page
+      break;
+  }
 };
 ```

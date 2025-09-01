@@ -2,7 +2,7 @@
 
 ## 🎯 Product Vision
 
-Een React Native Expo app die voetbalfans toegang geeft tot real-time voetbaldata via de API-Football API. De app focust op eenvoudige navigatie per land met persoonlijke favorieten functionaliteit.
+Een React Native Expo app die voetbalfans toegang geeft tot real-time voetbaldata via de API-Football API. De app focust op eenvoudige navigatie per land met persoonlijke favorieten functionaliteit, ondersteund door een cross-platform architectuur.
 
 ### Gebruikersdoelen
 
@@ -10,6 +10,7 @@ Een React Native Expo app die voetbalfans toegang geeft tot real-time voetbaldat
 - **Persoonlijke favorieten** beheren
 - **Real-time updates** van wedstrijden en scores
 - **Intuïtieve interface** voor voetbalfans van alle niveaus
+- **Cross-platform ervaring** tussen mobile en web
 
 ### Kernfunctionaliteiten
 
@@ -17,17 +18,20 @@ Een React Native Expo app die voetbalfans toegang geeft tot real-time voetbaldat
 2. **Land-specifieke data** (wedstrijden, teams, spelers)
 3. **Favorieten systeem** voor persoonlijke landen
 4. **Real-time updates** van live wedstrijden
+5. **Platform-specifieke optimalisaties** voor mobile en web
 
 ## 🏗 Technical Architecture
 
 ### Tech Stack
 
-- **Framework**: React Native met Expo
+- **Framework**: React Native met Expo (managed workflow)
+- **Platforms**: Mobile (iOS/Android) + Web
 - **Navigation**: React Navigation (Bottom Tabs + Stack)
 - **State Management**: React Context API
 - **API**: API-Football v3
-- **Styling**: React Native StyleSheet
+- **Styling**: React Native StyleSheet met getStyles pattern
 - **TypeScript**: Voor type safety en betere developer experience
+- **Cross-Platform**: Shared business logic, platform-specific UI
 
 ### App Structuur
 
@@ -35,19 +39,31 @@ Een React Native Expo app die voetbalfans toegang geeft tot real-time voetbaldat
 // App structure with TypeScript
 interface AppStructure {
   src: {
-    components: string; // Herbruikbare componenten
-    screens: {
-      scores: string; // Scores tab screens
-      settings: string; // Settings tab screens
+    platforms: {
+      mobile: {
+        components: string; // Mobile-specific componenten
+        screens: string; // Mobile screen implementaties
+        navigation: string; // Mobile navigation setup
+        App: string; // Mobile app entry point
+      };
+      web: {
+        components: string; // Web-specific componenten
+        pages: string; // Web page implementaties
+        context: string; // Web-specific context providers
+        App: string; // Web app entry point
+      };
     };
-    navigation: {
-      "bottom-tabs": string; // Bottom tabs navigatie
-      stacks: string; // Stack navigatie per tab
+    shared: {
+      i18n: string; // Internationalisatie
+      styles: string; // Shared styling en theming
     };
-    services: string; // API calls en data handling
-    context: string; // State management
-    utils: string; // Helper functies
-    assets: string; // Afbeeldingen en iconen
+    core: {
+      context: string; // Shared state management
+      hooks: string; // Custom hooks
+      services: string; // API calls en data handling
+      types: string; // TypeScript types
+      utils: string; // Helper functies
+    };
   };
 }
 
@@ -62,6 +78,30 @@ interface TypeScriptConfig {
 }
 ```
 
+### Platform Architecture
+
+#### Mobile Platform (`/src/platforms/mobile/`)
+
+- **Components**: React Native componenten met platform-specific styling
+- **Screens**: Mobile-optimized screen layouts
+- **Navigation**: React Navigation met bottom tabs en stack navigators
+- **App.tsx**: Mobile app entry point met providers
+
+#### Web Platform (`/src/platforms/web/`)
+
+- **Components**: Web-optimized componenten met responsive design
+- **Pages**: Web page implementaties
+- **Context**: Web-specific theme en settings providers
+- **App.tsx**: Web app entry point met web-specific providers
+
+#### Shared Core (`/src/core/`)
+
+- **Context**: FavoritesContext, SettingsContext, ThemeContext
+- **Hooks**: Custom hooks voor API calls en data management
+- **Services**: API integratie en storage utilities
+- **Types**: TypeScript interfaces en types
+- **Utils**: Helper functies en constants
+
 ### API Integratie
 
 - **Base URL**: https://v3.football.api-sports.io/
@@ -69,14 +109,16 @@ interface TypeScriptConfig {
 - **Rate Limiting**: 100 requests/day (free tier)
 - **Endpoints**: Countries, Leagues, Teams, Matches
 - **Type Safety**: TypeScript interfaces voor alle API responses
+- **Caching**: Deduplication en storage caching
 
 ### Performance Considerations
 
 - **Lazy Loading**: Landen data alleen laden wanneer nodig
-- **Caching**: Favorieten lokaal opslaan
+- **Caching**: Favorieten lokaal opslaan, API response caching
 - **Offline Support**: Basis functionaliteit zonder internet
-- **Image Optimization**: Vlaggen optimaliseren voor mobile
+- **Image Optimization**: Vlaggen optimaliseren voor mobile en web
 - **Type Checking**: Compile-time error detection
+- **Platform Optimization**: Platform-specific rendering optimalisaties
 
 ### Error Handling
 
@@ -85,10 +127,11 @@ interface TypeScriptConfig {
 - **User Feedback**: Loading states en error messages
 - **Type Errors**: TypeScript compile-time error detection
 - **Runtime Errors**: Try-catch blocks voor runtime errors
+- **Platform Errors**: Platform-specific error handling
 
 ### Navigation Flow
 
-#### Scores Tab (Main Stack)
+#### Mobile Platform
 
 ```typescript
 // Navigation types
@@ -110,23 +153,108 @@ type ScoresTabFlow = {
   CountryDetail: { item: Country };
   LeagueDetail: { item: League };
   CupDetail: { item: Cup };
+  MatchDetail: { item: Fixture };
+  TeamDetail: { item: Team };
+  PlayerDetail: { item: Player };
 };
 
 type SettingsTabFlow = {
   Settings: undefined;
 };
+
+type FavoritesTabFlow = {
+  FavoritesHome: undefined;
+};
+
+type DebugTabFlow = {
+  Debug: undefined;
+};
 ```
 
-1. **Homescreen** → Land zoeken/selecteren
-2. **Country Detail** → Leagues en cups per land
-3. **League Detail** → Standings en matches per league
-4. **Cup Detail** → Matches per cup round
+#### Web Platform
 
-#### Settings Tab
+```typescript
+// Web navigation types
+interface WebNavigationState {
+  currentPage: string;
+  params?: Record<string, any>;
+}
 
-1. **Settings Screen** → Thema configuratie en app versie
-2. **Theme Configuration** → Auto/manual theme selectie
-3. **App Version** → App versie informatie
+type WebPageFlow = {
+  Home: undefined;
+  CountryDetail: { item: Country };
+  LeagueDetail: { item: League };
+  CupDetail: { item: Cup };
+  MatchDetail: { item: Fixture };
+  TeamDetail: { item: Team };
+  PlayerDetail: { item: Player };
+  Settings: undefined;
+};
+```
+
+### Theming & Styling
+
+#### getStyles Pattern
+
+```typescript
+// Theme configuration
+interface Theme {
+  colors: {
+    primary: string;
+    secondary: string;
+    background: string;
+    surface: string;
+    text: string;
+    textSecondary: string;
+    border: string;
+    accent: string;
+    error: string;
+    success: string;
+    warning: string;
+  };
+  spacing: {
+    xs: number;
+    sm: number;
+    md: number;
+    lg: number;
+    xl: number;
+    xxl: number;
+  };
+  typography: {
+    h1: TextStyle;
+    h2: TextStyle;
+    h3: TextStyle;
+    body: TextStyle;
+    caption: TextStyle;
+  };
+  borderRadius: {
+    sm: number;
+    md: number;
+    lg: number;
+  };
+}
+
+// getStyles pattern
+const getStyles = (theme: Theme) =>
+  StyleSheet.create({
+    container: {
+      backgroundColor: theme.colors.background,
+      padding: theme.spacing.md,
+    },
+    title: {
+      ...theme.typography.h1,
+      color: theme.colors.text,
+      marginBottom: theme.spacing.sm,
+    },
+  });
+```
+
+#### Platform-Specific Theming
+
+- **Mobile**: React Native StyleSheet met platform-specific properties
+- **Web**: CSS-in-JS met responsive design considerations
+- **Shared**: Common theme structure en color schemes
+- **Dynamic**: Dark/light mode support met auto-detection
 
 ### TypeScript Benefits
 
@@ -136,3 +264,27 @@ type SettingsTabFlow = {
 - **Documentation**: Types serve as documentation
 - **Runtime Safety**: Reduced runtime errors
 - **Team Collaboration**: Better code understanding
+- **Platform Safety**: Platform-specific type checking
+
+### Cross-Platform Considerations
+
+#### Shared Logic
+
+- **Business Logic**: API calls, data processing, state management
+- **Types**: Common TypeScript interfaces
+- **Utils**: Helper functies en constants
+- **i18n**: Internationalisatie setup
+
+#### Platform-Specific Implementation
+
+- **UI Components**: Platform-optimized rendering
+- **Navigation**: Platform-specific navigation patterns
+- **Styling**: Platform-specific styling approaches
+- **Performance**: Platform-specific optimizations
+
+#### Code Sharing Strategy
+
+- **Monorepo Structure**: Single source of truth
+- **Conditional Imports**: Platform-specific imports
+- **Shared Interfaces**: Common contracts between platforms
+- **Testing**: Platform-specific test suites

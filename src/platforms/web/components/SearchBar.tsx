@@ -1,7 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   View,
-  Text,
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
@@ -10,38 +9,45 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { useWebTheme } from "../context/WebThemeProvider";
 import { useTranslation } from "react-i18next";
+import { useSearch } from "@/context/SearchContext";
 
 interface SearchBarProps {
   value: string;
   onChangeText: (text: string) => void;
   onClear: () => void;
+  onSearchPress?: () => void;
   placeholder?: string;
   isLoading?: boolean;
-  isValid?: boolean;
 }
 
 export const SearchBar: React.FC<SearchBarProps> = ({
   value,
   onChangeText,
   onClear,
+  onSearchPress,
   placeholder,
   isLoading = false,
-  isValid = true,
 }) => {
   const { theme } = useWebTheme();
   const { t } = useTranslation();
+  const { performSearch } = useSearch();
 
-  const styles = getStyles(theme, isValid);
+  const styles = getStyles(theme);
+
+  // Debounced search effect
+  useEffect(() => {
+    if (value.length > 0) {
+      const timeoutId = setTimeout(() => {
+        performSearch(value);
+      }, 500); // 500ms debounce
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [value, performSearch]);
 
   return (
     <View style={styles.container}>
       <View style={styles.inputContainer}>
-        <Ionicons
-          name="search"
-          size={20}
-          color={theme.colors.textSecondary}
-          style={styles.searchIcon}
-        />
         <TextInput
           style={styles.input}
           value={value}
@@ -67,18 +73,25 @@ export const SearchBar: React.FC<SearchBarProps> = ({
             />
           </TouchableOpacity>
         )}
+        {onSearchPress && (
+          <TouchableOpacity
+            onPress={onSearchPress}
+            style={styles.searchIconContainer}
+          >
+            <Ionicons
+              name="search"
+              size={20}
+              color={theme.colors.primary}
+              style={styles.searchIcon}
+            />
+          </TouchableOpacity>
+        )}
       </View>
-      {!isValid && value.length > 0 && (
-        <Text style={styles.errorText}>{t("search.minCharacters")}</Text>
-      )}
     </View>
   );
 };
 
-const getStyles = (
-  theme: ReturnType<typeof useWebTheme>["theme"],
-  isValid: boolean
-) =>
+const getStyles = (theme: ReturnType<typeof useWebTheme>["theme"]) =>
   StyleSheet.create({
     container: {
       flex: 1,
@@ -91,11 +104,8 @@ const getStyles = (
       height: 48,
       backgroundColor: theme.colors.surface,
       borderRadius: theme.borderRadius.md,
-      borderColor: isValid ? theme.colors.border : theme.colors.error,
+      borderColor: theme.colors.border,
       paddingHorizontal: theme.spacing.sm,
-    },
-    searchIcon: {
-      marginRight: theme.spacing.sm,
     },
     input: {
       flex: 1,
@@ -109,10 +119,11 @@ const getStyles = (
       padding: 2,
       marginLeft: theme.spacing.sm,
     },
-    errorText: {
-      ...theme.typography.small,
-      color: theme.colors.error,
-      marginTop: theme.spacing.xs,
+    searchIconContainer: {
+      padding: 2,
       marginLeft: theme.spacing.sm,
+    },
+    searchIcon: {
+      // No margin needed for right icon
     },
   });

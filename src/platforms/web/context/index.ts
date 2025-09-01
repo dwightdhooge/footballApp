@@ -1,2 +1,2 @@
-export { WebSettingsProvider } from "./WebSettingsProvider";
-export { WebThemeProvider } from "./WebThemeProvider";
+export { WebThemeProvider, useWebTheme } from "./WebThemeProvider";
+export { WebSettingsProvider, useWebSettings } from "./WebSettingsProvider";

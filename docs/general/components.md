@@ -9,8 +9,42 @@
 - **Maintainability** door gecentraliseerde component logica
 - **Performance** door geoptimaliseerde rendering
 - **Type Safety** door TypeScript interfaces
+- **Cross-Platform** support voor mobile en web
 
 ## 🏗 Technical Implementation
+
+### Platform-Specific Component Structure
+
+```
+src/platforms/
+├── mobile/
+│   └── components/
+│       ├── common/           # Mobile-specific common components
+│       │   ├── CachedImage.tsx
+│       │   ├── CacheManagement.tsx
+│       │   ├── DetailHeader.tsx
+│       │   ├── FavoriteButton.tsx
+│       │   ├── RoundDropdown.tsx
+│       │   ├── SeasonDropdown.tsx
+│       │   ├── StateComponents.tsx
+│       │   └── SvgImage.tsx
+│       ├── country/          # Country-related components
+│       ├── cup/              # Cup-related components
+│       ├── favorites/        # Favorites components
+│       ├── homescreen/       # Homescreen components
+│       ├── league/           # League components
+│       ├── match/            # Match components
+│       ├── player/           # Player components
+│       ├── settings/         # Settings components
+│       ├── team/             # Team components
+│       └── utility/          # Utility components
+└── web/
+    └── components/
+        ├── cards/            # Web-specific card components
+        ├── CategoryTabs.tsx  # Web favorites tabs
+        ├── SearchBar.tsx     # Web search component
+        └── SearchResults.tsx # Web search results
+```
 
 ### Componenten Structuur
 
@@ -800,6 +834,7 @@ const getRoundDisplay = (roundName: string): string => {
 - [ ] Performance is geoptimaliseerd
 - [ ] TypeScript strict mode compliance
 - [ ] Alle componenten hebben proper TypeScript interfaces
+- [ ] Cross-platform compatibility (mobile + web)
 
 ### Non-Functional Requirements
 
@@ -810,6 +845,7 @@ const getRoundDisplay = (roundName: string): string => {
 - [ ] Accessibility support
 - [ ] TypeScript compile time < 5 seconds
 - [ ] No TypeScript errors in strict mode
+- [ ] Platform-specific optimizations
 
 ### UI Requirements
 
@@ -820,6 +856,7 @@ const getRoundDisplay = (roundName: string): string => {
 - [ ] Dark/Light mode support
 - [ ] Proper spacing en typography
 - [ ] Type-safe props validation
+- [ ] Platform-specific UI patterns
 
 ## 🔧 Usage Examples
 
