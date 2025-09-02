@@ -1,4 +1,2 @@
-// Export main mobile components and screens
+// Export main mobile components
 export * from "./components";
-export * from "./screens";
-export * from "./navigation";

@@ -37,7 +37,7 @@ export default function SettingsScreen() {
 
         {/* Theme Section */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>{t("settings.theme")}</Text>
+          <Text style={styles.sectionTitle}>{t("settings.theme.title")}</Text>
 
           {/* Auto Theme Switch */}
           <AutoThemeSwitch

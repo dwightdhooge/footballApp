@@ -159,7 +159,6 @@ export const FavoritesList: React.FC<FavoritesListProps> = ({
               onPress={handlePress}
               onRemove={() => handleRemove(item, category)}
               size="small"
-              country={league.country?.name || "Unknown"}
             />
           );
         case "cups":
@@ -173,7 +172,6 @@ export const FavoritesList: React.FC<FavoritesListProps> = ({
               onPress={handlePress}
               onRemove={() => handleRemove(item, category)}
               size="small"
-              country={cup.country?.name || "Unknown"}
             />
           );
         case "countries":
@@ -206,7 +204,7 @@ export const FavoritesList: React.FC<FavoritesListProps> = ({
         return `team_${team.id}`;
       case "leagues":
         const leagueItem = item as any;
-        return `leagues_${leagueItem.league.id}`;
+        return `league_${leagueItem.league.id}`;
       case "cups":
         const cupItem = item as any;
         return `cup_${cupItem.league.id}`;

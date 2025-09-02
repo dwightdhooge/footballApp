@@ -37,9 +37,9 @@ export const ManualThemeSelector: React.FC<ManualThemeSelectorProps> = ({
         </View>
 
         <View style={styles.textContainer}>
-          <Text style={styles.title}>{t("settings.theme")}</Text>
+          <Text style={styles.title}>{t("settings.theme.title")}</Text>
           <Text style={styles.subtitle}>
-            {isReadOnly ? t("settings.autoTheme") : t("settings.theme")}
+            {isReadOnly ? t("settings.autoTheme") : t("settings.theme.title")}
           </Text>
         </View>
       </View>
