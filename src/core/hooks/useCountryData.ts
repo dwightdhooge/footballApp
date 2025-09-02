@@ -1,9 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
-import { League } from "@/core/types/api";
+import { League, Country } from "@/core/types/api";
 import { fetchLeaguesForCountry } from "@/services/api/leagues";
+import { fetchCountryByCode } from "@/services/api/countries";
 
 interface UseCountryDataReturn {
   // Data
+  country: Country | null;
   leagues: League[];
   cups: League[];
 
@@ -21,6 +23,7 @@ interface UseCountryDataReturn {
 }
 
 export const useCountryData = (countryCode: string): UseCountryDataReturn => {
+  const [country, setCountry] = useState<Country | null>(null);
   const [leagues, setLeagues] = useState<League[]>([]);
   const [cups, setCups] = useState<League[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -32,7 +35,17 @@ export const useCountryData = (countryCode: string): UseCountryDataReturn => {
       setIsLoading(true);
       setError(null);
 
-      const leaguesData = await fetchLeaguesForCountry(countryCode);
+      // Fetch both country data and leagues in parallel
+      const [countryData, leaguesData] = await Promise.all([
+        fetchCountryByCode(countryCode),
+        fetchLeaguesForCountry(countryCode),
+      ]);
+
+      if (!countryData) {
+        throw new Error("Land niet gevonden");
+      }
+
+      setCountry(countryData);
 
       // Separate leagues and cups
       const leaguesList = leaguesData.filter(
@@ -67,6 +80,7 @@ export const useCountryData = (countryCode: string): UseCountryDataReturn => {
   }, [loadData]);
 
   return {
+    country,
     leagues,
     cups,
     isLoading,

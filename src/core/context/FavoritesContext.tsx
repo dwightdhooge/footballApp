@@ -88,7 +88,7 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({
     try {
       const [countries, leagues, cups, teams, players] = await Promise.all([
         getFavoritesByType("country"),
-        getFavoritesByType("leagues"),
+        getFavoritesByType("league"),
         getFavoritesByType("cup"),
         getFavoritesByType("team"),
         getFavoritesByType("player"),
@@ -158,7 +158,7 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({
         return favoriteCountries.some(
           (fav) => fav.code === (item as Country).code
         );
-      case "leagues":
+      case "league":
         return favoriteLeagues.some(
           (fav) => fav.league.id === (item as League).league.id
         );

@@ -10,4 +10,4 @@ export const API_CONFIG: ApiConfig = {
   headers: {
     "x-apisports-key": "be585eb3815e94b55b2fdfc52b3e925c",
   },
-}; 
+};

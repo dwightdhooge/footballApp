@@ -4,9 +4,7 @@ import { useTheme } from "@/context/ThemeContext";
 import { useFavorites } from "@/context/FavoritesContext";
 import { FavoriteItem, FavoriteType } from "@/services/storage/favorites";
 import { useTranslation } from "react-i18next";
-import { useNavigation } from "@react-navigation/native";
-import { StackNavigationProp } from "@react-navigation/stack";
-import { ScoresStackParamList } from "@/types/navigation";
+import { router } from "expo-router";
 import { EmptyState } from "@/components/common/StateComponents";
 import { CountryCard } from "./../country/CountryCard";
 import { LeagueCard } from "./../league/LeagueCard";
@@ -22,7 +20,6 @@ export const FavoritesList: React.FC<FavoritesListProps> = ({
   category,
   favorites,
 }) => {
-  const navigation = useNavigation<StackNavigationProp<ScoresStackParamList>>();
   const { theme } = useTheme();
   const { removeFavoriteItem } = useFavorites();
   const { t } = useTranslation();
@@ -38,23 +35,60 @@ export const FavoritesList: React.FC<FavoritesListProps> = ({
       switch (category) {
         case "players":
           const playerItem = item as any;
-          navigation.navigate("PlayerDetail", { item: playerItem });
+          router.push({
+            pathname: `/player/[id]`,
+            params: {
+              id: playerItem.player.id.toString(),
+              name: playerItem.player.name,
+              firstname: playerItem.player.firstname,
+              lastname: playerItem.player.lastname,
+              photo: playerItem.player.photo,
+              position: playerItem.player.position,
+              number: playerItem.player.number?.toString(),
+            },
+          });
           break;
         case "teams":
           const teamItem = item as any;
-          navigation.navigate("TeamDetail", { item: teamItem });
+          router.push({
+            pathname: `/team/[id]`,
+            params: {
+              id: teamItem.id.toString(),
+              name: teamItem.name,
+              logo: teamItem.logo,
+              country: teamItem.country || "Unknown",
+            },
+          });
           break;
         case "leagues":
           const leagueItem = item as any;
-          navigation.navigate("LeagueDetail", { item: leagueItem });
+          router.push({
+            pathname: `/league/[id]`,
+            params: {
+              id: leagueItem.league.id.toString(),
+              name: leagueItem.league.name,
+              logo: leagueItem.league.logo,
+              countryName: leagueItem.country?.name || "Unknown",
+              seasons: JSON.stringify(leagueItem.seasons || []),
+            },
+          });
           break;
         case "cups":
           const cupItem = item as any;
-          navigation.navigate("CupDetail", { item: cupItem });
+          router.push({
+            pathname: `/cup/[id]`,
+            params: {
+              id: cupItem.league.id.toString(),
+              name: cupItem.league.name,
+              logo: cupItem.league.logo,
+              countryName: cupItem.country?.name || "Unknown",
+              seasons: JSON.stringify(cupItem.seasons || []),
+            },
+          });
           break;
         case "countries":
           const countryItem = item as any;
-          navigation.navigate("CountryDetail", { item: countryItem });
+          router.push(`/country/${countryItem.code}`);
           break;
       }
     };
@@ -76,7 +110,7 @@ export const FavoritesList: React.FC<FavoritesListProps> = ({
         case "teams":
           return "team";
         case "leagues":
-          return "leagues";
+          return "league";
         case "cups":
           return "cup";
         case "countries":
@@ -92,12 +126,12 @@ export const FavoritesList: React.FC<FavoritesListProps> = ({
           const player = item as any;
           return (
             <PlayerCard
-              id={player.player.id}
-              name={player.player.name}
-              firstname={player.player.firstname}
-              lastname={player.player.lastname}
-              photo={player.player.photo}
-              position={player.player.position}
+              id={player.id}
+              name={player.name}
+              firstname={player.firstname}
+              lastname={player.lastname}
+              photo={player.photo}
+              position={player.position}
               onPress={handlePress}
               onRemove={() => handleRemove(item, category)}
             />
@@ -118,26 +152,28 @@ export const FavoritesList: React.FC<FavoritesListProps> = ({
           const league = item as any;
           return (
             <LeagueCard
-              id={league.id}
-              name={league.name}
-              logo={league.logo}
-              type={league.type}
+              id={league.league.id}
+              name={league.league.name}
+              logo={league.league.logo}
+              type={league.league.type}
               onPress={handlePress}
               onRemove={() => handleRemove(item, category)}
               size="small"
+              country={league.country?.name || "Unknown"}
             />
           );
         case "cups":
           const cup = item as any;
           return (
             <LeagueCard
-              id={cup.id}
-              name={cup.name}
-              logo={cup.logo}
-              type={cup.type}
+              id={cup.league.id}
+              name={cup.league.name}
+              logo={cup.league.logo}
+              type={cup.league.type}
               onPress={handlePress}
               onRemove={() => handleRemove(item, category)}
               size="small"
+              country={cup.country?.name || "Unknown"}
             />
           );
         case "countries":
@@ -164,16 +200,16 @@ export const FavoritesList: React.FC<FavoritesListProps> = ({
     switch (category) {
       case "players":
         const player = item as any;
-        return `player_${player.player.id}`;
+        return `player_${player.id}`;
       case "teams":
         const team = item as any;
         return `team_${team.id}`;
       case "leagues":
         const leagueItem = item as any;
-        return `leagues_${leagueItem.id}`;
+        return `leagues_${leagueItem.league.id}`;
       case "cups":
         const cupItem = item as any;
-        return `cup_${cupItem.id}`;
+        return `cup_${cupItem.league.id}`;
       case "countries":
         const country = item as any;
         return `country_${country.code}`;

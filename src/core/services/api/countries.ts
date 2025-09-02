@@ -58,3 +58,32 @@ export const searchCountries = async (
     throw error;
   }
 };
+
+export const fetchCountryByCode = async (
+  countryCode: string
+): Promise<Country | null> => {
+  try {
+    const response = await fetch(
+      `${API_CONFIG.baseURL}/countries?code=${encodeURIComponent(countryCode)}`,
+      {
+        headers: API_CONFIG.headers,
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+
+    const data: CountriesApiResponse = await response.json();
+
+    if (data.errors && data.errors.length > 0) {
+      throw new Error(`API Error: ${data.errors.join(", ")}`);
+    }
+
+    // Return the first country if found, null otherwise
+    return data.response.length > 0 ? data.response[0] : null;
+  } catch (error) {
+    console.error("Fetch country by code error:", error);
+    throw error;
+  }
+};
