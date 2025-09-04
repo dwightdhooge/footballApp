@@ -18,6 +18,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { CachedImage } from "@/components/common/CachedImage";
 import { SeasonDropdown } from "@/components/common/SeasonDropdown";
 import { RoundDropdown } from "@/components/common/RoundDropdown";
+import { FavoriteButton } from "@/components/common/FavoriteButton";
 import { StandingsTable } from "@/components/league/StandingsTable";
 import { League, Fixture } from "@/core/types/api";
 import { MatchCard } from "@/components/match/MatchCard";
@@ -331,20 +332,20 @@ export default function LeagueDetailScreen() {
         options={{
           title: leagueItem.league.name,
           headerShown: true,
+          headerStyle: {
+            backgroundColor: theme.colors.surface,
+          },
+          headerTintColor: theme.colors.text,
+          headerTitleStyle: {
+            color: theme.colors.text,
+          },
           headerRight: () => (
-            <TouchableOpacity
+            <FavoriteButton
+              item={leagueItem}
+              type="league"
+              size={24}
               style={styles.favoriteButton}
-              onPress={() => toggleFavoriteItem(leagueItem, "league")}
-              activeOpacity={0.7}
-            >
-              <Ionicons
-                name={isLeagueFavorite ? "heart" : "heart-outline"}
-                size={24}
-                color={
-                  isLeagueFavorite ? theme.colors.error : theme.colors.text
-                }
-              />
-            </TouchableOpacity>
+            />
           ),
         }}
       />

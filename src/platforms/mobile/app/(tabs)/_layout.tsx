@@ -24,7 +24,7 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name="index"
+        name="(home)"
         options={{
           title: t("navigation.scores"),
           tabBarIcon: ({ focused, color, size }) => (
@@ -37,7 +37,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="favorites"
+        name="(favorites)"
         options={{
           title: t("navigation.favorites"),
           tabBarIcon: ({ focused, color, size }) => (

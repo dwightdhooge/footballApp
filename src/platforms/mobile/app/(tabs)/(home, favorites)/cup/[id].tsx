@@ -11,6 +11,7 @@ import { SeasonDropdown } from "@/components/common/SeasonDropdown";
 import { RoundDropdown } from "@/components/common/RoundDropdown";
 import { MatchesList } from "@/components/match/MatchesList";
 import { PlaceholderState } from "@/components/utility/PlaceholderState";
+import { FavoriteButton } from "@/components/common/FavoriteButton";
 
 export default function CupDetailScreen() {
   const { id, name, logo, countryName, seasons } = useLocalSearchParams<{
@@ -106,18 +107,20 @@ export default function CupDetailScreen() {
         options={{
           title: cupItem.league.name,
           headerShown: true,
+          headerStyle: {
+            backgroundColor: theme.colors.surface,
+          },
+          headerTintColor: theme.colors.text,
+          headerTitleStyle: {
+            color: theme.colors.text,
+          },
           headerRight: () => (
-            <TouchableOpacity
+            <FavoriteButton
+              item={cupItem}
+              type="cup"
+              size={24}
               style={styles.favoriteButton}
-              onPress={() => toggleFavoriteItem(cupItem, "cup")}
-              activeOpacity={0.7}
-            >
-              <Ionicons
-                name={isCupFavorite ? "heart" : "heart-outline"}
-                size={24}
-                color={isCupFavorite ? theme.colors.error : theme.colors.text}
-              />
-            </TouchableOpacity>
+            />
           ),
         }}
       />

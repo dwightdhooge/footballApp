@@ -38,13 +38,13 @@ export const FavoritesList: React.FC<FavoritesListProps> = ({
           router.push({
             pathname: `/player/[id]`,
             params: {
-              id: playerItem.player.id.toString(),
-              name: playerItem.player.name,
-              firstname: playerItem.player.firstname,
-              lastname: playerItem.player.lastname,
-              photo: playerItem.player.photo,
-              position: playerItem.player.position,
-              number: playerItem.player.number?.toString(),
+              id: playerItem.id.toString(),
+              name: playerItem.name,
+              firstname: playerItem.firstname,
+              lastname: playerItem.lastname,
+              photo: playerItem.photo,
+              position: playerItem.position,
+              number: playerItem.number?.toString(),
             },
           });
           break;

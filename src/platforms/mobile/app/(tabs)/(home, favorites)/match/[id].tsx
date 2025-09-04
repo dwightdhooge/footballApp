@@ -148,6 +148,13 @@ export default function MatchDetailScreen() {
             ? `${fixture.teams.home.name} vs ${fixture.teams.away.name}`
             : t("matchDetail.title"),
           headerShown: true,
+          headerStyle: {
+            backgroundColor: theme.colors.surface,
+          },
+          headerTintColor: theme.colors.text,
+          headerTitleStyle: {
+            color: theme.colors.text,
+          },
         }}
       />
 

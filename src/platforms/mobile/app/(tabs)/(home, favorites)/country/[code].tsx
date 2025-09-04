@@ -14,6 +14,7 @@ import { useFavorites } from "@/core/context/FavoritesContext";
 import { useCountryData } from "@/core/hooks/useCountryData";
 import { LeaguesSection } from "@/components/country/LeaguesSection";
 import { PlaceholderState } from "@/components/utility/PlaceholderState";
+import { FavoriteButton } from "@/components/common/FavoriteButton";
 
 export default function CountryDetailScreen() {
   const { code } = useLocalSearchParams<{
@@ -73,20 +74,20 @@ export default function CountryDetailScreen() {
         options={{
           title: country.name || code?.toUpperCase() || "Country Details",
           headerShown: true,
+          headerStyle: {
+            backgroundColor: theme.colors.surface,
+          },
+          headerTintColor: theme.colors.text,
+          headerTitleStyle: {
+            color: theme.colors.text,
+          },
           headerRight: () => (
-            <TouchableOpacity
+            <FavoriteButton
+              item={country}
+              type="country"
+              size={24}
               style={styles.favoriteButton}
-              onPress={() => toggleFavorite(country)}
-              activeOpacity={0.7}
-            >
-              <Ionicons
-                name={isCountryFavorite ? "heart" : "heart-outline"}
-                size={24}
-                color={
-                  isCountryFavorite ? theme.colors.error : theme.colors.text
-                }
-              />
-            </TouchableOpacity>
+            />
           ),
         }}
       />

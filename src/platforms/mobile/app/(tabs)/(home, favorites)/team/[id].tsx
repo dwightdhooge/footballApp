@@ -129,6 +129,13 @@ export default function TeamDetailScreen() {
         options={{
           title: teamInfo.team.name || basicTeam.name,
           headerShown: true,
+          headerStyle: {
+            backgroundColor: theme.colors.surface,
+          },
+          headerTintColor: theme.colors.text,
+          headerTitleStyle: {
+            color: theme.colors.text,
+          },
           headerRight: () => (
             <TouchableOpacity
               style={styles.favoriteButton}

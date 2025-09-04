@@ -15,6 +15,7 @@ import { useFavorites } from "@/core/context/FavoritesContext";
 import { usePlayerData } from "@/core/hooks/usePlayerData";
 import { CachedImage } from "@/components/common/CachedImage";
 import { PlaceholderState } from "@/components/utility/PlaceholderState";
+import { FavoriteButton } from "@/components/common/FavoriteButton";
 import { Ionicons } from "@expo/vector-icons";
 
 export default function PlayerDetailScreen() {
@@ -391,20 +392,20 @@ export default function PlayerDetailScreen() {
             player?.name ||
             "Player",
           headerShown: true,
+          headerStyle: {
+            backgroundColor: theme.colors.surface,
+          },
+          headerTintColor: theme.colors.text,
+          headerTitleStyle: {
+            color: theme.colors.text,
+          },
           headerRight: () => (
-            <TouchableOpacity
+            <FavoriteButton
+              item={player}
+              type="player"
+              size={24}
               style={styles.favoriteButton}
-              onPress={() => toggleFavoriteItem(player, "player")}
-              activeOpacity={0.7}
-            >
-              <Ionicons
-                name={isPlayerFavorite ? "heart" : "heart-outline"}
-                size={24}
-                color={
-                  isPlayerFavorite ? theme.colors.error : theme.colors.text
-                }
-              />
-            </TouchableOpacity>
+            />
           ),
         }}
       />
