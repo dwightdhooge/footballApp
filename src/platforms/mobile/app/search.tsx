@@ -99,6 +99,7 @@ export default function SearchScreen() {
         options={{
           title: t("search.title"),
           headerShown: true,
+          headerBackButtonDisplayMode: "minimal",
         }}
       />
 

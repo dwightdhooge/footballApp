@@ -339,6 +339,7 @@ export default function LeagueDetailScreen() {
           headerTitleStyle: {
             color: theme.colors.text,
           },
+          headerBackButtonDisplayMode: "minimal",
           headerRight: () => (
             <FavoriteButton
               item={leagueItem}

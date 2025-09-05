@@ -81,6 +81,7 @@ export default function CountryDetailScreen() {
           headerTitleStyle: {
             color: theme.colors.text,
           },
+          headerBackButtonDisplayMode: "minimal",
           headerRight: () => (
             <FavoriteButton
               item={country}

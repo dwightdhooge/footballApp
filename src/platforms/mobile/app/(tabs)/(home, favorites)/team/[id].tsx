@@ -136,6 +136,7 @@ export default function TeamDetailScreen() {
           headerTitleStyle: {
             color: theme.colors.text,
           },
+          headerBackButtonDisplayMode: "minimal",
           headerRight: () => (
             <TouchableOpacity
               style={styles.favoriteButton}

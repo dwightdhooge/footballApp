@@ -114,6 +114,7 @@ export default function CupDetailScreen() {
           headerTitleStyle: {
             color: theme.colors.text,
           },
+          headerBackButtonDisplayMode: "minimal",
           headerRight: () => (
             <FavoriteButton
               item={cupItem}

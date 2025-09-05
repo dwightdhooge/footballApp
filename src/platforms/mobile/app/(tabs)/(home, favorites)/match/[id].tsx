@@ -155,6 +155,7 @@ export default function MatchDetailScreen() {
           headerTitleStyle: {
             color: theme.colors.text,
           },
+          headerBackButtonDisplayMode: "minimal",
         }}
       />
 
